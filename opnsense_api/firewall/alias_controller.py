@@ -9,14 +9,19 @@ class Alias(object):
     self.device = device
 
   def list_aliases(self) -> dict:
-    return self.device.authenticated_request("GET", f"firewall/alias/searchItem")['rows']
+    search_results = self.device.authenticated_request("GET", f"firewall/alias/searchItem")
+    if 'rows' in search_results:
+      return search_results['rows']
+    return []
 
   def get_alias(self, uuid: str) -> dict:
     return self.device.authenticated_request("GET", f"firewall/alias/getItem/{uuid}")['alias']
 
   def get_alias_uuid(self, name: str) -> str:
-    print(self.device.authenticated_request("GET", f"firewall/alias/getAliasUUID/{name}"))
-    return self.device.authenticated_request("GET", f"firewall/alias/getAliasUUID/{name}")['uuid']
+    search_results = self.device.authenticated_request("GET", f"firewall/alias/getAliasUUID/{name}")
+    if 'uuid' in search_results:
+      return search_results['uuid']
+    return None
 
   def toggle_alias(self, uuid, enabled=None):
     if enabled is None:

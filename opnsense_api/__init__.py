@@ -4,7 +4,7 @@ import http.client
 from base64 import b64encode
 from opnsense_api.firewall import Firewall
 from opnsense_api.util import Constants
-
+import os.path
 
 class Opnsense(object):
 
@@ -23,7 +23,7 @@ class Opnsense(object):
 
     if ca_path is not None:
       self._context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-      self._context.load_verify_locations(ca_path)
+      self._context.load_verify_locations(os.path.abspath(ca_path))
 
     self._connection = http.client.HTTPSConnection(
       host = self._host,
