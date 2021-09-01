@@ -1,9 +1,8 @@
-from .. import Opnsense
-from alias_controller import Alias
+from .alias_controller import Alias
 
 class Firewall(object):
 
-  def __init__(self, device: Opnsense):
+  def __init__(self, device):
     self._device = device
 
   @property
