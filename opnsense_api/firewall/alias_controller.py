@@ -15,6 +15,7 @@ class Alias(object):
     return self.device.authenticated_request("GET", f"firewall/alias/getItem/{uuid}")['alias']
 
   def get_alias_uuid(self, name: str) -> str:
+    print(self.device.authenticated_request("GET", f"firewall/alias/getAliasUUID/{name}"))
     return self.device.authenticated_request("GET", f"firewall/alias/getAliasUUID/{name}")['uuid']
 
   def toggle_alias(self, uuid, enabled=None):

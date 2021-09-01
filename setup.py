@@ -1,8 +1,9 @@
-from distutils.core import setup
+from setuptools import setup, find_packages
+
 setup(
   name = 'python-opnsense',
-  packages = ['opnsense_api'],
-  version = '0.1.4',
+  packages=find_packages(),
+  version = '0.1.5',
   license='apache-2.0',
   description = 'A python library that interacts with an Opnsense API',
   author = 'Dylan Turnbull',
