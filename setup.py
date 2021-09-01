@@ -2,7 +2,7 @@ from distutils.core import setup
 setup(
   name = 'python-opnsense',
   packages = ['opnsense_api'],
-  version = '0.1.1',
+  version = '0.1.4',
   license='apache-2.0',
   description = 'A python library that interacts with an Opnsense API',
   author = 'Dylan Turnbull',
