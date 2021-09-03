@@ -1,5 +1,5 @@
+import base64
 from enum import Enum
-
 
 class Constants(object):
   HTTP_SUCCESS = [200, 201, 202, 203, 204, 205, 206, 207]
@@ -13,6 +13,12 @@ class AliasType(Enum):
 class ProtocolType(Enum):
   IPV4 = "IPv4"
   IPV6 = "IPv6"
+
+def reliable_b64_decode(string):
+  try:
+    return base64.b64decode(string).decode("utf-8")
+  except Exception:
+    return string
 
 def parse_query_response_alias(alias):
   name = alias["name"]

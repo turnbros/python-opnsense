@@ -2,6 +2,17 @@
 A Python library for the Opnsense API
 
 ## Getting Started
+
+### Valid Environment Variables
+* OPN_API_KEY
+* OPN_API_SECRET
+* OPN_API_SCHEME
+* OPN_API_HOST
+* OPN_API_PORT
+* OPN_API_CA_PATH
+* OPN_API_CA_CONTENT
+
+### Example Script
 ```python
 import json
 from opnsense_api import Opnsense
