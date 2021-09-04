@@ -1,6 +1,7 @@
 from typing import List
 from typing import Union
-from opnsense_api.util import AliasType, ProtocolType, parse_query_response_alias
+from opnsense_api.util import AliasType, ProtocolType
+from opnsense_api.util.parse import parse_query_response_alias
 
 
 class Alias(object):
