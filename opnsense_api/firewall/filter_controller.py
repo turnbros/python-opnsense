@@ -8,6 +8,11 @@ class Filter(object):
   def __init__(self, device):
     self.device = device
 
+  def apply_changes(self):
+    response = self.device.authenticated_request("POST", f"firewall/filter/apply")
+    if response["status"] == "error":
+      raise Exception(f"Failed to apply changes. Reason {response}")
+
   def get_rule(self, uuid: str=None) -> Union[dict, None]:
     """
     Returns a specific filter rule
@@ -44,30 +49,35 @@ class Filter(object):
     all_rules = self.list_rules()
     matched_rules = []
     for rule in all_rules:
+      rule_uuid = rule.get("uuid")
+      rule = self.get_rule(rule_uuid)
+      rule["uuid"] = rule_uuid
+      rule_matched = True
       for key in kwargs.keys():
         if rule.get(key) != kwargs.get(key):
-          return None
-      matched_rules.append(rule)
+          rule_matched = False
+          break
+      if rule_matched: matched_rules.append(rule)
     return matched_rules
 
 
   def add_rule(self,
-               action: str,
-               direction: str,
-               interface: List[str],
-               protocol: str,
-               source_net: str,
-               source_port: int,
-               destination_net: str,
-               destination_port: int,
-               gateway: Union[str,None],
+               direction: str = "in",
+               interface: List[str] = ["lan"],
+               source_net: str = "any",
+               destination_net: str = "any",
+               action: str = 'pass',
+               protocol: str = "any",
+               source_port: int = 0,
+               destination_port: int = 0,
+               gateway: Union[str,None] = None,
                source_not: bool = False,
                destination_not: bool = False,
                sequence: int = 1,
                description: str = "",
-               enabled: bool = True,
+               enabled: bool = False,
                quick: bool = True,
-               log: bool = True,
+               log: bool = False,
                ipprotocol: str = "inet"):
     """
     Adds a new firewall filter rule.
@@ -89,8 +99,10 @@ class Filter(object):
     :param quick:
     :param log:
     :param ipprotocol:
-    :return: {'result': 'saved', 'uuid': 'd244216a-0483-4090-897a-2f2dbd6c7f8d'}
+    :return: A parsed filter rule
+    :rtype: dict
     """
+
     # This will raise an exception if a bad input is provided.
     validate_add_filter_rule(action, direction, ipprotocol, protocol)
 
@@ -127,7 +139,12 @@ class Filter(object):
       "gateway": gateway
     }
 
-    return self.device.authenticated_request("POST", "firewall/filter/addRule", body={"rule": rule_body})
+    response = self.device.authenticated_request("POST", "firewall/filter/addRule", body={"rule": rule_body})
+    if response['result'] == "saved":
+      self.apply_changes()
+      return self.get_rule(response['uuid'])
+    else:
+      raise Exception(f"Failed to add filter rule. Reason: {response}")
 
 
   def set_rule(self,
@@ -170,7 +187,7 @@ class Filter(object):
     :param quick:
     :param log:
     :param ipprotocol:
-    :return: {'result': 'saved'}
+    :return: A parsed filter rule
     :rtype: dict
     """
 
@@ -227,27 +244,32 @@ class Filter(object):
       "gateway": gateway
     }
 
-    return self.device.authenticated_request("POST", f"firewall/filter/setRule/{uuid}", body={"rule": rule_body})
+    response = self.device.authenticated_request("POST", f"firewall/filter/setRule/{uuid}", body={"rule": rule_body})
+    if response['result'] == 'saved':
+      self.apply_changes()
+      return self.get_rule(uuid)
+    else:
+      raise Exception(f"Failed to update filter rule with uuid {uuid}. Reason: {response}")
 
 
-  def toggle_rule(self, uuid: str=None, enabled: Union[bool,None]=None) -> dict:
+  def toggle_rule(self, uuid: str=None) -> dict:
     """
-    Toggles the enabled state of a filter rule. Alternativly, a desired enabled state can be supplied with a bool
+    Toggles the enabled state of a filter rule.
     :param uuid: The UUID of the filter rule to toggle
-    :param enabled: An optional parameter that if set will become the enabled state of the filter rule
     :type uuid: str
-    :type enabled: bool
-    :return: {"result": string,"changed": bool}
+    :return: A parsed filter rule
     :rtype: dict
     """
-    if enabled is None:
-      enabled = bool(int(self.get_rule(uuid)['enabled']))
-    return self.device.authenticated_request("POST", f"firewall/filter/toggleRule/{uuid}?enabled={not enabled}")
+    response = self.device.authenticated_request("POST", f"firewall/filter/toggleRule/{uuid}")
+    if response["changed"]:
+      self.apply_changes()
+      return self.get_rule(uuid)
+    raise Exception(f"Failed to toggle filter rule. Reason: {response}")
 
 
   def delete_rule(self, uuid: str=None) -> bool:
     """
-    Deletes a rule.
+    Deletes a rule. Returns a bool or throws an exception since we don't really care about the UUID once it's gone.
     :param uuid: The UUID of the filter rule to delete
     :type uuid: str
     :return: A bool that indicates operation result
@@ -255,5 +277,52 @@ class Filter(object):
     """
     query_results = self.device.authenticated_request("POST", f"firewall/filter/delRule/{uuid}")
     if query_results['result'] == "deleted":
+      self.apply_changes()
       return True
-    return False
+    raise Exception(f"Failed to delete filter rule with UUID {uuid} with reason: {query_results['result']}  ")
+
+  def add_or_set_rule(self,
+               uuid: str = None,
+               action: Union[str, None] = None,
+               direction: Union[str, None] = None,
+               interface: Union[List[str], None] = None,
+               protocol: Union[str, None] = None,
+               source_net: Union[str, None] = None,
+               source_port: Union[int, None] = None,
+               destination_net: Union[str, None] = None,
+               destination_port: Union[int, None] = None,
+               gateway: Union[str, None] = None,
+               source_not: Union[bool, None] = None,
+               destination_not: Union[bool, None] = None,
+               sequence: Union[int, None] = None,
+               description: Union[str, None] = None,
+               enabled: Union[bool, None] = None,
+               quick: Union[bool, None] = None,
+               log: Union[bool, None] = None,
+               ipprotocol: Union[str, None] = None) -> dict:
+
+    if uuid is None:
+      filter_rule = self.add_rule()
+    else:
+      filter_rule = self.get_rule(uuid)
+
+    return self.set_rule(filter_rule["uuid"],
+                         action,
+                         direction,
+                         interface,
+                         protocol,
+                         source_net,
+                         source_port,
+                         destination_net,
+                         destination_port,
+                         gateway,
+                         source_not,
+                         destination_not,
+                         sequence,
+                         description,
+                         enabled,
+                         quick,
+                         log,
+                         ipprotocol)
+
+

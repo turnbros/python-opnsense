@@ -159,6 +159,7 @@ def parse_firewall_filter_rule(filter_uuid, filter_rule):
     raise ParsingError(filter_uuid, filter_rule['gateway'], f"Failed to parse filter gateway. {error}")
 
   return {
+    "uuid": filter_uuid,
     "sequence": sequence,
     "description": description,
     "enabled": enabled,
