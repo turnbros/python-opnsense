@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
   name = 'python-opnsense',
   packages=find_packages(),
-  version = '1.0.2',
+  version = '1.0.3',
   license='apache-2.0',
   description = 'A python library that interacts with an Opnsense API',
   author = 'Dylan Turnbull',
