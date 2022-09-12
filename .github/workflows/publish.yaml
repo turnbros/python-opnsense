@@ -1,0 +1,39 @@
+name: Build and publish
+on:
+  workflow_dispatch:
+  release:
+    types: [ published ]
+  push:
+    tags: [ v* ]
+  # Run tests for any PRs.
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.8
+
+    - name: Install dependencies
+      run: |
+        
+        # Strip git ref prefix from version.
+        VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+        # Strip "v" prefix from tag name.
+        [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+        export BUILD_VERSION=${VERSION}
+        echo $(pwd)
+        echo $(ls -l)
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        python -m build --sdist --wheel --outdir dist/
+
+    - name: Publish package
+      if: github.event_name == 'release'
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}

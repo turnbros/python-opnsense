@@ -4,6 +4,7 @@ import json
 import http.client
 from base64 import b64encode
 from opnsense_api.firewall import Firewall
+from opnsense_api.unbound import Unbound
 from opnsense_api.util import Constants, reliable_b64_decode
 
 
@@ -65,10 +66,10 @@ class Opnsense(object):
     )
 
   @property
-  def device_path(self):
+  def _device_path(self):
     return f"{self._scheme}://{self._host}:{self._port}"
 
-  def authenticated_request(self, method, path, body=None, headers=None) -> http.client.HTTPResponse:
+  def _authenticated_request(self, method, path, body=None, headers=None) -> http.client.HTTPResponse:
     if headers is None:
       headers = {}
     headers["Authorization"] = f"Basic {self._b64_auth}"
@@ -79,7 +80,7 @@ class Opnsense(object):
     if isinstance(body, (dict, list, tuple)):
       body = json.dumps(body)
 
-    self._connection.request(method, f"{self.device_path}/api/{path}", body, headers)
+    self._connection.request(method, f"{self._device_path}/api/{path}", body, headers)
     query_response = self._connection.getresponse()
 
     if query_response.status not in Constants.HTTP_SUCCESS:
@@ -100,3 +101,7 @@ class Opnsense(object):
   @property
   def firewall(self) -> Firewall:
     return Firewall(self)
+
+  @property
+  def unbound_dns(self) -> Unbound:
+    return Unbound(self)
