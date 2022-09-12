@@ -10,13 +10,13 @@ class Alias(object):
     self.device = device
 
   def list_aliases(self) -> list:
-    search_results = self.device.authenticated_request("GET", f"firewall/alias/searchItem")
+    search_results = self.device._authenticated_request("GET", f"firewall/alias/searchItem")
     if 'rows' in search_results:
       return search_results['rows']
     return []
 
   def get_alias(self, uuid: str) -> dict:
-    query_response = self.device.authenticated_request("GET", f"firewall/alias/getItem/{uuid}")
+    query_response = self.device._authenticated_request("GET", f"firewall/alias/getItem/{uuid}")
     if 'alias' in query_response:
       try:
         return parse_query_response_alias(query_response['alias'])
@@ -24,7 +24,7 @@ class Alias(object):
         raise Exception(f"Failed to parse the alias wuth UUID: {uuid}\nException: {error.with_traceback()}")
 
   def get_alias_uuid(self, name: str) -> Union[str,None]:
-    search_results = self.device.authenticated_request("GET", f"firewall/alias/getAliasUUID/{name}")
+    search_results = self.device._authenticated_request("GET", f"firewall/alias/getAliasUUID/{name}")
     if 'uuid' in search_results:
       return search_results['uuid']
     return None
@@ -32,10 +32,10 @@ class Alias(object):
   def toggle_alias(self, uuid, enabled=None):
     if enabled is None:
       enabled = bool(int(self.get_alias(uuid)['enabled']))
-    return self.device.authenticated_request("POST", f"firewall/alias/toggleItem/{uuid}?enabled={not enabled}")
+    return self.device._authenticated_request("POST", f"firewall/alias/toggleItem/{uuid}?enabled={not enabled}")
 
   def delete_alias(self, uuid):
-    return self.device.authenticated_request("POST", f"firewall/alias/delItem/{uuid}")
+    return self.device._authenticated_request("POST", f"firewall/alias/delItem/{uuid}")
 
   def add_alias(self,
                 name: str,
@@ -69,7 +69,7 @@ class Alias(object):
         "enabled": str(int(enabled))
       }
     }
-    return self.device.authenticated_request("POST", f"firewall/alias/addItem", body=request_body)
+    return self.device._authenticated_request("POST", f"firewall/alias/addItem", body=request_body)
 
 
   def set_alias(self,
@@ -106,4 +106,4 @@ class Alias(object):
         "enabled": str(int(enabled))
       }
     }
-    return self.device.authenticated_request("POST", f"firewall/alias/setItem/{uuid}", body=request_body)
+    return self.device._authenticated_request("POST", f"firewall/alias/setItem/{uuid}", body=request_body)

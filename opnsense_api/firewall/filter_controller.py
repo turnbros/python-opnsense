@@ -9,7 +9,7 @@ class Filter(object):
     self.device = device
 
   def apply_changes(self):
-    response = self.device.authenticated_request("POST", f"firewall/filter/apply")
+    response = self.device._authenticated_request("POST", f"firewall/filter/apply")
     if response["status"] == "error":
       raise Exception(f"Failed to apply changes. Reason {response}")
 
@@ -21,7 +21,7 @@ class Filter(object):
     :return: A parsed filter rule
     :rtype: dict
     """
-    query_results = self.device.authenticated_request("GET", f"firewall/filter/getRule/{uuid}")
+    query_results = self.device._authenticated_request("GET", f"firewall/filter/getRule/{uuid}")
     if 'rule' in query_results:
       return parse_firewall_filter_rule(uuid, query_results['rule'])
     return None
@@ -33,7 +33,7 @@ class Filter(object):
     :return: A brief list of parsed filter rules
     :rtype: list
     """
-    query_results = self.device.authenticated_request("GET", f"firewall/filter/searchRule")
+    query_results = self.device._authenticated_request("GET", f"firewall/filter/searchRule")
     if 'rows' in query_results:
       return parse_firewall_filter_search_results(query_results['rows'])
     return []
@@ -139,7 +139,7 @@ class Filter(object):
       "gateway": gateway
     }
 
-    response = self.device.authenticated_request("POST", "firewall/filter/addRule", body={"rule": rule_body})
+    response = self.device._authenticated_request("POST", "firewall/filter/addRule", body={"rule": rule_body})
     if response['result'] == "saved":
       self.apply_changes()
       return self.get_rule(response['uuid'])
@@ -244,7 +244,7 @@ class Filter(object):
       "gateway": gateway
     }
 
-    response = self.device.authenticated_request("POST", f"firewall/filter/setRule/{uuid}", body={"rule": rule_body})
+    response = self.device._authenticated_request("POST", f"firewall/filter/setRule/{uuid}", body={"rule": rule_body})
     if response['result'] == 'saved':
       self.apply_changes()
       return self.get_rule(uuid)
@@ -260,7 +260,7 @@ class Filter(object):
     :return: A parsed filter rule
     :rtype: dict
     """
-    response = self.device.authenticated_request("POST", f"firewall/filter/toggleRule/{uuid}")
+    response = self.device._authenticated_request("POST", f"firewall/filter/toggleRule/{uuid}")
     if response["changed"]:
       self.apply_changes()
       return self.get_rule(uuid)
@@ -275,7 +275,7 @@ class Filter(object):
     :return: A bool that indicates operation result
     :rtype: bool
     """
-    query_results = self.device.authenticated_request("POST", f"firewall/filter/delRule/{uuid}")
+    query_results = self.device._authenticated_request("POST", f"firewall/filter/delRule/{uuid}")
     if query_results['result'] == "deleted":
       self.apply_changes()
       return True
