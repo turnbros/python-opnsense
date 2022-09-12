@@ -68,11 +68,11 @@ class Host(object):
           name: str,
           domain: str,
           server: str,
-          rr: str,
-          mxprio: str,
-          mx: str,
           description: str = "",
           enabled: bool = True,
+          rr: str = "",
+          mxprio: int = 0,
+          mx: str = ""
           ) -> HostOverride:
     """
 
@@ -111,11 +111,11 @@ class Host(object):
           name: str,
           domain: str,
           server: str,
-          rr: str,
-          mxprio: str,
-          mx: str,
           description: str = "",
           enabled: bool = True,
+          rr: str = "",
+          mxprio: int = 0,
+          mx: str = "",
           ) -> HostOverride:
     """
 
@@ -146,6 +146,6 @@ class Host(object):
     response = self._device._authenticated_request("POST", request_base, body=request_body)
     if response['result'] == "saved":
       apply_changes(self._device)
-      return self.get(response['uuid'])
+      return self.get(uuid)
     else:
       raise Exception(f"Failed to update host override. Reason: {response}")

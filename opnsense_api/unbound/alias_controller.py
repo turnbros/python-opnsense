@@ -128,6 +128,6 @@ class Alias(object):
     response = self._device._authenticated_request("POST", request_base, body=request_body)
     if response['result'] == "saved":
       apply_changes(self._device)
-      return self.get(response['uuid'])
+      return self.get(uuid)
     else:
       raise Exception(f"Failed to update host alias. Reason: {response}")

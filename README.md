@@ -3,6 +3,13 @@ A Python library for the Opnsense API
 
 ## Getting Started
 
+### Supported Controllers and Services
+- Firewall Aliases
+- Firewall Filter Rules
+- Unbound Domain Overrides
+- Unbound Host Overrides
+- Unbound Host Aliases
+
 ### Valid Environment Variables
 * OPN_API_KEY
 * OPN_API_SECRET
@@ -71,4 +78,40 @@ print(json.dumps(toggle_output))
 print("DELETE ALIAS")
 delete_output = alias.delete_alias(lookup_output_uuid)
 print(json.dumps(delete_output))
+```
+
+### Unbound DNS Example
+```python
+from opnsense_api import Opnsense
+
+
+# Create an instance of the Opnsense class
+opnsense = Opnsense(api_key="my_opnsense_api_key",
+                    api_secret="my_opnsense_api_secret",
+                    host="192.168.1.1",
+                    ca_path="/path/to/opnsense/ca/cert_bundle.pem")
+
+overridden_domain = "reverb.io"
+nonexistent_domain = "fake-domain"
+
+# Returns None because there is no configured override.
+result = opnsense.unbound_dns.domain_controller.get(nonexistent_domain)
+print(f"Get Result: {result}")
+
+# Retuns a list of configured domain overrides 
+result = opnsense.unbound_dns.domain_controller.list()
+print(f"List Result: {result}")
+
+found_domain = False
+for domain_override in result:
+    if domain_override['domain'] == overridden_domain:
+        # Deletes the override for a specific domain
+        result = opnsense.unbound_dns.domain_controller.delete(domain_override['uuid'])
+        print(f"Delete Result: {result}")
+        found_domain = True
+
+if not found_domain:
+    # Adds an override for a specific domain
+    result = opnsense.unbound_dns.domain_controller.add(overridden_domain, "0.0.0.0", "foobarbaz", True)
+    print(f"Add Result: {result}")
 ```
