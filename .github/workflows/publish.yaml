@@ -19,13 +19,16 @@ jobs:
 
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        
         # Strip git ref prefix from version.
         VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
         # Strip "v" prefix from tag name.
         [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
         export BUILD_VERSION=${VERSION}
+        echo $(pwd)
+        echo $(ls -l)
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
         python -m build --sdist --wheel --outdir dist/
 
     - name: Publish package
