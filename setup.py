@@ -1,9 +1,7 @@
+import os
 from setuptools import setup, find_packages
 
-from setuptools_scm import get_version
-
-version = get_version(root='.', relative_to=__file__)
-base_url = 'https://github.com/turnbros/python-opnsense'
+version = os.environ.get('BUILD_VERSION')
 
 setup(
   name='python-opnsense',
@@ -13,8 +11,8 @@ setup(
   description='A python library that interacts with an Opnsense API',
   author='Dylan Turnbull',
   author_email='dylanturn@gmail.com',
-  url=base_url,
-  download_url='{0}/releases'.format(base_url),
+  url="https://github.com/turnbros/python-opnsense",
+  download_url=f"https://github.com/turnbros/python-opnsense/releases/tag/{version}",
   keywords=['turnbros', 'opnsense'],
   install_requires=[],
   classifiers=[
