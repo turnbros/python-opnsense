@@ -19,3 +19,8 @@ class Unbound(object):
   @property
   def domain_controller(self) -> Domain:
     return Domain(self._device)
+
+  def apply_changes(self):
+    response = self._device._authenticated_request("GET", f"unbound/service/reconfigure")
+    if response["status"] == "error":
+      raise Exception(f"Failed to apply changes. Reason {response}")
