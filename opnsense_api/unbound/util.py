@@ -47,6 +47,15 @@ class HostOverride(TypedDict):
   enabled: bool
 
 
+def parse_unbound_resource(kind: str, uuid: str, resource: dict):
+  if kind == "alias":
+    return parse_unbound_host_alias(uuid, resource)
+  if kind == "host":
+    return parse_unbound_host_override(uuid, resource)
+  if kind == "domain":
+    return parse_unbound_domain_override(uuid, resource)
+
+
 def parse_unbound_host_alias(uuid: str, alias: dict) -> HostAlias:
     """
 
@@ -156,9 +165,3 @@ def format_request(module: str, controller: str, command: str, uuid: str = None,
         base_request = f"{base_request}?{urllib.parse.urlencode(params)}"
 
     return base_request
-
-
-def apply_changes(device):
-    response = device._authenticated_request("GET", f"unbound/service/reconfigure")
-    if response["status"] == "error":
-        raise Exception(f"Failed to apply changes. Reason {response}")
