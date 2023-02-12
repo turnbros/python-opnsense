@@ -1,7 +1,9 @@
 from typing import List
 from typing import Union
+from deprecation import deprecated
 from opnsense_api.util.validate import validate_add_filter_rule
 from opnsense_api.util.parse import parse_firewall_filter_rule, parse_firewall_filter_search_results
+
 
 class Filter(object):
 
@@ -13,6 +15,17 @@ class Filter(object):
     if response["status"] == "error":
       raise Exception(f"Failed to apply changes. Reason {response}")
 
+  def get(self, uuid: str = None) -> Union[dict, None]:
+    """
+    Returns a specific filter rule
+    :param uuid: The UUID of the filter rule to get
+    :type uuid: str
+    :return: A parsed filter rule
+    :rtype: dict
+    """
+    return self.get_rule(uuid)
+
+  @deprecated(deprecated_in="1.0.5", removed_in="1.1.0", details="Use get instead")
   def get_rule(self, uuid: str=None) -> Union[dict, None]:
     """
     Returns a specific filter rule
@@ -26,7 +39,15 @@ class Filter(object):
       return parse_firewall_filter_rule(uuid, query_results['rule'])
     return None
 
+  def list(self) -> list:
+    """
+    Returns a list of filter rules that exist on the device
+    :return: A brief list of parsed filter rules
+    :rtype: list
+    """
+    return self.list_rules()
 
+  @deprecated(deprecated_in="1.0.5", removed_in="1.1.0", details="Use list instead")
   def list_rules(self) -> list:
     """
     Returns a list of filter rules that exist on the device
@@ -38,7 +59,16 @@ class Filter(object):
       return parse_firewall_filter_search_results(query_results['rows'])
     return []
 
+  def match_rule_by_attributes(self, **kwargs) -> Union[dict, None]:
+    """
+    Matches and returns firewall filter rules. The match is based on attribute values provided as kwargs.
+    :param kwargs: { "description": "a filter rule description", "log": True }
+    :return: A list of matched firewall filter rules
+    :rtype: dict
+    """
+    return self.match_rule_by_attributes(**kwargs)
 
+  @deprecated(deprecated_in="1.0.5", removed_in="1.1.0", details="Use match_by_attribute instead")
   def match_rule_by_attributes(self, **kwargs) -> Union[dict, None]:
     """
     Matches and returns firewall filter rules. The match is based on attribute values provided as kwargs.
@@ -60,7 +90,68 @@ class Filter(object):
       if rule_matched: matched_rules.append(rule)
     return matched_rules
 
+  def add(self,
+               direction: str = "in",
+               interface: List[str] = ["lan"],
+               source_net: str = "any",
+               destination_net: str = "any",
+               action: str = 'pass',
+               protocol: str = "any",
+               source_port: int = 0,
+               destination_port: int = 0,
+               gateway: Union[str,None] = None,
+               source_not: bool = False,
+               destination_not: bool = False,
+               sequence: int = 1,
+               description: str = "",
+               enabled: bool = False,
+               quick: bool = True,
+               log: bool = False,
+               ipprotocol: str = "inet"):
+    """
+    Adds a new firewall filter rule.
+    Note: This will function does not apply the change. A separate call is needed.
+    :param action:
+    :param direction:
+    :param interface:
+    :param protocol:
+    :param source_net:
+    :param source_port:
+    :param destination_net:
+    :param destination_port:
+    :param gateway:
+    :param source_not:
+    :param destination_not:
+    :param sequence:
+    :param description:
+    :param enabled:
+    :param quick:
+    :param log:
+    :param ipprotocol:
+    :return: A parsed filter rule
+    :rtype: dict
+    """
+    return self.add_rule(
+      direction=direction,
+      interface=interface,
+      source_net=source_net,
+      destination_net=destination_net,
+      action=action,
+      protocol=protocol,
+      source_port=source_port,
+      destination_port=destination_port,
+      gateway=gateway,
+      source_not=source_not,
+      destination_not=destination_not,
+      sequence=sequence,
+      description=description,
+      enabled=enabled,
+      quick=quick,
+      log=log,
+      ipprotocol=ipprotocol
+      )
 
+  @deprecated(deprecated_in="1.0.5", removed_in="1.1.0", details="Use add instead")
   def add_rule(self,
                direction: str = "in",
                interface: List[str] = ["lan"],
@@ -146,7 +237,47 @@ class Filter(object):
     else:
       raise Exception(f"Failed to add filter rule. Reason: {response}")
 
+  def set(self,
+               uuid: str,
+               action: Union[str, None] = None,
+               direction: Union[str, None] = None,
+               interface: Union[List[str], None] = None,
+               protocol: Union[str, None] = None,
+               source_net: Union[str, None] = None,
+               source_port: Union[int, None] = None,
+               destination_net: Union[str, None] = None,
+               destination_port: Union[int, None] = None,
+               gateway: Union[str, None] = None,
+               source_not: Union[bool, None] = None,
+               destination_not: Union[bool, None] = None,
+               sequence: Union[int, None] = None,
+               description: Union[str, None] = None,
+               enabled: Union[bool, None] = None,
+               quick: Union[bool, None] = None,
+               log: Union[bool, None] = None,
+               ipprotocol: Union[str, None] = None) -> dict:
+    return self.set_rule(
+      uuid=uuid,
+      action=action,
+      direction=direction,
+      interface=interface,
+      protocol=protocol,
+      source_net=source_net,
+      source_port=source_port,
+      destination_net=destination_net,
+      destination_port=destination_port,
+      gateway=gateway,
+      source_not=source_not,
+      destination_not=destination_not,
+      sequence=sequence,
+      description=description,
+      enabled=enabled,
+      quick=quick,
+      log=log,
+      ipprotocol=ipprotocol
+    )
 
+  @deprecated(deprecated_in="1.0.5", removed_in="1.1.0", details="Use set instead")
   def set_rule(self,
                uuid: str,
                action: Union[str, None] = None,
@@ -251,7 +382,17 @@ class Filter(object):
     else:
       raise Exception(f"Failed to update filter rule with uuid {uuid}. Reason: {response}")
 
+  def toggle(self, uuid: str=None) -> dict:
+    """
+        Toggles the enabled state of a filter rule.
+        :param uuid: The UUID of the filter rule to toggle
+        :type uuid: str
+        :return: A parsed filter rule
+        :rtype: dict
+        """
+    return self.toggle_rule(uuid)
 
+  @deprecated(deprecated_in="1.0.5", removed_in="1.1.0", details="Use toggle instead")
   def toggle_rule(self, uuid: str=None) -> dict:
     """
     Toggles the enabled state of a filter rule.
@@ -266,7 +407,10 @@ class Filter(object):
       return self.get_rule(uuid)
     raise Exception(f"Failed to toggle filter rule. Reason: {response}")
 
+  def delete(self, uuid: str = None) -> bool:
+    return self.delete_rule(uuid)
 
+  @deprecated(deprecated_in="1.0.5", removed_in="1.1.0", details="Use delete instead")
   def delete_rule(self, uuid: str=None) -> bool:
     """
     Deletes a rule. Returns a bool or throws an exception since we don't really care about the UUID once it's gone.
@@ -281,6 +425,47 @@ class Filter(object):
       return True
     raise Exception(f"Failed to delete filter rule with UUID {uuid} with reason: {query_results['result']}  ")
 
+  def add_or_se(self,
+                uuid: str = None,
+                action: Union[str, None] = None,
+                direction: Union[str, None] = None,
+                interface: Union[List[str], None] = None,
+                protocol: Union[str, None] = None,
+                source_net: Union[str, None] = None,
+                source_port: Union[int, None] = None,
+                destination_net: Union[str, None] = None,
+                destination_port: Union[int, None] = None,
+                gateway: Union[str, None] = None,
+                source_not: Union[bool, None] = None,
+                destination_not: Union[bool, None] = None,
+                sequence: Union[int, None] = None,
+                description: Union[str, None] = None,
+                enabled: Union[bool, None] = None,
+                quick: Union[bool, None] = None,
+                log: Union[bool, None] = None,
+                ipprotocol: Union[str, None] = None) -> dict:
+    return self.add_or_set_rule(
+      uuid=uuid,
+      action=action,
+      direction=direction,
+      interface=interface,
+      protocol=protocol,
+      source_net=source_net,
+      source_port=source_port,
+      destination_net=destination_net,
+      destination_port=destination_port,
+      gateway=gateway,
+      source_not=source_not,
+      destination_not=destination_not,
+      sequence=sequence,
+      description=description,
+      enabled=enabled,
+      quick=quick,
+      log=log,
+      ipprotocol=ipprotocol
+    )
+
+  @deprecated(deprecated_in="1.0.5", removed_in="1.1.0", details="Use add_or_set instead")
   def add_or_set_rule(self,
                uuid: str = None,
                action: Union[str, None] = None,
