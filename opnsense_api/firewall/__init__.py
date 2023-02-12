@@ -1,6 +1,7 @@
 from .alias_controller import Alias
 from .filter_controller import Filter
 
+
 class Firewall(object):
 
   def __init__(self, device):

@@ -3,7 +3,6 @@ import urllib.parse
 from enum import Enum
 from typing import TypedDict
 
-
 log = logging.getLogger(__name__)
 
 

@@ -37,6 +37,7 @@ def parse_query_response_alias(alias):
     "enabled": enabled
   }
 
+
 def parse_firewall_filter_search_results(search_results):
   for found_rule in search_results:
     try:
@@ -50,6 +51,7 @@ def parse_firewall_filter_search_results(search_results):
       raise ParsingError(None, found_rule, f"Failed to parse filter search result attribute enabled. {error}")
 
   return search_results
+
 
 def parse_firewall_filter_rule(filter_uuid, filter_rule):
 
