@@ -5,7 +5,7 @@ from .util import format_request, HostOverride
 log = logging.getLogger(__name__)
 
 
-class Host(UnboundResource):
+class Host(UnboundResource[HostOverride]):
 
   def __init__(self, device):
     super().__init__(device, "host")
@@ -21,15 +21,16 @@ class Host(UnboundResource):
           mx: str = ""
           ) -> HostOverride:
     """
+    Adds a new HostOverride.
 
-    :param name:
-    :param domain:
-    :param server:
-    :param rr:
-    :param mxprio:
-    :param mx:
-    :param description:
-    :param enabled:
+    :param name: The name of the override. In the UI this is the host field
+    :param domain: The overrides domain.
+    :param server: The IP address that will be returned for this host and domain
+    :param rr: The type of record this overrides
+    :param mxprio: MX Record priority
+    :param mx: I forgot what this one is.
+    :param description: The overrides' description.
+    :param enabled: whether the override is enabled.
     :return: HostOverride
     """
     request_body = {
@@ -64,16 +65,17 @@ class Host(UnboundResource):
           mx: str = "",
           ) -> HostOverride:
     """
+    Updates an existing HostOverride.
 
-    :param uuid:
-    :param name:
-    :param domain:
-    :param server:
-    :param rr:
-    :param mxprio:
-    :param mx:
-    :param description:
-    :param enabled:
+    :param uuid: The UUID of the override. This is generated when the override is created.
+    :param name: The name of the override. In the UI this is the host field.
+    :param domain: The overrides domain.
+    :param server: The IP address that will be returned for this host and domain
+    :param rr: The type of record this overrides
+    :param mxprio: MX Record priority
+    :param mx: I forgot what this one is.
+    :param description: The overrides' description.
+    :param enabled: whether the override is enabled.
     :return: HostOverride
     """
     request_body = {

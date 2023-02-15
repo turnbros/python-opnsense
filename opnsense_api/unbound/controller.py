@@ -1,9 +1,9 @@
 import logging
 from typing import TypeVar, Generic, Union, List
-from opnsense_api.unbound.util import format_request, parse_unbound_resource, HostOverride
+from opnsense_api.unbound.util import format_request, parse_unbound_resource, HostOverride, BaseOverride
 
 log = logging.getLogger(__name__)
-T = TypeVar('T')
+T = TypeVar('T', bound=BaseOverride)
 
 
 class UnboundResource(Generic[T]):
@@ -40,15 +40,15 @@ class UnboundResource(Generic[T]):
         }
     }
 
-  def get_function_name(self, function: str):
+  def _get_function_name(self, function: str):
     return self._functions[self._resource_type][function]
 
   def apply_changes(self):
-    response = self._device._authenticated_request("GET", f"unbound/service/reconfigure")
-    if response["status"] == "error":
+    response = self._device._authenticated_request("POST", f"unbound/service/reconfigure")
+    if response["status"] != "ok":
       raise Exception(f"Failed to apply changes. Reason {response}")
 
-  def match_by_attributes(self, **kwargs) -> Union[List[T], None]:
+  def match_by_attributes(self, **kwargs) -> List[T]:
     """
     Matches and returns firewall filter rules. The match is based on attribute values provided as kwargs.
     :param kwargs: { "description": "a filter rule description", "log": True }
@@ -64,7 +64,7 @@ class UnboundResource(Generic[T]):
       item_match = self.get(item_uuid)
       print(item_match)
 
-      item_match["uuid"] = item_uuid
+      item_match.uuid = item_uuid
       item_matched = True
       for key in kwargs.keys():
         if item_match.get(key) != kwargs.get(key):
@@ -76,21 +76,22 @@ class UnboundResource(Generic[T]):
     return matched_items
 
   def list(self) -> List[T]:
-    request_base = format_request(self._module, self._controller, self.get_function_name("search"))
+    request_base = format_request(self._module, self._controller, self._get_function_name("search"))
     search_results = self._device._authenticated_request("GET", request_base)
     if 'rows' in search_results:
       return search_results['rows']
     return []
 
-  def get(self, uuid: str) -> Union[T, None]:
-    request_base = format_request(self._module, self._controller, self.get_function_name("get"), uuid)
+  def get(self, uuid: str) -> T:
+    request_base = format_request(self._module, self._controller, self._get_function_name("get"), uuid)
     query_response = self._device._authenticated_request("GET", request_base)
     if self._resource_type in query_response:
       try:
         return parse_unbound_resource(self._resource_type, uuid, query_response[self._resource_type])
       except Exception as error:
         raise Exception(f"Failed to parse the {self._resource_type} overrides with UUID: {uuid}\nException: {error.with_traceback()}")
-    return None
+
+    raise Exception(f"A DomainOverride with the UUID {uuid} was not found!")
 
   def delete(self, uuid: str) -> bool:
     """
@@ -98,23 +99,23 @@ class UnboundResource(Generic[T]):
     :param uuid:
     :return: bool
     """
-    request_base = format_request(self._module, self._controller, self.get_function_name("delete"), uuid)
+    request_base = format_request(self._module, self._controller, self._get_function_name("delete"), uuid)
     response = self._device._authenticated_request("POST", request_base)
     if response['result'] == "deleted":
       self.apply_changes()
       return True
     raise Exception(f"Failed to delete host override with UUID {uuid} with reason: {response['result']}")
 
-  def toggle(self, uuid: str, enabled=None) -> HostOverride:
+  def toggle(self, uuid: str, enabled=None) -> T:
     """
 
     :param uuid:
     :param enabled:
-    :return: HostOverride
+    :return: T
     """
     if enabled is None:
-      enabled = bool(int(self.get(uuid)['enabled']))
-    request_base = format_request(self._module, self._controller, self.get_function_name("toggle"), uuid, {"enabled": not enabled})
+      enabled = bool(int(self.get(uuid).enabled))
+    request_base = format_request(self._module, self._controller, self._get_function_name("toggle"), uuid, {"enabled": not enabled})
     response = self._device._authenticated_request("POST", request_base)
     if response["changed"]:
       self.apply_changes()

@@ -5,7 +5,7 @@ from .util import format_request, HostAlias
 log = logging.getLogger(__name__)
 
 
-class Alias(UnboundResource):
+class Alias(UnboundResource[HostAlias]):
 
   def __init__(self, device):
     super().__init__(device, "alias")

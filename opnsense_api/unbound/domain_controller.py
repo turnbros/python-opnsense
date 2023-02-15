@@ -5,7 +5,7 @@ from .util import format_request, DomainOverride
 log = logging.getLogger(__name__)
 
 
-class Domain(UnboundResource):
+class Domain(UnboundResource[DomainOverride]):
 
   def __init__(self, device):
     super().__init__(device, "domain")
