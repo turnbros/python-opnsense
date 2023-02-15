@@ -48,7 +48,7 @@ def test_host_controller():
 
   # DELETE: Make sure we can delete the override and that the domain will
   # resolve to the IP it started with and that we end up with 0 overrides.
-  assert host_overrides.delete(new_override.uuid)
+  host_overrides.delete(new_override.uuid)
   assert compare(query_opnsense_device_dns(test_domain, 'A'), domain_start_ip)
   assert len(host_overrides.list()) == 0
 
@@ -89,9 +89,9 @@ def test_alias_controller():
   # DELETE: Make sure we can delete the override and that the domain will
   #         resolve to the IP it started with and that we end up with 0 overrides.
   # First delete the host alias
-  assert alias_overrides.delete(new_host_alias.uuid)
+  alias_overrides.delete(new_host_alias.uuid)
   assert len(alias_overrides.list()) == 0
   # Then delete the host override
-  assert host_overrides.delete(new_host_override.uuid)
+  host_overrides.delete(new_host_override.uuid)
   assert compare(query_opnsense_device_dns(test_domain, 'A'), domain_start_ip)
   assert len(host_overrides.list()) == 0

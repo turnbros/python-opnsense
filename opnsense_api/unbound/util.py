@@ -43,7 +43,7 @@ class HostOverride(BaseOverride):
   hostname: str
   domain: str
   server: str
-  rr: RecordType
+  rr: OverridableRecordType
   mxprio: str
   mx: str
 
