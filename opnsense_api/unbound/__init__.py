@@ -9,7 +9,7 @@ class Unbound(object):
     self._device = device
 
   @property
-  def alias_override_controller(self) -> Alias:
+  def host_alias_controller(self) -> Alias:
     return Alias(self._device)
 
   @property

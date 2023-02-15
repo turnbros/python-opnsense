@@ -58,7 +58,7 @@ def test_alias_controller():
   # Make a note of the IP
   domain_start_ip = query_opnsense_device_dns(test_domain, 'A')
   host_overrides = opnsense.unbound_dns.host_override_controller
-  alias_overrides = opnsense.unbound_dns.alias_override_controller
+  alias_overrides = opnsense.unbound_dns.host_alias_controller
 
   # Make sure we're starting from a clean slate.
   host_override_list = host_overrides.list()
