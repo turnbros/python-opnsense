@@ -6,7 +6,7 @@ import os
 
 def compare(list_x, list_y):
   return collections.Counter(list_x) == collections.Counter(list_y)
-# compare = lambda x, y: collections.Counter(x) == collections.Counter(y)
+
 
 def query_opnsense_device_dns(record_name: str, record_type: str = "NS") -> List[str]:
   resolver = dns.resolver.Resolver(configure=False)
