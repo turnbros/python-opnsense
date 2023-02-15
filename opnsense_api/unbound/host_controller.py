@@ -28,9 +28,9 @@ class Host(UnboundResource[HostOverride]):
     :param server: The IP address that will be returned for this host and domain
     :param rr: The type of record this overrides
     :param mxprio: MX Record priority
-    :param mx: I forgot what this one is.
+    :param mx: If overriding an MX record, the MX hostname to return
     :param description: The overrides' description.
-    :param enabled: whether the override is enabled.
+    :param enabled: Whether the override is enabled.
     :return: HostOverride
     """
     request_body = {
@@ -73,9 +73,9 @@ class Host(UnboundResource[HostOverride]):
     :param server: The IP address that will be returned for this host and domain
     :param rr: The type of record this overrides
     :param mxprio: MX Record priority
-    :param mx: I forgot what this one is.
+    :param mx: If overriding an MX record, the MX hostname to return
     :param description: The overrides' description.
-    :param enabled: whether the override is enabled.
+    :param enabled: Whether the override is enabled.
     :return: HostOverride
     """
     request_body = {

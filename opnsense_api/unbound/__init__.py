@@ -24,5 +24,3 @@ class Unbound(object):
     response = self._device._authenticated_request("GET", f"unbound/service/reconfigure")
     if response["status"] != "ok":
       raise Exception(f"Failed to apply changes. Reason {response}")
-
-

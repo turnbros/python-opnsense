@@ -17,13 +17,15 @@ class Domain(UnboundResource[DomainOverride]):
           enabled: bool = True,
           ) -> DomainOverride:
     """
+    Adds a domain override to Unbound
 
-    :param domain:
-    :param server:
-    :param description:
-    :param enabled:
+    :param domain: The domain to override DNS requests for.
+    :param server: The IP address that the DNS requests will be sent to.
+    :param description: The overrides' description.
+    :param enabled: whether the override is enabled.
     :return: DomainOverride
     """
+
     request_body = {
       "domain": {
         "domain": domain,
@@ -32,14 +34,14 @@ class Domain(UnboundResource[DomainOverride]):
         "enabled": str(int(enabled))
       }
     }
-    # TODO: Handle the fact that a failure still results in HTTP 200
+
     request_base = format_request(self._module, self._controller, "addDomainOverride")
     response = self._device._authenticated_request("POST", request_base, body=request_body)
-    if response['result'] == "saved":
-      self.apply_changes()
-      return self.get(response['uuid'])
-    else:
+    if response['result'] != "saved":
       raise Exception(f"Failed to add domain override. Reason: {response}")
+
+    self.apply_changes()
+    return self.get(response['uuid'])
 
   def set(self,
           uuid: str,
@@ -49,12 +51,13 @@ class Domain(UnboundResource[DomainOverride]):
           enabled: bool = True,
           ) -> DomainOverride:
     """
+    Update an attribute of a domain override
 
-    :param uuid:
-    :param domain:
-    :param server:
-    :param description:
-    :param enabled:
+    :param uuid: The UUID of the override. This is generated when the override is created.
+    :param domain: The domain to override DNS requests for.
+    :param server: The IP address that the DNS requests will be sent to.
+    :param description: The overrides' description.
+    :param enabled: Whether the override is enabled.
     :return: DomainOverride
     """
     request_body = {

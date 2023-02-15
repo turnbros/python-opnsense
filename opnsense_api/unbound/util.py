@@ -7,12 +7,10 @@ from typing import TypedDict
 log = logging.getLogger(__name__)
 
 
-class RecordType(Enum):
+class OverridableRecordType(Enum):
     A = "A"
     AAAA = "AAAA"
     MX = "MX"
-    CNAME = "CNAME"
-    SRV = "SRV"
 
 
 class BoundOverride(TypedDict):
