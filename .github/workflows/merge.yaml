@@ -17,13 +17,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Run test
-      env:
-        OPN_API_KEY: ${{ vars.OPN_API_KEY }}
-        OPN_API_SECRET: ${{ secrets.OPN_API_SECRET }}
-        OPN_API_HOST: ${{ vars.OPN_API_HOST }}
-        OPN_API_CA_CONTENT: ${{ vars.OPN_API_CA_CONTENT }}
-        TEST_ALIAS: ${{ vars.TEST_ALIAS }}
-        TEST_DOMAIN: ${{ vars.TEST_DOMAIN }}
-        TEST_DOMAIN_IP: ${{ vars.TEST_DOMAIN_IP }}
       run: |
+        export OPN_API_KEY="${{ vars.OPN_API_KEY }}"
+        export OPN_API_SECRET="${{ secrets.OPN_API_SECRET }}"
+        export OPN_API_HOST="${{ vars.OPN_API_HOST }}"
+        export OPN_API_CA_CONTENT="${{ vars.OPN_API_CA_CONTENT }}"
+        export TEST_ALIAS="${{ vars.TEST_ALIAS }}"
+        export TEST_DOMAIN="${{ vars.TEST_DOMAIN }}"
+        export TEST_DOMAIN_IP="${{ vars.TEST_DOMAIN_IP }}"
         pytest
