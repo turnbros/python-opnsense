@@ -5,7 +5,7 @@ from .util import format_request, HostAlias
 log = logging.getLogger(__name__)
 
 
-class Alias(UnboundResource):
+class Alias(UnboundResource[HostAlias]):
 
   def __init__(self, device):
     super().__init__(device, "alias")
@@ -18,12 +18,13 @@ class Alias(UnboundResource):
           enabled: bool = True,
           ) -> HostAlias:
     """
+    Adds a new alias to an existing host.
 
-    :param name:
-    :param domain:
-    :param host_uuid:
-    :param description:
-    :param enabled:
+    :param name: The name of the alias. In the UI this is the `host` field.
+    :param domain: A domain for the alias.
+    :param host_uuid: The UUID of the host this alias will be associated with.
+    :param description: A description for this host alias.
+    :param enabled: Whether the alias is enabled.
     :return: HostAlias
     """
     request_body = {
@@ -52,13 +53,14 @@ class Alias(UnboundResource):
           enabled: bool = True,
           ) -> HostAlias:
     """
+    Updates an existing HostAlias.
 
-    :param uuid:
-    :param name:
-    :param domain:
-    :param host_uuid:
-    :param description:
-    :param enabled:
+    :param uuid: The UUID of the alias. This is generated when the alias is created.
+    :param name: The name of the alias. In the UI this is the `host` field.
+    :param domain: A domain for the alias.
+    :param host_uuid: The UUID of the host this alias will be associated with.
+    :param description: A description for this host alias.
+    :param enabled: Whether the alias is enabled.
     :return: HostAlias
     """
     request_body = {

@@ -5,8 +5,6 @@ on:
     types: [ published ]
   push:
     tags: [ v* ]
-  # Run tests for any PRs.
-  pull_request:
 
 jobs:
   build:

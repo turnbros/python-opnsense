@@ -509,5 +509,3 @@ class Filter(object):
                          quick,
                          log,
                          ipprotocol)
-
-
