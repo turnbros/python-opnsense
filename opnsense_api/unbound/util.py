@@ -1,13 +1,13 @@
+import dataclasses
 import logging
 import urllib.parse
 from enum import Enum
 from typing import TypedDict
 
-
 log = logging.getLogger(__name__)
 
 
-class RecordType(Enum):
+class OverridableRecordType(Enum):
     A = "A"
     AAAA = "AAAA"
     MX = "MX"
@@ -18,33 +18,34 @@ class BoundOverride(TypedDict):
     hostname: str
 
 
-class HostAlias(TypedDict):
+@dataclasses.dataclass
+class BaseOverride:
   uuid: str
+  description: str
+  enabled: bool
+
+
+@dataclasses.dataclass
+class HostAlias(BaseOverride):
   hostname: str
   domain: str
-  description: str
   host: BoundOverride
-  enabled: bool
 
 
-class DomainOverride(TypedDict):
-  uuid: str
+@dataclasses.dataclass
+class DomainOverride(BaseOverride):
   domain: str
   server: str
-  description: str
-  enabled: bool
 
 
-class HostOverride(TypedDict):
-  uuid: str
+@dataclasses.dataclass
+class HostOverride(BaseOverride):
   hostname: str
   domain: str
   server: str
-  rr: RecordType
+  rr: OverridableRecordType
   mxprio: str
   mx: str
-  description: str
-  enabled: bool
 
 
 def parse_unbound_resource(kind: str, uuid: str, resource: dict):

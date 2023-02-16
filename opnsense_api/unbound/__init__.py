@@ -9,18 +9,18 @@ class Unbound(object):
     self._device = device
 
   @property
-  def alias_controller(self) -> Alias:
+  def host_alias_controller(self) -> Alias:
     return Alias(self._device)
 
   @property
-  def host_controller(self) -> Host:
+  def host_override_controller(self) -> Host:
     return Host(self._device)
 
   @property
-  def domain_controller(self) -> Domain:
+  def domain_override_controller(self) -> Domain:
     return Domain(self._device)
 
   def apply_changes(self):
     response = self._device._authenticated_request("GET", f"unbound/service/reconfigure")
-    if response["status"] == "error":
+    if response["status"] != "ok":
       raise Exception(f"Failed to apply changes. Reason {response}")
