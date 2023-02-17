@@ -47,7 +47,7 @@ print(json.dumps(list_output))
 # Add a new alias to the Opnsense device
 # This will return an object that represents the new alias.
 print("ADD ALIAS")
-add_output = alias.add_alias(name=example_alias_name, description=example_alias_description, alias_type=example_alias_type)
+add_output = alias.add(name=example_alias_name, description=example_alias_description, alias_type=example_alias_type)
 print(json.dumps(add_output))
 
 # Get an alias by UUID
