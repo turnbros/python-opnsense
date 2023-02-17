@@ -1,4 +1,5 @@
 import pydantic
+import re
 
 
 class Category(pydantic.BaseModel):
@@ -22,13 +23,10 @@ class Category(pydantic.BaseModel):
     @classmethod
     def color_valid(cls, value: str) -> str:
         value = value.lower()
-        if len(value) not in [0, 6]:
+        valid_color_regex = r'([a-f0-9]{6}|^$)'
+        if not re.fullmatch(valid_color_regex, value):
             raise Category.InvalidCategoryException("Value for 'color' should either be '' or a six character long "
                                                     "hex string.")
-        for c in value:
-            if c not in "0123456789abcdef":
-                raise Category.InvalidCategoryException("Value for 'color' should either be '' or a six character long "
-                                                        "hex string.")
         return value
 
 
