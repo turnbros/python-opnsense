@@ -11,7 +11,7 @@ class Alias(object):
     self.device = device
 
   def list(self) -> list:
-    return self.list()
+    return self.list_aliases()
 
   @deprecated(deprecated_in="1.0.5", removed_in="1.1.0", details="Use list instead")
   def list_aliases(self) -> list:
