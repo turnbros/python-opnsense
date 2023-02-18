@@ -2,10 +2,15 @@ import os
 import ssl
 import json
 import http.client
+import logging
 from base64 import b64encode
 from opnsense_api.firewall import Firewall
 from opnsense_api.unbound import Unbound
+from opnsense_api.interfaces import Interfaces
+from opnsense_api.routing import Routing
 from opnsense_api.util import Constants, reliable_b64_decode
+
+log = logging.getLogger(__name__)
 
 
 class Opnsense(object):
@@ -83,6 +88,8 @@ class Opnsense(object):
     self._connection.request(method, f"{self._device_path}/api/{path}", body, headers)
     query_response = self._connection.getresponse()
 
+    log.debug(query_response.info())
+
     if query_response.status not in Constants.HTTP_SUCCESS:
       del headers["Authorization"]
       exception_message = {
@@ -105,3 +112,11 @@ class Opnsense(object):
   @property
   def unbound_dns(self) -> Unbound:
     return Unbound(self)
+
+  @property
+  def interfaces(self) -> Interfaces:
+    return Interfaces(self)
+
+  @property
+  def routing(self) -> Routing:
+    return Routing(self)
