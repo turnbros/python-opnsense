@@ -95,7 +95,7 @@ class Filter(object):
 
     def add(self,
             direction: str = "in",
-            interface: List[str] = ["lan"],
+            interface=None,
             source_net: str = "any",
             destination_net: str = "any",
             action: str = 'pass',
@@ -134,6 +134,9 @@ class Filter(object):
         :return: A parsed filter rule
         :rtype: dict
         """
+        if interface is None:
+            interface = ["lan"]
+
         return self.add_rule(
             direction=direction,
             interface=interface,
@@ -157,7 +160,7 @@ class Filter(object):
     @deprecated(deprecated_in="1.0.5", removed_in="1.1.0", details="Use add instead")
     def add_rule(self,
                  direction: str = "in",
-                 interface: List[str] = ["lan"],
+                 interface=None,
                  source_net: str = "any",
                  destination_net: str = "any",
                  action: str = 'pass',
@@ -197,6 +200,9 @@ class Filter(object):
         :rtype: dict
         """
 
+        if interface is None:
+            interface = ["lan"]
+        
         # This will raise an exception if a bad input is provided.
         validate_add_filter_rule(action, direction, ipprotocol, protocol)
 
