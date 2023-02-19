@@ -31,7 +31,7 @@ class Alias(object):
             try:
                 return parse_query_response_alias(query_response['alias'])
             except Exception as error:
-                raise Exception(f"Failed to parse the alias wuth UUID: {uuid}\nException: {error.with_traceback()}")
+                raise Exception(f"Failed to parse the alias with UUID: {uuid}\nException: {error.with_traceback()}")
 
     def get_uuid(self, name: str) -> Union[str, None]:
         return self.get_alias_uuid(name)
@@ -71,7 +71,7 @@ class Alias(object):
             ):
         if content is None:
             content = []
-        
+
         return self.add_alias(
             name=name,
             alias_type=alias_type,
