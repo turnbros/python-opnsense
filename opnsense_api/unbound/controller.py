@@ -109,7 +109,8 @@ class UnboundResource(Generic[T]):
                 return parse_unbound_resource(self._resource_type, uuid, query_response[self._resource_type])
             except Exception as error:
                 raise Exception(
-                    f"Failed to parse the {self._resource_type} overrides with UUID: {uuid}\nException: {error.with_traceback()}")
+                    f"Failed to parse the {self._resource_type} overrides with UUID: {uuid}\n"
+                    f"Exception: {error.with_traceback()}")
 
         raise Exception(f"A DomainOverride with the UUID {uuid} was not found!")
 
