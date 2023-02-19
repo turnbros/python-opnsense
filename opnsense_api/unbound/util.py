@@ -119,7 +119,7 @@ def parse_unbound_host_override(uuid: str, host: dict) -> HostOverride:
                         description=host['description'])
 
 
-def format_request(module: str, controller: str, command: str, uuid: str = None, params: dict = {}) -> str:
+def format_request(module: str, controller: str, command: str, uuid: str = None, params=None) -> str:
     """
 
     :param module: str
@@ -132,6 +132,9 @@ def format_request(module: str, controller: str, command: str, uuid: str = None,
     """
     # Simplest url path for a request
     # e.g. api/unbound/settings/searchHostOverride
+    if params is None:
+        params = {}
+    
     base_request = f"{module}/{controller}/{command}"
 
     # Add in the UUID for a specific resource

@@ -1,4 +1,3 @@
-from typing import List
 from typing import Union
 
 from deprecation import deprecated
@@ -67,9 +66,12 @@ class Alias(object):
             update_freq: str = "",
             counters: str = "",
             proto: ProtocolType = None,
-            content: List[str] = [],
+            content=None,
             enabled: bool = True
             ):
+        if content is None:
+            content = []
+        
         return self.add_alias(
             name=name,
             alias_type=alias_type,
@@ -89,9 +91,12 @@ class Alias(object):
                   update_freq: str = "",
                   counters: str = "",
                   proto: ProtocolType = None,
-                  content: List[str] = [],
+                  content=None,
                   enabled: bool = True
                   ):
+
+        if content is None:
+            content = []
 
         protocol_type = ""
         if proto is not None:
