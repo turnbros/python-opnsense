@@ -16,5 +16,6 @@ class Firewall(object):
     def filter_controller(self) -> Filter:
         return Filter(self._device)
 
+    @property
     def category_controller(self) -> CategoryController:
         return CategoryController(self._device)
