@@ -20,41 +20,41 @@ class BoundOverride(TypedDict):
 
 @dataclasses.dataclass
 class BaseOverride:
-  uuid: str
-  description: str
-  enabled: bool
+    uuid: str
+    description: str
+    enabled: bool
 
 
 @dataclasses.dataclass
 class HostAlias(BaseOverride):
-  hostname: str
-  domain: str
-  host: BoundOverride
+    hostname: str
+    domain: str
+    host: BoundOverride
 
 
 @dataclasses.dataclass
 class DomainOverride(BaseOverride):
-  domain: str
-  server: str
+    domain: str
+    server: str
 
 
 @dataclasses.dataclass
 class HostOverride(BaseOverride):
-  hostname: str
-  domain: str
-  server: str
-  rr: OverridableRecordType
-  mxprio: str
-  mx: str
+    hostname: str
+    domain: str
+    server: str
+    rr: OverridableRecordType
+    mxprio: str
+    mx: str
 
 
 def parse_unbound_resource(kind: str, uuid: str, resource: dict):
-  if kind == "alias":
-    return parse_unbound_host_alias(uuid, resource)
-  if kind == "host":
-    return parse_unbound_host_override(uuid, resource)
-  if kind == "domain":
-    return parse_unbound_domain_override(uuid, resource)
+    if kind == "alias":
+        return parse_unbound_host_alias(uuid, resource)
+    if kind == "host":
+        return parse_unbound_host_override(uuid, resource)
+    if kind == "domain":
+        return parse_unbound_domain_override(uuid, resource)
 
 
 def parse_unbound_host_alias(uuid: str, alias: dict) -> HostAlias:
@@ -79,17 +79,9 @@ def parse_unbound_host_alias(uuid: str, alias: dict) -> HostAlias:
                   f"bound_hostname: {bound_hostname}\n")
         raise Exception("Failed to parse the alias host override. ")
 
-    return HostAlias(
-        uuid=uuid,
-        hostname=alias["hostname"],
-        description=alias["description"],
-        domain=alias["domain"],
-        host=BoundOverride(
-            uuid=bound_host_uuid,
-            hostname=bound_hostname
-        ),
-        enabled=bool(int(alias['enabled']))
-    )
+    return HostAlias(uuid=uuid, hostname=alias["hostname"], description=alias["description"], domain=alias["domain"],
+                     host=BoundOverride(uuid=bound_host_uuid, hostname=bound_hostname),
+                     enabled=bool(int(alias['enabled'])))
 
 
 def parse_unbound_domain_override(uuid: str, domain: dict) -> DomainOverride:
@@ -99,13 +91,8 @@ def parse_unbound_domain_override(uuid: str, domain: dict) -> DomainOverride:
     :param domain:
     :return: DomainOverride
     """
-    return DomainOverride(
-        uuid=uuid,
-        domain=domain['domain'],
-        server=domain['server'],
-        description=domain['description'],
-        enabled=bool(int(domain['enabled'])),
-    )
+    return DomainOverride(uuid=uuid, domain=domain['domain'], server=domain['server'],
+                          description=domain['description'], enabled=bool(int(domain['enabled'])), )
 
 
 def parse_unbound_host_override(uuid: str, host: dict) -> HostOverride:
@@ -127,17 +114,9 @@ def parse_unbound_host_override(uuid: str, host: dict) -> HostOverride:
         raise Exception("Failed to parse the alias host override. ")
 
     host['enabled'] = bool(int(host['enabled']))
-    return HostOverride(
-        uuid=uuid,
-        enabled=bool(int(host['enabled'])),
-        hostname=host['hostname'],
-        domain=host['domain'],
-        rr=record_type,
-        mxprio=host['mxprio'],
-        mx=host['mx'],
-        server=host['server'],
-        description=host['description']
-    )
+    return HostOverride(uuid=uuid, enabled=bool(int(host['enabled'])), hostname=host['hostname'], domain=host['domain'],
+                        rr=record_type, mxprio=host['mxprio'], mx=host['mx'], server=host['server'],
+                        description=host['description'])
 
 
 def format_request(module: str, controller: str, command: str, uuid: str = None, params: dict = {}) -> str:
