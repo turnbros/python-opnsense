@@ -51,7 +51,7 @@ class OPNsenseItemController(Generic[T], OPNsenseAPIController):
     search_results = self._api_get(self.ItemActions.search.value)
     if 'rows' in search_results:
       for item in search_results['rows']:
-        items.append(self.parse_api_response(item))
+        items.append(self._parse_api_response(item))
 
     return items
 
@@ -64,7 +64,7 @@ class OPNsenseItemController(Generic[T], OPNsenseAPIController):
     """
     result = self._api_get(self.ItemActions.get.value, uuid)
     item = list(result.values())[0]
-    return self.parse_api_response(item)
+    return self._parse_api_response(item)
 
   def delete(self, item: T) -> None:
     """
