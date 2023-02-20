@@ -2,11 +2,18 @@ import http.client
 import json
 import os
 import ssl
+import json
+import http.client
+import logging
 from base64 import b64encode
 
 from opnsense_api.firewall import Firewall
 from opnsense_api.unbound import Unbound
+from opnsense_api.interfaces import Interfaces
+from opnsense_api.routing import Routing
 from opnsense_api.util import Constants, reliable_b64_decode
+
+log = logging.getLogger(__name__)
 
 
 class Opnsense(object):
@@ -44,13 +51,17 @@ class Opnsense(object):
             self._ca_content = os.getenv("OPN_API_CA_CONTENT", None)
 
         # Raise an exception and quit if we're missing the key, secret, or host.
-        if self._api_key is None: raise Exception("API key not found!")
-        if self._api_secret is None: raise Exception("API secret not found!")
-        if self._host is None: raise Exception("API host not found!")
+        if self._api_key is None:
+            raise Exception("API key not found!")
+        if self._api_secret is None:
+            raise Exception("API secret not found!")
+        if self._host is None:
+            raise Exception("API host not found!")
 
         # Base64 encode the api key and secret.
         # This will get passed as basic auth.
-        self._b64_auth = b64encode(str.encode(f"{self._api_key}:{self._api_secret}")).decode("utf-8")
+        self._b64_auth = b64encode(str.encode(
+            f"{self._api_key}:{self._api_secret}")).decode("utf-8")
 
         # We'll use CA files provided by path first, then content second.
         if self._ca_path is not None:
@@ -58,7 +69,8 @@ class Opnsense(object):
             self._context.load_verify_locations(self._ca_path)
         elif self._ca_content is not None:
             self._context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-            self._context.load_verify_locations(cadata=reliable_b64_decode(self._ca_content))
+            self._context.load_verify_locations(
+                cadata=reliable_b64_decode(self._ca_content))
 
         self._connection = http.client.HTTPSConnection(
             host=self._host,
@@ -81,7 +93,8 @@ class Opnsense(object):
         if isinstance(body, (dict, list, tuple)):
             body = json.dumps(body)
 
-        self._connection.request(method, f"{self._device_path}/api/{path}", body, headers)
+        self._connection.request(
+            method, f"{self._device_path}/api/{path}", body, headers)
         query_response = self._connection.getresponse()
 
         if query_response.status not in Constants.HTTP_SUCCESS:
@@ -106,3 +119,11 @@ class Opnsense(object):
     @property
     def unbound_dns(self) -> Unbound:
         return Unbound(self)
+
+    @property
+    def interfaces(self) -> Interfaces:
+        return Interfaces(self)
+
+    @property
+    def routing(self) -> Routing:
+        return Routing(self)

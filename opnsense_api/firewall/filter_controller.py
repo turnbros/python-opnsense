@@ -13,7 +13,8 @@ class Filter(object):
         self.device = device
 
     def apply_changes(self):
-        response = self.device._authenticated_request("POST", f"firewall/filter/apply")
+        response = self.device._authenticated_request(
+            "POST", f"firewall/filter/apply")
         if response["status"] == "error":
             raise Exception(f"Failed to apply changes. Reason {response}")
 
@@ -36,7 +37,8 @@ class Filter(object):
         :return: A parsed filter rule
         :rtype: dict
         """
-        query_results = self.device._authenticated_request("GET", f"firewall/filter/getRule/{uuid}")
+        query_results = self.device._authenticated_request(
+            "GET", f"firewall/filter/getRule/{uuid}")
         if 'rule' in query_results:
             return parse_firewall_filter_rule(uuid, query_results['rule'])
         return None
@@ -56,12 +58,13 @@ class Filter(object):
         :return: A brief list of parsed filter rules
         :rtype: list
         """
-        query_results = self.device._authenticated_request("GET", f"firewall/filter/searchRule")
+        query_results = self.device._authenticated_request(
+            "GET", f"firewall/filter/searchRule")
         if 'rows' in query_results:
             return parse_firewall_filter_search_results(query_results['rows'])
         return []
 
-    def match_rule_by_attributes(self, **kwargs) -> Union[dict, None]:
+    def match_by_attribute(self, **kwargs) -> Union[dict, None]:
         """
         Matches and returns firewall filter rules. The match is based on attribute values provided as kwargs.
         :param kwargs: { "description": "a filter rule description", "log": True }
@@ -202,7 +205,7 @@ class Filter(object):
 
         if interface is None:
             interface = ["lan"]
-        
+
         # This will raise an exception if a bad input is provided.
         validate_add_filter_rule(action, direction, ipprotocol, protocol)
 
@@ -239,7 +242,8 @@ class Filter(object):
             "gateway": gateway
         }
 
-        response = self.device._authenticated_request("POST", "firewall/filter/addRule", body={"rule": rule_body})
+        response = self.device._authenticated_request(
+            "POST", "firewall/filter/addRule", body={"rule": rule_body})
         if response['result'] == "saved":
             self.apply_changes()
             return self.get_rule(response['uuid'])
@@ -335,28 +339,46 @@ class Filter(object):
         if existing_rule is None:
             raise Exception(f"Firewall rule with UUID {uuid} not found")
 
-        if action is None: action = existing_rule.get("action")
-        if direction is None: direction = existing_rule.get("direction")
-        if interface is None: interface = existing_rule.get("interface")
-        if protocol is None: protocol = existing_rule.get("protocol")
-        if source_net is None: source_net = existing_rule.get("source_net")
-        if source_port is None: source_port = existing_rule.get("source_port")
-        if destination_net is None: destination_net = existing_rule.get("destination_net")
-        if destination_port is None: destination_port = existing_rule.get("destination_port")
-        if gateway is None: gateway = existing_rule.get("gateway")
-        if source_not is None: source_not = existing_rule.get("source_not")
-        if destination_not is None: destination_not = existing_rule.get("destination_not")
-        if sequence is None: sequence = existing_rule.get("sequence")
-        if description is None: description = existing_rule.get("description")
-        if enabled is None: enabled = existing_rule.get("enabled")
-        if quick is None: quick = existing_rule.get("quick")
-        if log is None: log = existing_rule.get("log")
-        if ipprotocol is None: ipprotocol = existing_rule.get("ipprotocol")
+        if action is None:
+            action = existing_rule.get("action")
+        if direction is None:
+            direction = existing_rule.get("direction")
+        if interface is None:
+            interface = existing_rule.get("interface")
+        if protocol is None:
+            protocol = existing_rule.get("protocol")
+        if source_net is None:
+            source_net = existing_rule.get("source_net")
+        if source_port is None:
+            source_port = existing_rule.get("source_port")
+        if destination_net is None:
+            destination_net = existing_rule.get("destination_net")
+        if destination_port is None:
+            destination_port = existing_rule.get("destination_port")
+        if gateway is None:
+            gateway = existing_rule.get("gateway")
+        if source_not is None:
+            source_not = existing_rule.get("source_not")
+        if destination_not is None:
+            destination_not = existing_rule.get("destination_not")
+        if sequence is None:
+            sequence = existing_rule.get("sequence")
+        if description is None:
+            description = existing_rule.get("description")
+        if enabled is None:
+            enabled = existing_rule.get("enabled")
+        if quick is None:
+            quick = existing_rule.get("quick")
+        if log is None:
+            log = existing_rule.get("log")
+        if ipprotocol is None:
+            ipprotocol = existing_rule.get("ipprotocol")
 
         # This will raise an exception if a bad input is provided.
         validate_add_filter_rule(action, direction, ipprotocol, protocol)
 
-        if gateway is None: gateway = ""
+        if gateway is None:
+            gateway = ""
 
         if source_port == 0:
             source_port = ""
@@ -394,7 +416,8 @@ class Filter(object):
             self.apply_changes()
             return self.get_rule(uuid)
         else:
-            raise Exception(f"Failed to update filter rule with uuid {uuid}. Reason: {response}")
+            raise Exception(
+                f"Failed to update filter rule with uuid {uuid}. Reason: {response}")
 
     def toggle(self, uuid: str = None) -> dict:
         """
@@ -415,7 +438,8 @@ class Filter(object):
         :return: A parsed filter rule
         :rtype: dict
         """
-        response = self.device._authenticated_request("POST", f"firewall/filter/toggleRule/{uuid}")
+        response = self.device._authenticated_request(
+            "POST", f"firewall/filter/toggleRule/{uuid}")
         if response["changed"]:
             self.apply_changes()
             return self.get_rule(uuid)
@@ -433,11 +457,13 @@ class Filter(object):
         :return: A bool that indicates operation result
         :rtype: bool
         """
-        query_results = self.device._authenticated_request("POST", f"firewall/filter/delRule/{uuid}")
+        query_results = self.device._authenticated_request(
+            "POST", f"firewall/filter/delRule/{uuid}")
         if query_results['result'] == "deleted":
             self.apply_changes()
             return True
-        raise Exception(f"Failed to delete filter rule with UUID {uuid} with reason: {query_results['result']}  ")
+        raise Exception(
+            f"Failed to delete filter rule with UUID {uuid} with reason: {query_results['result']}  ")
 
     def add_or_se(self,
                   uuid: str = None,

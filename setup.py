@@ -16,7 +16,7 @@ setup(
   url="https://github.com/turnbros/python-opnsense",
   download_url=f"https://github.com/turnbros/python-opnsense/releases/tag/{version}",
   keywords=['turnbros', 'opnsense'],
-  install_requires=[],
+  install_requires=["deprecation==2.1.0"],
   classifiers=[
     'Programming Language :: Python :: 3',
     'License :: OSI Approved :: Apache Software License',
