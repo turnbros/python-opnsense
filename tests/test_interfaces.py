@@ -16,10 +16,10 @@ opnsense = Opnsense()
 
 
 def test_interface_controller():
-  print(opnsense.interfaces.loopback_controller.list())
-  print(opnsense.interfaces.vip_controller.list())
-  print(opnsense.interfaces.vlan_controller.list())
-  print(opnsense.interfaces.vxlan_controller.list())
+    print(opnsense.interfaces.loopback_controller.list())
+    print(opnsense.interfaces.vip_controller.list())
+    print(opnsense.interfaces.vlan_controller.list())
+    print(opnsense.interfaces.vxlan_controller.list())
 
 
 test_interface_controller()
