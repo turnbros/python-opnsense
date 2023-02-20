@@ -1,21 +1,40 @@
-from typing import Union
+from typing import Union, List
+from enum import Enum
 
 from deprecation import deprecated
 
-from opnsense_api.util import AliasType, ProtocolType
+from opnsense_api.util import ProtocolType
+from opnsense_api.util.item_controller import OPNsenseItem, OPNsenseItemController
 from opnsense_api.util.parse import parse_query_response_alias
 
 
-class Alias(object):
+class Alias(OPNsenseItem):
+    class AliasType(Enum):
+        HOST = "host"
+        NETWORK = "network"
+        PORT = "port"
+        URL = "url"
+
+    name: str
+    alias_type: AliasType
+    description: str
+    update_freq: str
+    counters: str
+    proto: ProtocolType|None = None
+    content: str|None =None
+    enabled: bool = True
+
+
+class AliasController(OPNsenseItemController[Alias]):
 
     def __init__(self, device):
         self.device = device
 
-    def list(self) -> list:
+    def list(self) -> List[Alias]:
         return self.list_aliases()
 
     @deprecated(deprecated_in="1.0.5", removed_in="1.1.0", details="Use list instead")
-    def list_aliases(self) -> list:
+    def list_aliases(self) -> List[Alias]:
         search_results = self.device._authenticated_request("GET", f"firewall/alias/searchItem")
         if 'rows' in search_results:
             return search_results['rows']
@@ -62,10 +81,10 @@ class Alias(object):
     def add(self,
             name: str,
             alias_type: AliasType,
-            description: str = "",
-            update_freq: str = "",
-            counters: str = "",
-            proto: ProtocolType = None,
+            description: str
+            update_freq: str
+            counters: str
+            proto: ProtocolType|None = None,
             content=None,
             enabled: bool = True
             ):
@@ -87,9 +106,9 @@ class Alias(object):
     def add_alias(self,
                   name: str,
                   alias_type: AliasType,
-                  description: str = "",
-                  update_freq: str = "",
-                  counters: str = "",
+                  description: str
+                  update_freq: str
+                  counters: str
                   proto: ProtocolType = None,
                   content=None,
                   enabled: bool = True
@@ -125,9 +144,9 @@ class Alias(object):
             uuid: str,
             name: str,
             alias_type: AliasType,
-            description: str = "",
-            update_freq: str = "",
-            counters: str = "",
+            description: str
+            update_freq: str
+            counters: str
             proto: ProtocolType = None,
             content=None,
             enabled: bool = True
@@ -149,9 +168,9 @@ class Alias(object):
                   uuid: str,
                   name: str,
                   alias_type: AliasType,
-                  description: str = "",
-                  update_freq: str = "",
-                  counters: str = "",
+                  description: str
+                  update_freq: str
+                  counters: str
                   proto: ProtocolType = None,
                   content=None,
                   enabled: bool = True
