@@ -134,7 +134,7 @@ def format_request(module: str, controller: str, command: str, uuid: str = None,
     # e.g. api/unbound/settings/searchHostOverride
     if params is None:
         params = {}
-    
+
     base_request = f"{module}/{controller}/{command}"
 
     # Add in the UUID for a specific resource

@@ -16,7 +16,7 @@ opnsense = Opnsense()
 
 
 def test_route_controller():
-  print(opnsense.routing.route_controller.list())
+    print(opnsense.routing.route_controller.list())
 
 
 test_route_controller()
