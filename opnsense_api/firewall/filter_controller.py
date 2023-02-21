@@ -74,7 +74,7 @@ class Filter(object):
         return self.match_rule_by_attributes(**kwargs)
 
     @deprecated(deprecated_in="1.0.5", removed_in="1.1.0", details="Use match_by_attribute instead")
-    def match_rule_by_attributes(self, **kwargs) -> List[dict, None]:
+    def match_rule_by_attributes(self, **kwargs) -> Union[dict, None]:
         """
         Matches and returns firewall filter rules. The match is based on attribute values provided as kwargs.
         :param kwargs: { "description": "a filter rule description", "log": True }
