@@ -14,7 +14,7 @@ class VLANInterface(OPNsenseItem):
 class VLANController(OPNsenseItemController[VLANInterface]):
 
     def __init__(self, device):
-        super().__init__(device, "interface", "vlan_settings")
+        super().__init__(device, "interfaces", "vlan_settings")
 
     def _parse_api_response(self, api_response) -> VLANInterface:
         pass

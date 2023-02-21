@@ -14,7 +14,7 @@ class VXLANInterface(OPNsenseItem):
 class VXLANController(OPNsenseItemController[VXLANInterface]):
 
     def __init__(self, device):
-        super().__init__(device, "interface", "vxlan_settings")
+        super().__init__(device, "interfaces", "vxlan_settings")
 
     def _parse_api_response(self, api_response) -> VXLANInterface:
         pass

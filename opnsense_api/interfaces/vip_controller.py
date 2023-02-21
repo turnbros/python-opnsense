@@ -23,15 +23,15 @@ class VIPInterface(OPNsenseItem):
 class VIPController(OPNsenseItemController[VIPInterface]):
 
     def __init__(self, device):
-        super().__init__(device, "interface", "vip_settings")
+        super().__init__(device, "interfaces", "vip_settings")
 
     def _parse_api_response(self, api_response) -> VIPInterface:
         return VIPInterface(
         uuid=api_response["uuid"],
-        description=api_response["description"],
+        description=api_response["descr"],
         interface=api_response["interface"],
         mode=api_response["mode"],
-        descr=api_response["descr"],
+        descr=api_response["descr"], # TODO: Either remove this one or description
         subnet=api_response["subnet"],
         subnet_bits=api_response["subnet_bits"],
         vhid=api_response["vhid"],
