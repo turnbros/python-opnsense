@@ -51,7 +51,6 @@ class OPNsenseItemController(Generic[T], OPNsenseAPIController):
         search_results = self._api_get(self.ItemActions.search.value)
         if 'rows' in search_results:
             for item in search_results['rows']:
-                print(item)
                 items.append(self._parse_api_response(item))
 
         return items
