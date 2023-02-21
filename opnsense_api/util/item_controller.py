@@ -1,21 +1,67 @@
-import json
-import pydantic
-from dataclasses import dataclass, fields, asdict
-from .controller import OPNsenseAPIController
-from typing import List, TypeVar, Generic
-from abc import abstractmethod
+from abc import abstractmethod, ABC
+from dataclasses import dataclass
 from enum import Enum
-import logging
+from typing import List, TypeVar, Generic, Union
 
-log = logging.getLogger(__name__)
-T = TypeVar('T', bound='OPNsenseItem')
+from pydantic import BaseModel
+
+from .controller import OPNsenseAPIController
+from .exceptions import FailedToDeleteException, ItemNotFoundException, FailedToSetItemException, \
+    FailedToAddItemException
+
+TOPNSenseItem = TypeVar('TOPNSenseItem', bound='OPNsenseItem')
 
 
 @dataclass
-class OPNsenseItem(pydantic.BaseModel):
+class OPNSenseItem(BaseModel, ABC):
+    uuid: Union[str, None]
 
-    uuid: str
+    # So my IDE stops screaming at me about unexpected arguments whenever I want to instantiate a subclass with more
+    # than just uuid.
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
+    @classmethod
+    @abstractmethod
+    def from_api_response_get(cls, api_response: dict, **kwargs) -> TOPNSenseItem:
+        """
+        Parses the Item from the API response to getItem
+        :param api_response: API response to getItem
+        :return: Item from API response
+        """
+        raise NotImplementedError("This method needs to be implemented!")
+
+    @classmethod
+    @abstractmethod
+    def from_api_response_list(cls, api_response: dict, **kwargs) -> TOPNSenseItem:
+        """
+        Parses the Item from the API response to list
+        :param api_response: API response to list
+        :return: Item from API response
+        """
+        raise NotImplementedError("This method needs to be implemented!")
+
+    @staticmethod
+    def _strip_none_fields(dictionary: dict) -> dict:
+        return {k: v for k, v in dictionary.items() if v is not None}
+
+    @staticmethod
+    def _replace_booleans_with_numbers(dictionary: dict):
+        for k, v in dictionary.items():
+            if isinstance(v, bool):
+                dictionary[k] = "1" if v else "0"
+        return dictionary
+
+    def get_api_representation(self) -> dict:
+        """
+
+        :return: the items dictionary representation as the OPNSense API understands it when setting or adding.
+        """
+        return {
+            type(self).__name__.lower(): self._replace_booleans_with_numbers(self._strip_none_fields(dict(self)))
+        }
+
+    # TODO: figure out if this is still needed
     # def to_dict(self):
     #     opnsense_item = asdict(self)
     #     opnsense_item_dict = {}
@@ -28,8 +74,7 @@ class OPNsenseItem(pydantic.BaseModel):
     #     return json.dumps(self.to_dict())
 
 
-class OPNsenseItemController(Generic[T], OPNsenseAPIController):
-
+class OPNSenseItemController(Generic[TOPNSenseItem], OPNsenseAPIController, ABC):
     # This gets overridden if the controller uses different action verbs
     # See Routes: https://docs.opnsense.org/development/api/core/routes.html
     class ItemActions(Enum):
@@ -38,63 +83,72 @@ class OPNsenseItemController(Generic[T], OPNsenseAPIController):
         add = "addItem"
         set = "setItem"
         delete = "delItem"
-        apply = "reconfigure"
+        # toggle = "toggleItem"
+        # removed toggle, we should just use set
 
-    def list(self) -> List[T]:
+    @property
+    @abstractmethod
+    def opnsense_item_class(self) -> type[TOPNSenseItem]:
+        """
+        :return: the class of the implementation of OPNSenseItem this class controls.
+        """
+        raise NotImplementedError("Not implemented!")
+
+    def __init__(self, device, module: str, controller: str):
+        super().__init__(device, module, controller)
+
+    def list(self) -> List[TOPNSenseItem]:
         """
         Returns a list of items.
 
         :return: A list of OPNsense items
         :rtype List[T]:
         """
-        items = []
-        search_results = self._api_get(self.ItemActions.search.value)
-        if 'rows' in search_results:
-            for item in search_results['rows']:
-                items.append(self._parse_api_response(item))
+        query_response = self._api_get(self.ItemActions.search.value)
+        return [self.opnsense_item_class.from_api_response_from(item) for item in query_response.get('rows')]
 
-        return items
-
-    def get(self, uuid) -> T:
+    def get(self, uuid: str) -> TOPNSenseItem:
         """
         Gets a specific item
 
         :param uuid:
         :return: T
         """
-        result = self._api_get(self.ItemActions.get.value, uuid)
-        item = list(result.values())[0]
-        return self._parse_api_response(item)
+        query_response = self._api_get(self.ItemActions.get.value, uuid)
+        if len(query_response.values()) == 0 or len(query_response.values()) > 1:
+            raise ItemNotFoundException(type(TOPNSenseItem).__name__, uuid, query_response)
+        return self.opnsense_item_class.from_api_response_get(list(query_response.values())[0])
 
-    def delete(self, item: T) -> None:
+    def delete(self, item: TOPNSenseItem) -> None:
         """
         Deletes the item
 
-        :param item:
-        :return:
+        :param item: Item to be deleted
         """
-        response = self._api_post(self.ItemActions.delete.value, item.uuid)
-        if response['result'] != "deleted":
-            raise Exception(f"Failed to delete host override with UUID {item.uuid} with reason: {response['result']}")
-        self.apply_changes()
+        query_response = self._api_post(self.ItemActions.delete.value, item.uuid)
+        if query_response['result'] != "deleted":
+            raise FailedToDeleteException(type(item).__name__, item.uuid, query_response)
 
-    def apply_changes(self) -> None:
+    def add(self, item: TOPNSenseItem) -> None:
         """
-        Apply any pending changes
-
+        Adds the item to the OPNSense and saves the items UUID in the parameter item
+        :param item: Will be created on the OPNSense and UUID will be updated after creation
         """
-        response = self._api_post(self.ItemActions.apply.value)
-        if response["status"] != "ok":
-            raise Exception(f"Failed to apply changes. Reason {response}")
+        query_response = self._api_post(self.ItemActions.add.value,
+                                        body=item.get_api_representation())
+        if query_response['result'] != "saved":
+            raise FailedToAddItemException(type(item).__name__, item.uuid, query_response)
 
-    @abstractmethod
-    def _parse_api_response(self, api_response) -> T:
-        raise NotImplementedError("This method needs to be implemented!")
+    def set(self, item: TOPNSenseItem) -> None:
+        """
+        Updates the items state in the OPNSense
 
-    @abstractmethod
-    def add(self, item: T) -> T:
-        raise NotImplementedError("This method needs to be implemented!")
+        :param item: state of item to be set on OPNSense
+        """
+        # get the item first to ensure it exists
+        self.get(item.uuid)
 
-    @abstractmethod
-    def set(self, item: T) -> T:
-        raise NotImplementedError("This method needs to be implemented!")
+        query_response = self._api_post(self.ItemActions.set.value, item.uuid,
+                                        body=item.get_api_representation())
+        if query_response['result'] != "saved":
+            raise FailedToSetItemException(type(item).__name__, item.uuid, query_response)
