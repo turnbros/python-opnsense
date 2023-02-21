@@ -23,7 +23,7 @@ class VIPInterface(OPNsenseItem):
 class VIPController(OPNsenseItemController[VIPInterface]):
 
     def __init__(self, device):
-        super().__init__(device, "interface", "vip_settings")
+        super().__init__(device, "interfaces", "vip_settings")
 
     def _parse_api_response(self, api_response) -> VIPInterface:
         return VIPInterface(

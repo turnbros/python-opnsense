@@ -14,7 +14,7 @@ class LoopbackInterface(OPNsenseItem):
 class LoopbackController(OPNsenseItemController[LoopbackInterface]):
 
     def __init__(self, device):
-        super().__init__(device, "interface", "loopback_settings")
+        super().__init__(device, "interfaces", "loopback_settings")
 
     def _parse_api_response(self, api_response: dict) -> LoopbackInterface:
         return LoopbackInterface(
