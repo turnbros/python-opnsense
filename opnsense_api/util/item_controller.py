@@ -41,6 +41,9 @@ class OPNSenseItem(BaseModel, ABC):
         """
         raise NotImplementedError("This method needs to be implemented!")
 
+    def get_api_name(self):
+        return type(self).__name__.lower()
+
     @staticmethod
     def _strip_none_fields(dictionary: dict) -> dict:
         return {k: v for k, v in dictionary.items() if v is not None}
@@ -56,16 +59,22 @@ class OPNSenseItem(BaseModel, ABC):
     def _replace_ints_with_strings(dictionary: dict):
         return {k: str(v) if isinstance(v, int) else v for k, v in dictionary.items()}
 
+    @staticmethod
+    def _replace_lists(dictionary: dict):
+        return {k: str.join('\n', v) if isinstance(v, list) else v for k, v in dictionary.items()}
+
     def get_api_representation(self) -> dict:
         """
 
         :return: the items dictionary representation as the OPNSense API understands it when setting or adding.
         """
         return {
-            type(self).__name__.lower():
+            self.get_api_name():
                 self._replace_ints_with_strings(
                     self._replace_booleans_with_numbers(
-                        self._strip_none_fields(dict(self))
+                        self._replace_lists(
+                            self._strip_none_fields(dict(self))
+                        )
                     )
                 )
         }
@@ -103,6 +112,41 @@ class OPNSenseItemController(Generic[TOPNSenseItem], OPNSenseAPIController, ABC)
         """
         raise NotImplementedError("Not implemented!")
 
+    @property
+    def opnsense_item_class_list(self) -> type[TOPNSenseItem]:
+        """
+        :return: the class of implementation that handles object creation when listing items from the OPNSense
+        """
+        return self.opnsense_item_class
+
+    @property
+    def opnsense_item_class_get(self) -> type[TOPNSenseItem]:
+        """
+        :return: the class of implementation that handles object creation when getting items from the OPNSense
+        """
+        return self.opnsense_item_class
+
+    @property
+    def opnsense_item_class_delete(self) -> type[TOPNSenseItem]:
+        """
+        :return: the class of implementation that handles object deletion
+        """
+        return self.opnsense_item_class
+
+    @property
+    def opnsense_item_class_add(self) -> type[TOPNSenseItem]:
+        """
+        :return: the class of implementation that handles object addition
+        """
+        return self.opnsense_item_class
+
+    @property
+    def opnsense_item_class_set(self) -> type[TOPNSenseItem]:
+        """
+        :return: the class of implementation that handles setting objects
+        """
+        return self.opnsense_item_class
+
     def __init__(self, device, module: str, controller: str):
         super().__init__(device, module, controller)
 
@@ -114,7 +158,7 @@ class OPNSenseItemController(Generic[TOPNSenseItem], OPNSenseAPIController, ABC)
         :rtype List[T]:
         """
         query_response = self._api_get(self.ItemActions.search.value)
-        return [self.opnsense_item_class.from_api_response_list(item) for item in query_response.get('rows')]
+        return [self.opnsense_item_class_list.from_api_response_list(item) for item in query_response.get('rows')]
 
     def get(self, uuid: str) -> TOPNSenseItem:
         """
@@ -125,8 +169,8 @@ class OPNSenseItemController(Generic[TOPNSenseItem], OPNSenseAPIController, ABC)
         """
         query_response = self._api_get(self.ItemActions.get.value, uuid)
         if len(query_response.values()) == 0 or len(query_response.values()) > 1:
-            raise ItemNotFoundException(self.opnsense_item_class.__name__, uuid, query_response)
-        return self.opnsense_item_class.from_api_response_get(list(query_response.values())[0], uuid=uuid)
+            raise ItemNotFoundException(self.opnsense_item_class_get.__name__, uuid, query_response)
+        return self.opnsense_item_class_get.from_api_response_get(list(query_response.values())[0], uuid=uuid)
 
     def delete(self, item: TOPNSenseItem) -> None:
         """
@@ -136,7 +180,7 @@ class OPNSenseItemController(Generic[TOPNSenseItem], OPNSenseAPIController, ABC)
         """
         query_response = self._api_post(self.ItemActions.delete.value, item.uuid)
         if query_response['result'] != "deleted":
-            raise FailedToDeleteException(self.opnsense_item_class.__name__, item.uuid, query_response)
+            raise FailedToDeleteException(self.opnsense_item_class_delete.__name__, item.uuid, query_response)
 
     def add(self, item: TOPNSenseItem) -> None:
         """
@@ -146,7 +190,8 @@ class OPNSenseItemController(Generic[TOPNSenseItem], OPNSenseAPIController, ABC)
         query_response = self._api_post(self.ItemActions.add.value,
                                         body=item.get_api_representation())
         if query_response['result'] != "saved":
-            raise FailedToAddItemException(self.opnsense_item_class.__name__, item.uuid, query_response)
+            raise FailedToAddItemException(self.opnsense_item_class_add.__name__, item.uuid, query_response)
+        item.uuid = query_response['uuid']
 
     def set(self, item: TOPNSenseItem) -> None:
         """
@@ -160,4 +205,4 @@ class OPNSenseItemController(Generic[TOPNSenseItem], OPNSenseAPIController, ABC)
         query_response = self._api_post(self.ItemActions.set.value, item.uuid,
                                         body=item.get_api_representation())
         if query_response['result'] != "saved":
-            raise FailedToSetItemException(self.opnsense_item_class.__name__, item.uuid, query_response)
+            raise FailedToSetItemException(self.opnsense_item_class_set.__name__, item.uuid, query_response)

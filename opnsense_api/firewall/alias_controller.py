@@ -82,11 +82,6 @@ class Alias(OPNSenseItem):
             categories_uuids=api_response['categories_uuid']
         )
 
-    def get_api_representation(self) -> dict:
-        api_representation = super().get_api_representation()
-        api_representation['alias']['content'] = str.join('\n', self.content)
-        return self._strip_none_fields(api_representation)
-
 
 class FirewallAliasController(OPNSenseApplicableItemController[Alias]):
     class ItemActions(Enum):
