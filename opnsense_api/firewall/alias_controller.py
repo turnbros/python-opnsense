@@ -29,6 +29,7 @@ LONG_NAME_TO_TYPE_DICT = {
 
 
 class Alias(OPNSenseItem):
+    uuid: Union[str, None]
     name: constr(min_length=1, max_length=32, strip_whitespace=True, regex=r"^[a-zA-Z0-9_]*$")
     type: str
     description: str = ""

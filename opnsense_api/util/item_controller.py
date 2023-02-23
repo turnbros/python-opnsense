@@ -1,11 +1,11 @@
 from abc import abstractmethod, ABC
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, TypeVar, Generic, Union
+from typing import List, TypeVar, Generic
 
 from pydantic import BaseModel
 
-from .controller import OPNsenseAPIController
+from .controller import OPNSenseAPIController
 from .exceptions import FailedToDeleteException, ItemNotFoundException, FailedToSetItemException, \
     FailedToAddItemException
 
@@ -14,8 +14,6 @@ TOPNSenseItem = TypeVar('TOPNSenseItem', bound='OPNsenseItem')
 
 @dataclass
 class OPNSenseItem(BaseModel, ABC):
-    uuid: Union[str, None]
-
     # So my IDE stops screaming at me about unexpected arguments whenever I want to instantiate a subclass with more
     # than just uuid.
     def __init__(self, **kwargs):
@@ -74,7 +72,7 @@ class OPNSenseItem(BaseModel, ABC):
     #     return json.dumps(self.to_dict())
 
 
-class OPNSenseItemController(Generic[TOPNSenseItem], OPNsenseAPIController, ABC):
+class OPNSenseItemController(Generic[TOPNSenseItem], OPNSenseAPIController, ABC):
     # This gets overridden if the controller uses different action verbs
     # See Routes: https://docs.opnsense.org/development/api/core/routes.html
     class ItemActions(Enum):
