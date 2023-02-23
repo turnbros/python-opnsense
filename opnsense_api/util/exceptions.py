@@ -32,5 +32,10 @@ class FailedToSetItemException(Exception):
 
 
 class InvalidItemException(ValueError):
-    def __init__(self, class_name: str, field: str, value: str, valid_values: list[str]):
-        super().__init__(f"Invalid {class_name}:\nValue for '{field}' is '{value}' but should be one of {valid_values}")
+    def __init__(self, class_name: str, field: str = "", value: str = "", valid_values: list[str] = None,
+                 custom_message: str = ""):
+        if not custom_message:
+            super().__init__(
+                f"Invalid {class_name}:\nValue for '{field}' is '{value}' but should be one of {valid_values}")
+        else:
+            super().__init__(f"Invalid {class_name}:\n{custom_message}")
