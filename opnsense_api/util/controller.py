@@ -4,7 +4,7 @@ import urllib.parse
 log = logging.getLogger(__name__)
 
 
-class OPNsenseAPIController:
+class OPNSenseAPIController:
     def __init__(self, device, module: str, controller: str):
         self._device = device
         self._module = module
