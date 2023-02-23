@@ -79,6 +79,10 @@ class OPNSenseItem(BaseModel, ABC):
                 )
         }
 
+    def __repr__(self):
+        return f"{type(self).__name__}(uuid={self.uuid}" \
+               f"{f', description={self.description}' if getattr(self, 'description') else None})"
+
     # TODO: figure out if this is still needed
     # def to_dict(self):
     #     opnsense_item = asdict(self)
