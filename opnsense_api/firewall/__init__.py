@@ -1,5 +1,5 @@
 from .alias_controller import FirewallAliasController
-from .filter_controller import Filter
+from .filter_controller import FilterController
 
 
 class Firewall(object):
@@ -12,5 +12,5 @@ class Firewall(object):
         return FirewallAliasController(self._device)
 
     @property
-    def filter_controller(self) -> Filter:
-        return Filter(self._device)
+    def filter_controller(self) -> FilterController:
+        return FilterController(self._device)
