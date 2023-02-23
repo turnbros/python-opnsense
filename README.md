@@ -1,6 +1,11 @@
 # python-opnsense
 A Python library for the Opnsense API
 
+
+![Discord Banner 2](https://discordapp.com/api/guilds/418227841398996993/widget.png?style=banner2)
+#### [Join us on Discord!](https://discord.gg/nGfWCZCGpF)
+
+
 ## Getting Started
 
 ### Supported Controllers and Services
