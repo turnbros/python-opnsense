@@ -114,7 +114,7 @@ class OPNSenseItemController(Generic[TOPNSenseItem], OPNSenseAPIController, ABC)
         :rtype List[T]:
         """
         query_response = self._api_get(self.ItemActions.search.value)
-        return [self.opnsense_item_class.from_api_response_from(item) for item in query_response.get('rows')]
+        return [self.opnsense_item_class.from_api_response_list(item) for item in query_response.get('rows')]
 
     def get(self, uuid: str) -> TOPNSenseItem:
         """
