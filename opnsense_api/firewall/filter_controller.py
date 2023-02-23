@@ -42,7 +42,6 @@ class FilterRule(FilterRuleBase):
     action: constr(to_lower=True) = "pass"
     quick: bool = True
     interface: conlist(item_type=str, min_items=1, unique_items=True) = ["lan"]
-    # list() on the controller sets interface to ["lan"] for every FilterRule as it doesn't know better
     direction: constr(to_lower=True) = "in"
     ipprotocol: constr(to_lower=True) = "inet"
     protocol: constr(to_lower=True) = "any"
