@@ -18,9 +18,15 @@ class OPNSenseApplicableItemController(OPNSenseItemController[TOPNSenseItem], AB
         delete = "delItem"
         apply = "reconfigure"
 
+    def add(self, item: TOPNSenseItem) -> None:
+        super().add(item)
+        self.apply_changes()
+
+    def set(self, item: TOPNSenseItem) -> None:
+        self.apply_changes()
+
     def delete(self, item: TOPNSenseItem) -> None:
         super().delete(item)
-        # Apply Changes after deleting an item
         self.apply_changes()
 
     def apply_changes(self) -> None:
