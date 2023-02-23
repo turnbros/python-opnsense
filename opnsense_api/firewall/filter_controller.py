@@ -26,7 +26,7 @@ class FilterRuleBase(OPNSenseItem):
 
     @classmethod
     def from_api_response_get(cls, api_response: dict, **kwargs) -> TOPNSenseItem:
-        raise NotImplementedError("This method needs to be implemented!")
+        raise NotImplementedError("This method is not implemented!")
 
     @classmethod
     def from_api_response_list(cls, api_response: dict, **kwargs) -> FilterRuleBase:
@@ -116,7 +116,7 @@ class FilterRule(FilterRuleBase):
 
     @classmethod
     def from_api_response_list(cls, api_response: dict, uuid: str = None) -> FilterRule:
-        raise NotImplementedError("This method needs to be implemented!")
+        raise NotImplementedError("This method is not implemented!")
 
     def get_api_name(self):
         return "rule"
