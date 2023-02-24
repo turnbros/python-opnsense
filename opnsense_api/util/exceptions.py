@@ -1,4 +1,5 @@
-from typing import Optional
+from typing import Optional, Any
+
 
 class FailedToParseItemException(Exception):
     def __init__(self, class_type: str, msg: str):
@@ -6,7 +7,7 @@ class FailedToParseItemException(Exception):
 
 
 class FailedToDeleteException(Exception):
-    def __init__(self, class_name: str, uuid: str, query_response: dict):
+    def __init__(self, class_name: str, uuid: Optional[str], query_response: dict):
         super().__init__(f"Failed to delete {class_name} with UUID {uuid} with reason: "
                          f"{query_response}")
 
@@ -17,20 +18,20 @@ class FailedToApplyChangesException(Exception):
 
 
 class ItemNotFoundException(Exception):
-    def __init__(self, class_name: str, uuid: str, query_response: dict):
-        super().__init__(f"Could not find {class_name} with uuid {uuid} with reason: {query_response}")
+    def __init__(self, class_name: str, uuid: Optional[str], query_response: dict):
+        super().__init__(f"Could not find {class_name} with UUID {uuid} with reason: {query_response}")
 
 
 class FailedToAddItemException(Exception):
-    def __init__(self, class_name: str, uuid: str, query_response: dict):
+    def __init__(self, class_name: str, uuid: Optional[str], query_response: dict):
         super().__init__(f"Failed to set {class_name} with UUID {uuid} with reason: "
                          f"{query_response}")
 
 
 class FailedToSetItemException(Exception):
-    def __init__(self, class_name: str, uuid: str, query_response: dict):
+    def __init__(self, class_name: str, uuid: Optional[str], reason: Any):
         super().__init__(f"Failed to add {class_name} with UUID {uuid} with reason: "
-                         f"{query_response}")
+                         f"{reason}")
 
 
 class InvalidItemException(ValueError):

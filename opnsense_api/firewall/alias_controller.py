@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional, Union, List
+from typing import Optional, Union
 
 from pydantic import validator, constr
 
 from opnsense_api.util import ProtocolType
 from opnsense_api.util.applicable_item_controller import OPNSenseApplicableItemController
 from opnsense_api.util.exceptions import FailedToParseItemException, InvalidItemException
-from opnsense_api.util.item_controller import OPNSenseItem, TOPNSenseItem
+from opnsense_api.util.item_controller import OPNSenseItem
 from opnsense_api.util.parse import parse_selected_enum, parse_selected_keys
 
 LONG_NAME_TO_TYPE_DICT = {
@@ -34,7 +34,7 @@ class Alias(OPNSenseItem):
     updatefreq: Union[str, None]
     counters: Union[str, None]
     proto: Union[ProtocolType, None] = None
-    content: list[str] = None
+    content: Optional[list[str]] = None
     enabled: bool = True
     categories_uuids: list[str] = []
 
@@ -46,7 +46,7 @@ class Alias(OPNSenseItem):
         return value
 
     @classmethod
-    def from_api_response_get(cls, api_response: dict, uuid: Optional[str] = None) -> Alias:
+    def from_api_response_get(cls, api_response: dict, uuid: Optional[str] = None, **kwargs) -> Alias:
         # API response doesn't contain UUID for aliases.
         if uuid is None:
             raise FailedToParseItemException("Alias", "Can't parse alias if no UUID is passed.")
@@ -65,7 +65,7 @@ class Alias(OPNSenseItem):
         )
 
     @classmethod
-    def from_api_response_list(cls, api_response: dict, uuid: Optional[str] = None):
+    def from_api_response_list(cls, api_response: dict, uuid: Optional[str] = None, **kwargs):
         # API response doesn't contain UUID for aliases.
         if uuid is None:
             raise FailedToParseItemException("Alias", "Can't parse alias if no UUID is passed.")
@@ -94,13 +94,13 @@ class FirewallAliasController(OPNSenseApplicableItemController[Alias]):
         get_uuid = "getAliasUUID"
 
     @property
-    def opnsense_item_class(self) -> type[TOPNSenseItem]:
+    def opnsense_item_class(self) -> type[Alias]:
         return Alias
 
     def __init__(self, device):
         super().__init__(device, "firewall", "alias")
 
-    def list(self) -> List[Alias]:
+    def list(self) -> list[OPNSenseItem]:
         query_response = self._api_get(self.ItemActions.search.value)
         return [self.opnsense_item_class.from_api_response_list(item, uuid=item['uuid'])
                 for item in query_response.get('rows')]

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import abstractmethod, ABC
 from dataclasses import dataclass
 from enum import Enum
@@ -7,9 +9,9 @@ from pydantic import BaseModel
 
 from .controller import OPNSenseAPIController
 from .exceptions import FailedToDeleteException, ItemNotFoundException, FailedToSetItemException, \
-    FailedToAddItemException
+    FailedToAddItemException, InvalidItemException
 
-TOPNSenseItem = TypeVar('TOPNSenseItem', bound='OPNsenseItem')
+TOPNSenseItem = TypeVar('TOPNSenseItem', bound='OPNSenseItem')
 
 
 @dataclass
@@ -23,7 +25,7 @@ class OPNSenseItem(BaseModel, ABC):
 
     @classmethod
     @abstractmethod
-    def from_api_response_get(cls, api_response: dict, **kwargs) -> TOPNSenseItem:
+    def from_api_response_get(cls, api_response: dict, **kwargs) -> OPNSenseItem:
         """
         Parses the Item from the API response to getItem
         :param api_response: API response to getItem
@@ -33,7 +35,7 @@ class OPNSenseItem(BaseModel, ABC):
 
     @classmethod
     @abstractmethod
-    def from_api_response_list(cls, api_response: dict, **kwargs) -> TOPNSenseItem:
+    def from_api_response_list(cls, api_response: dict, **kwargs) -> OPNSenseItem:
         """
         Parses the Item from the API response to list
         :param api_response: API response to list
@@ -154,7 +156,7 @@ class OPNSenseItemController(Generic[TOPNSenseItem], OPNSenseAPIController, ABC)
     def __init__(self, device, module: str, controller: str):
         super().__init__(device, module, controller)
 
-    def list(self) -> List[TOPNSenseItem]:
+    def list(self) -> List[OPNSenseItem]:
         """
         Returns a list of items.
 
@@ -164,7 +166,7 @@ class OPNSenseItemController(Generic[TOPNSenseItem], OPNSenseAPIController, ABC)
         query_response = self._api_get(self.ItemActions.search.value)
         return [self.opnsense_item_class_list.from_api_response_list(item) for item in query_response.get('rows')]
 
-    def get(self, uuid: str) -> TOPNSenseItem:
+    def get(self, uuid: str) -> OPNSenseItem:
         """
         Gets a specific item
 
@@ -204,6 +206,9 @@ class OPNSenseItemController(Generic[TOPNSenseItem], OPNSenseAPIController, ABC)
         :param item: state of item to be set on OPNSense
         """
         # get the item first to ensure it exists
+        if not item.uuid:
+            raise InvalidItemException(self.opnsense_item_class_set.__name__,
+                                       custom_message="Can't set item without knowing it's UUID.")
         self.get(item.uuid)
 
         query_response = self._api_post(self.ItemActions.set.value, item.uuid,

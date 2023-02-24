@@ -11,7 +11,8 @@ class OPNSenseAPIController:
         self._module = module
         self._controller = controller
 
-    def _format_request(self, command: str, resource_identifier: Optional[str] = None, params: Optional[dict] = None) -> str:
+    def _format_request(self, command: str, resource_identifier: Optional[str] = None,
+                        params: Optional[dict] = None) -> str:
         # Simplest url path for a request
         # e.g. api/unbound/settings/searchHostOverride
         base_request = f"{self._module}/{self._controller}/{command}"
@@ -23,12 +24,13 @@ class OPNSenseAPIController:
 
         # Sprinkle some url params on top.
         # e.g. api/unbound/settings/toggleHostOverride/2ce9672e-43a5-4462-9cf1-084964970862
-        if len(params.keys()) > 0:
+        if params:
             base_request = f"{base_request}?{urllib.parse.urlencode(params)}"
 
         return base_request
 
-    def _api_request(self, method: str, command: str, resource_identifier: Optional[str] = None, params: Optional[dict] = None,
+    def _api_request(self, method: str, command: str, resource_identifier: Optional[str] = None,
+                     params: Optional[dict] = None,
                      body: Optional[dict] = None) -> dict:
 
         if params is None:
@@ -40,14 +42,18 @@ class OPNSenseAPIController:
             body=body
         )
 
-    def _api_get(self, command: str, resource_identifier: Optional[str] = None, params: Optional[dict] = None, body: Optional[dict] = None):
+    def _api_get(self, command: str, resource_identifier: Optional[str] = None, params: Optional[dict] = None,
+                 body: Optional[dict] = None):
         return self._api_request("GET", command, resource_identifier, params, body)
 
-    def _api_post(self, command: str, resource_identifier: Optional[str] = None, params: Optional[dict] = None, body: Optional[dict] = None):
+    def _api_post(self, command: str, resource_identifier: Optional[str] = None, params: Optional[dict] = None,
+                  body: Optional[dict] = None):
         return self._api_request("POST", command, resource_identifier, params, body)
 
-    def _api_put(self, command: str, resource_identifier: Optional[str] = None, params: Optional[dict] = None, body: Optional[dict] = None):
+    def _api_put(self, command: str, resource_identifier: Optional[str] = None, params: Optional[dict] = None,
+                 body: Optional[dict] = None):
         return self._api_request("PUT", command, resource_identifier, params, body)
 
-    def _api_delete(self, command: str, resource_identifier: Optional[str] = None, params: Optional[dict] = None, body: Optional[dict] = None):
+    def _api_delete(self, command: str, resource_identifier: Optional[str] = None, params: Optional[dict] = None,
+                    body: Optional[dict] = None):
         return self._api_request("DELETE", command, resource_identifier, params, body)
