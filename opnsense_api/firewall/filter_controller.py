@@ -138,10 +138,6 @@ class FilterController(OPNSenseApplicableItemController[FilterRuleBase]):
     def opnsense_item_class(self) -> type[FilterRule]:
         return FilterRule
 
-    @property
-    def opnsense_item_class_list(self) -> type[FilterRuleBase]:
-        return FilterRuleBase
-
     def apply_changes(self) -> None:
         response = self._api_post(self.ItemActions.apply.value)
         if response["status"] != "OK\n\n":
@@ -159,5 +155,7 @@ class FilterController(OPNSenseApplicableItemController[FilterRuleBase]):
         To set every attribute, call: filter_rule = filter_controller.get(filter_rule_base.uuid)
         To set every attribute on each filter_rule_base call: filters = [filter_controller.get(f.uuid) for f in filters]
         :return: A brief list of parsed filter rules
+        :rtype: list[FilterRuleBase]
         """
-        return super().list()
+        query_response = self._api_get(self.ItemActions.search.value)
+        return [FilterRuleBase.from_api_response_list(item) for item in query_response.get('rows')]
