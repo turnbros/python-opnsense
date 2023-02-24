@@ -2,7 +2,7 @@ import dataclasses
 import logging
 import urllib.parse
 from enum import Enum
-from typing import TypedDict
+from typing import Optional, TypedDict
 
 log = logging.getLogger(__name__)
 
@@ -119,7 +119,7 @@ def parse_unbound_host_override(uuid: str, host: dict) -> HostOverride:
                         description=host['description'])
 
 
-def format_request(module: str, controller: str, command: str, uuid: str = None, params=None) -> str:
+def format_request(module: str, controller: str, command: str, uuid: Optional[str] = None, params=None) -> str:
     """
 
     :param module: str

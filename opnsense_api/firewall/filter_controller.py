@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import List, Union
+from typing import Optional, List, Union
 
 from pydantic import constr, conint, root_validator, validator, conlist
 
@@ -88,7 +88,7 @@ class FilterRule(FilterRuleBase):
         return v
 
     @classmethod
-    def from_api_response_get(cls, api_response: dict, uuid: str = None) -> FilterRule:
+    def from_api_response_get(cls, api_response: dict, uuid: Optional[str] = None) -> FilterRule:
         if uuid is None:
             raise FailedToParseItemException("FilterRule", "Can't parse FilterRule if no UUID is passed.")
 
@@ -115,7 +115,7 @@ class FilterRule(FilterRuleBase):
         )
 
     @classmethod
-    def from_api_response_list(cls, api_response: dict, uuid: str = None) -> FilterRule:
+    def from_api_response_list(cls, api_response: dict, uuid: Optional[str] = None) -> FilterRule:
         raise NotImplementedError("This method is not implemented!")
 
     def get_api_name(self):

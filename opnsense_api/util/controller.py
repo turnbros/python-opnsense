@@ -1,5 +1,6 @@
 import logging
 import urllib.parse
+from typing import Optional
 
 log = logging.getLogger(__name__)
 
@@ -10,7 +11,7 @@ class OPNSenseAPIController:
         self._module = module
         self._controller = controller
 
-    def _format_request(self, command: str, resource_identifier: str = None, params: dict = None) -> str:
+    def _format_request(self, command: str, resource_identifier: Optional[str] = None, params: Optional[dict] = None) -> str:
         # Simplest url path for a request
         # e.g. api/unbound/settings/searchHostOverride
         base_request = f"{self._module}/{self._controller}/{command}"
@@ -27,8 +28,8 @@ class OPNSenseAPIController:
 
         return base_request
 
-    def _api_request(self, method: str, command: str, resource_identifier: str = None, params: dict = None,
-                     body: dict = None) -> dict:
+    def _api_request(self, method: str, command: str, resource_identifier: Optional[str] = None, params: Optional[dict] = None,
+                     body: Optional[dict] = None) -> dict:
 
         if params is None:
             params = {}
@@ -39,14 +40,14 @@ class OPNSenseAPIController:
             body=body
         )
 
-    def _api_get(self, command: str, resource_identifier: str = None, params: dict = None, body: dict = None):
+    def _api_get(self, command: str, resource_identifier: Optional[str] = None, params: Optional[dict] = None, body: Optional[dict] = None):
         return self._api_request("GET", command, resource_identifier, params, body)
 
-    def _api_post(self, command: str, resource_identifier: str = None, params: dict = None, body: dict = None):
+    def _api_post(self, command: str, resource_identifier: Optional[str] = None, params: Optional[dict] = None, body: Optional[dict] = None):
         return self._api_request("POST", command, resource_identifier, params, body)
 
-    def _api_put(self, command: str, resource_identifier: str = None, params: dict = None, body: dict = None):
+    def _api_put(self, command: str, resource_identifier: Optional[str] = None, params: Optional[dict] = None, body: Optional[dict] = None):
         return self._api_request("PUT", command, resource_identifier, params, body)
 
-    def _api_delete(self, command: str, resource_identifier: str = None, params: dict = None, body: dict = None):
+    def _api_delete(self, command: str, resource_identifier: Optional[str] = None, params: Optional[dict] = None, body: Optional[dict] = None):
         return self._api_request("DELETE", command, resource_identifier, params, body)

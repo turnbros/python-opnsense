@@ -1,3 +1,5 @@
+from typing import Optional
+
 class FailedToParseItemException(Exception):
     def __init__(self, class_type: str, msg: str):
         super().__init__(f"Failed to parse {class_type}: {msg}")
@@ -32,7 +34,7 @@ class FailedToSetItemException(Exception):
 
 
 class InvalidItemException(ValueError):
-    def __init__(self, class_name: str, field: str = "", value: str = "", valid_values: list[str] = None,
+    def __init__(self, class_name: str, field: str = "", value: str = "", valid_values: Optional[list[str]] = None,
                  custom_message: str = ""):
         if not custom_message:
             super().__init__(

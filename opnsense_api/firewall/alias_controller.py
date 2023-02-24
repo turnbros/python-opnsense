@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Union, List
+from typing import Optional, Union, List
 
 from pydantic import validator, constr
 
@@ -46,7 +46,7 @@ class Alias(OPNSenseItem):
         return value
 
     @classmethod
-    def from_api_response_get(cls, api_response: dict, uuid: str = None) -> Alias:
+    def from_api_response_get(cls, api_response: dict, uuid: Optional[str] = None) -> Alias:
         # API response doesn't contain UUID for aliases.
         if uuid is None:
             raise FailedToParseItemException("Alias", "Can't parse alias if no UUID is passed.")
@@ -65,7 +65,7 @@ class Alias(OPNSenseItem):
         )
 
     @classmethod
-    def from_api_response_list(cls, api_response: dict, uuid: str = None):
+    def from_api_response_list(cls, api_response: dict, uuid: Optional[str] = None):
         # API response doesn't contain UUID for aliases.
         if uuid is None:
             raise FailedToParseItemException("Alias", "Can't parse alias if no UUID is passed.")
