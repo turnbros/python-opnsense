@@ -11,7 +11,7 @@ from opnsense_api.util.exceptions import FailedToParseItemException, InvalidItem
 from opnsense_api.util.item_controller import OPNSenseItem
 from opnsense_api.util.parse import parse_selected_enum, parse_selected_keys
 
-LONG_NAME_TO_TYPE_DICT = {
+ALIAS_LONG_NAME_TO_TYPE_DICT = {
     "Host(s)": "host",
     "Network(s)": "network",
     "Port(s)": "port",
@@ -40,9 +40,9 @@ class Alias(OPNSenseItem):
 
     @validator("type", pre=True, always=True)
     def type_valid(cls, value: str) -> str:
-        if value not in LONG_NAME_TO_TYPE_DICT.values():
+        if value not in ALIAS_LONG_NAME_TO_TYPE_DICT.values():
             raise InvalidItemException("Alias", field="type", value=value,
-                                       valid_values=list(LONG_NAME_TO_TYPE_DICT.values()))
+                                       valid_values=list(ALIAS_LONG_NAME_TO_TYPE_DICT.values()))
         return value
 
     @classmethod
@@ -68,7 +68,7 @@ class Alias(OPNSenseItem):
         return Alias(
             uuid=uuid,
             name=api_response['name'],
-            type=LONG_NAME_TO_TYPE_DICT[api_response['type']],
+            type=ALIAS_LONG_NAME_TO_TYPE_DICT[api_response['type']],
             description=api_response['description'],
             updatefreq=api_response.get('updatefreq'),
             counters=api_response.get('counters'),
