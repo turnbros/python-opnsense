@@ -23,6 +23,7 @@ class OPNSenseApplicableItemController(OPNSenseItemController[TOPNSenseItem], AB
         self.apply_changes()
 
     def set(self, item: TOPNSenseItem) -> None:
+        super().set(item)
         self.apply_changes()
 
     def delete(self, item: TOPNSenseItem) -> None:
