@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from abc import abstractmethod, ABC
-from dataclasses import dataclass
 from enum import Enum
 from typing import List, TypeVar, Generic, Union
 
@@ -14,8 +13,13 @@ from .exceptions import FailedToDeleteException, ItemNotFoundException, FailedTo
 TOPNSenseItem = TypeVar('TOPNSenseItem', bound='OPNSenseItem')
 
 
-@dataclass
 class OPNSenseItem(BaseModel, ABC):
+    class Config:
+        """
+        Config class that ensures validation of all fields, whenever a field is set directly.
+        """
+        validate_assignment = True
+
     uuid: Union[str, None]
 
     # So my IDE stops screaming at me about unexpected arguments whenever I want to instantiate a subclass with more
@@ -81,10 +85,6 @@ class OPNSenseItem(BaseModel, ABC):
                 )
         }
 
-    def __repr__(self):
-        return f"{type(self).__name__}(uuid={self.uuid}" \
-               f"{f', description={self.description}' if getattr(self, 'description') else None})"
-
     # TODO: figure out if this is still needed
     # def to_dict(self):
     #     opnsense_item = asdict(self)
@@ -118,6 +118,7 @@ class OPNSenseItemController(Generic[TOPNSenseItem], OPNSenseAPIController, ABC)
         """
         raise NotImplementedError("Not implemented!")
 
+    @abstractmethod
     def __init__(self, device, module: str, controller: str):
         super().__init__(device, module, controller)
 
