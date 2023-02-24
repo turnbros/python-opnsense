@@ -4,7 +4,7 @@ from typing import Optional
 from pydantic import constr, validator
 
 from opnsense_api.util.exceptions import InvalidItemException, FailedToParseItemException
-from opnsense_api.util.item_controller import OPNSenseItem, TOPNSenseItem, OPNSenseItemController
+from opnsense_api.util.item_controller import OPNSenseItem, OPNSenseItemController
 
 
 class Category(OPNSenseItem):
@@ -25,7 +25,7 @@ class Category(OPNSenseItem):
         return Category.parse_obj(api_response)
 
     @classmethod
-    def from_api_response_get(cls, api_response: dict, uuid: Optional[str] = None, **kwargs) -> TOPNSenseItem:
+    def from_api_response_get(cls, api_response: dict, uuid: Optional[str] = None, **kwargs) -> OPNSenseItem:
         if uuid is None:
             raise FailedToParseItemException("Category", "Can't parse Category if no UUID is passed.")
 
