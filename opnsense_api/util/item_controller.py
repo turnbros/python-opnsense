@@ -130,7 +130,7 @@ class OPNSenseItemController(Generic[TOPNSenseItem], OPNSenseAPIController, ABC)
         :return: A list of OPNsense items
         :rtype List[T]:
         """
-        query_response = self._api_get(self.ItemActions.search.value)
+        query_response = self._api_post(self.ItemActions.search.value)
         return [self.opnsense_item_class.from_api_response_list(item) for item in query_response.get('rows')]
 
     def get(self, uuid: str) -> OPNSenseItem:

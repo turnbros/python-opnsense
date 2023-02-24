@@ -97,7 +97,7 @@ class FirewallAliasController(OPNSenseApplicableItemController[Alias]):
         super().__init__(device, "firewall", "alias")
 
     def list(self) -> list[OPNSenseItem]:
-        query_response = self._api_get(self.ItemActions.search.value)
+        query_response = self._api_post(self.ItemActions.search.value)
         return [self.opnsense_item_class.from_api_response_list(item, uuid=item['uuid'])
                 for item in query_response.get('rows')]
 

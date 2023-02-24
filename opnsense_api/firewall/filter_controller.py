@@ -154,5 +154,5 @@ class FilterController(OPNSenseApplicableItemController[FilterRuleBase]):
         :return: A brief list of parsed filter rules
         :rtype: list[FilterRuleBase]
         """
-        query_response = self._api_get(self.ItemActions.search.value)
+        query_response = self._api_post(self.ItemActions.search.value)
         return [FilterRuleBase.from_api_response_list(item) for item in query_response.get('rows')]
