@@ -28,7 +28,7 @@ class Category(OPNSenseItem):
         return Category.parse_obj({"uuid": uuid} | api_response)
 
 
-class CategoryController(OPNSenseItemController):
+class CategoryController(OPNSenseItemController[Category]):
 
     def __init__(self, device):
         super().__init__(device, "firewall", "category")
