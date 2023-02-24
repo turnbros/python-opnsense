@@ -29,10 +29,11 @@ class OPNSenseItem(BaseModel, ABC):
 
     @classmethod
     @abstractmethod
-    def from_api_response_get(cls, api_response: dict, **kwargs) -> OPNSenseItem:
+    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNSenseItem:
         """
         Parses the Item from the API response to getItem
         :param api_response: API response to getItem
+        :param uuid: the UUID that was originally searched for, as it's often not part of the response
         :return: Item from API response
         """
         raise NotImplementedError("This method needs to be implemented!")

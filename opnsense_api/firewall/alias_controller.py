@@ -46,11 +46,7 @@ class Alias(OPNSenseItem):
         return value
 
     @classmethod
-    def from_api_response_get(cls, api_response: dict, uuid: Optional[str] = None, **kwargs) -> Alias:
-        # API response doesn't contain UUID for aliases.
-        if uuid is None:
-            raise FailedToParseItemException("Alias", "Can't parse alias if no UUID is passed.")
-
+    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> Alias:
         return Alias(
             uuid=uuid,
             name=api_response['name'],

@@ -6,7 +6,7 @@ from typing import Optional, List, Union
 from pydantic import constr, conint, root_validator, validator, conlist
 
 from opnsense_api.util.applicable_item_controller import OPNSenseApplicableItemController
-from opnsense_api.util.exceptions import InvalidItemException, FailedToParseItemException, FailedToApplyChangesException
+from opnsense_api.util.exceptions import InvalidItemException, FailedToApplyChangesException
 from opnsense_api.util.item_controller import OPNSenseItem
 from opnsense_api.util.parse import parse_selected_keys
 
@@ -25,7 +25,7 @@ class FilterRuleBase(OPNSenseItem):
     description: Union[None, constr(min_length=0, max_length=255)] = None
 
     @classmethod
-    def from_api_response_get(cls, api_response: dict, **kwargs) -> OPNSenseItem:
+    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNSenseItem:
         raise NotImplementedError("This method is not implemented!")
 
     @classmethod
@@ -88,10 +88,7 @@ class FilterRule(FilterRuleBase):
         return v
 
     @classmethod
-    def from_api_response_get(cls, api_response: dict, uuid: Optional[str] = None, **kwargs) -> OPNSenseItem:
-        if uuid is None:
-            raise FailedToParseItemException("FilterRule", "Can't parse FilterRule if no UUID is passed.")
-
+    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNSenseItem:
         return FilterRule(
             uuid=uuid,
             sequence=int(api_response['sequence']),
