@@ -141,7 +141,7 @@ class OPNSenseItemController(Generic[TOPNSenseItem], OPNSenseAPIController, ABC)
         :return: T
         """
         query_response = self._api_get(self.ItemActions.get.value, uuid)
-        if len(query_response.values()) == 0 or len(query_response.values()) > 1:
+        if len(query_response.values()) != 1:
             raise ItemNotFoundException(self.opnsense_item_class.__name__, uuid, query_response)
         return self.opnsense_item_class.from_api_response_get(list(query_response.values())[0], uuid=uuid)
 
