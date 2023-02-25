@@ -7,7 +7,7 @@ from pydantic import validator, constr
 
 from opnsense_api.util import ProtocolType
 from opnsense_api.util.applicable_item_controller import OPNSenseApplicableItemController
-from opnsense_api.util.exceptions import FailedToParseItemException, InvalidItemException
+from opnsense_api.util.exceptions import InvalidItemException
 from opnsense_api.util.item_controller import OPNSenseItem
 from opnsense_api.util.parse import parse_selected_enum, parse_selected_keys
 
@@ -61,10 +61,7 @@ class Alias(OPNSenseItem):
         )
 
     @classmethod
-    def from_api_response_list(cls, api_response: dict, uuid: Optional[str] = None, **kwargs):
-        # API response doesn't contain UUID for aliases.
-        if uuid is None:
-            raise FailedToParseItemException("Alias", "Can't parse alias if no UUID is passed.")
+    def from_api_response_list(cls, api_response: dict, uuid: str = None, **kwargs):
         return Alias(
             uuid=uuid,
             name=api_response['name'],
