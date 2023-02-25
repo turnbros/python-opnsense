@@ -11,7 +11,7 @@ from opnsense_api.util.item_controller import OPNSenseItem
 from opnsense_api.util.parse import parse_selected_keys
 
 """
-This requires the os-firewall package to be installed.
+This requires the os-firewall plugin to be installed.
 """
 
 
