@@ -121,18 +121,5 @@ class FilterController(OPNSenseApplicableItemController[FilterRule]):
             raise FailedToApplyChangesException(f"Failed to apply changes. Reason {response}")
 
     def list(self) -> List[OPNSenseItem]:
-        """
-        Returns a list of FilterRuleBase objects.
-        As the Firewall doesn't return every information by listing the rules,
-            only the following attributes will be set:
-                - uuid
-                - enabled
-                - sequence
-                - description
-        To set every attribute, call: filter_rule = filter_controller.get(filter_rule_base.uuid)
-        To set every attribute on each filter_rule_base call: filters = [filter_controller.get(f.uuid) for f in filters]
-        :return: A brief list of parsed filter rules
-        :rtype: list[FilterRuleBase]
-        """
         query_response = self._api_post(self.ItemActions.search.value)
         return [self.get(row["uuid"]) for row in query_response.get('rows')]
