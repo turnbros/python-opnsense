@@ -15,30 +15,10 @@ This requires the os-firewall plugin to be installed.
 """
 
 
-class FilterRuleBase(OPNSenseItem):
-    """
-    FilterRule base object, as listing them doesn't return all the information.
-    FilterController.list() creates a list of these objects.
-    """
+class FilterRule(OPNSenseItem):
     enabled: bool = True
     sequence: conint(gt=0, lt=100000)
     description: Union[None, constr(min_length=0, max_length=255)] = None
-
-    @classmethod
-    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNSenseItem:
-        raise NotImplementedError("This method is not implemented!")
-
-    @classmethod
-    def from_api_response_list(cls, api_response: dict, **kwargs) -> OPNSenseItem:
-        return FilterRuleBase(
-            uuid=api_response['uuid'],
-            sequence=int(api_response['sequence']),
-            enabled=bool(int(api_response['enabled'])),
-            description=api_response['description']
-        )
-
-
-class FilterRule(FilterRuleBase):
     action: constr(to_lower=True) = "pass"
     quick: bool = True
     interface: conlist(item_type=str, min_items=1, unique_items=True) = ["lan"]
@@ -119,7 +99,7 @@ class FilterRule(FilterRuleBase):
         return "rule"
 
 
-class FilterController(OPNSenseApplicableItemController[FilterRuleBase]):
+class FilterController(OPNSenseApplicableItemController[FilterRule]):
     class ItemActions(Enum):
         search = "searchRule"
         get = "getRule"
@@ -155,4 +135,4 @@ class FilterController(OPNSenseApplicableItemController[FilterRuleBase]):
         :rtype: list[FilterRuleBase]
         """
         query_response = self._api_post(self.ItemActions.search.value)
-        return [FilterRuleBase.from_api_response_list(item) for item in query_response.get('rows')]
+        return [self.get(row["uuid"]) for row in query_response.get('rows')]
