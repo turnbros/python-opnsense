@@ -3,33 +3,48 @@ from __future__ import annotations
 from enum import Enum
 from typing import Optional, Union
 
-from pydantic import validator, constr
+from pydantic import constr
 
 from opnsense_api.util import ProtocolType
 from opnsense_api.util.applicable_item_controller import OPNSenseApplicableItemController
-from opnsense_api.util.exceptions import InvalidItemException
 from opnsense_api.util.item_controller import OPNSenseItem
 from opnsense_api.util.parse import parse_selected_enum, parse_selected_keys
 
-ALIAS_LONG_NAME_TO_TYPE_DICT = {
-    "Host(s)": "host",
-    "Network(s)": "network",
-    "Port(s)": "port",
-    "URL (IPs)": "url",
-    "URL Table (IPs)": "urltable",
-    "GeoIP": "geoip",
-    "Network group": "networkgroup",
-    "MAC address": "mac",
-    "BGP ASN": "asn",
-    "Dynamic IPv6 Host": "dynipv6host",
-    "Internal (automatic)": "internal",
-    "External (advanced)": "external"
+
+class AliasType(Enum):
+    HOST = "host"
+    NETWORK = "network"
+    PORT = "port"
+    URL = "url"
+    URL_TABLE = "urltable"
+    GEO_IP = "geoip"
+    NETWORK_GROUP = "networkgroup"
+    MAC = "mac"
+    BGP_ASN = "asn"
+    DYNAMIC_IPV6_HOST = "dynipv6host"
+    INTERNAL = "internal"
+    EXTERNAL = "external"
+
+
+ALIAS_LONG_NAME_TO_TYPE_DICT: dict[str, AliasType] = {
+    "Host(s)": AliasType.HOST,
+    "Network(s)": AliasType.NETWORK,
+    "Port(s)": AliasType.PORT,
+    "URL (IPs)": AliasType.URL,
+    "URL Table (IPs)": AliasType.URL_TABLE,
+    "GeoIP": AliasType.GEO_IP,
+    "Network group": AliasType.NETWORK_GROUP,
+    "MAC address": AliasType.MAC,
+    "BGP ASN": AliasType.BGP_ASN,
+    "Dynamic IPv6 Host": AliasType.DYNAMIC_IPV6_HOST,
+    "Internal (automatic)": AliasType.INTERNAL,
+    "External (advanced)": AliasType.EXTERNAL
 }
 
 
 class Alias(OPNSenseItem):
     name: constr(min_length=1, max_length=32, strip_whitespace=True, regex=r"^[a-zA-Z0-9_]*$")
-    type: constr(to_lower=True)
+    type: AliasType
     description: Union[None, constr(min_length=0, max_length=255)] = None
     updatefreq: Union[str, None]
     counters: Union[str, None]
@@ -38,19 +53,12 @@ class Alias(OPNSenseItem):
     enabled: bool = True
     categories_uuids: list[str] = []
 
-    @validator("type", pre=True, always=True)
-    def type_valid(cls, value: str) -> str:
-        if value not in ALIAS_LONG_NAME_TO_TYPE_DICT.values():
-            raise InvalidItemException("Alias", field="type", value=value,
-                                       valid_values=list(ALIAS_LONG_NAME_TO_TYPE_DICT.values()))
-        return value
-
     @classmethod
     def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> Alias:
         return Alias(
             uuid=uuid,
             name=api_response['name'],
-            type=parse_selected_keys(api_response['type'])[0],  # will always only be one
+            type=AliasType(parse_selected_keys(api_response['type'])[0]),
             description=api_response['description'],
             updatefreq=api_response['updatefreq'],
             counters=api_response['counters'],
