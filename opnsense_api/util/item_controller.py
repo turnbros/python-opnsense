@@ -70,6 +70,10 @@ class OPNSenseItem(BaseModel, ABC):
     def _replace_lists(dictionary: dict):
         return {k: str.join('\n', v) if isinstance(v, list) else v for k, v in dictionary.items()}
 
+    @staticmethod
+    def _replace_enums_with_values(dictionary: dict):
+        return {k: v.value if isinstance(v, Enum) else v for k, v in dictionary.items()}
+
     def get_api_representation(self) -> dict:
         """
 
@@ -80,7 +84,9 @@ class OPNSenseItem(BaseModel, ABC):
                 self._replace_ints_with_strings(
                     self._replace_booleans_with_numbers(
                         self._replace_lists(
-                            self._strip_none_fields(dict(self))
+                            self._replace_enums_with_values(
+                                self._strip_none_fields(dict(self))
+                            )
                         )
                     )
                 )
