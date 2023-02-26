@@ -120,6 +120,6 @@ class FilterController(OPNSenseApplicableItemController[FilterRule]):
         if response["status"] != "OK\n\n":
             raise FailedToApplyChangesException(f"Failed to apply changes. Reason {response}")
 
-    def list(self) -> List[OPNSenseItem]:
+    def list(self) -> List[FilterRule]:
         query_response = self._api_post(self.ItemActions.search.value)
         return [self.get(row["uuid"]) for row in query_response.get('rows')]

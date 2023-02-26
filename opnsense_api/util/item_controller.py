@@ -132,7 +132,7 @@ class OPNSenseItemController(Generic[TOPNSenseItem], OPNSenseAPIController, ABC)
     def __init__(self, device, module: str, controller: str):
         super().__init__(device, module, controller)
 
-    def list(self) -> List[OPNSenseItem]:
+    def list(self) -> List[TOPNSenseItem]:
         """
         Returns a list of items.
 
@@ -142,7 +142,7 @@ class OPNSenseItemController(Generic[TOPNSenseItem], OPNSenseAPIController, ABC)
         query_response = self._api_post(self.ItemActions.search.value)
         return [self.opnsense_item_class.from_api_response_list(item) for item in query_response.get('rows')]
 
-    def get(self, uuid: str) -> OPNSenseItem:
+    def get(self, uuid: str) -> TOPNSenseItem:
         """
         Gets a specific item
 
