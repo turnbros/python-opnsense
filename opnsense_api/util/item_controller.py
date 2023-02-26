@@ -16,9 +16,12 @@ TOPNSenseItem = TypeVar('TOPNSenseItem', bound='OPNSenseItem')
 class OPNSenseItem(BaseModel, ABC):
     class Config:
         """
-        Config class that ensures validation of all fields, whenever a field is set directly.
+        Config class that:
+          - ensures validation of all fields, whenever a field is set directly.
+          - allows populating of fields via alias
         """
         validate_assignment = True
+        allow_population_by_field_name = True
 
     uuid: Union[str, None]
 
@@ -85,7 +88,7 @@ class OPNSenseItem(BaseModel, ABC):
                     self._replace_booleans_with_numbers(
                         self._replace_lists(
                             self._replace_enums_with_values(
-                                self._strip_none_fields(dict(self))
+                                self._strip_none_fields(self.dict(by_alias=True))
                             )
                         )
                     )
