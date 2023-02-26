@@ -6,14 +6,14 @@ from typing import List, TypeVar, Generic, Union
 
 from pydantic import BaseModel
 
-from .controller import OPNSenseAPIController
+from .controller import OPNsenseAPIController
 from .exceptions import FailedToDeleteException, ItemNotFoundException, FailedToSetItemException, \
     FailedToAddItemException, InvalidItemException
 
 TOPNSenseItem = TypeVar('TOPNSenseItem', bound='OPNSenseItem')
 
 
-class OPNSenseItem(BaseModel, ABC):
+class OPNsenseItem(BaseModel, ABC):
     class Config:
         """
         Config class that:
@@ -32,7 +32,7 @@ class OPNSenseItem(BaseModel, ABC):
 
     @classmethod
     @abstractmethod
-    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNSenseItem:
+    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
         """
         Parses the Item from the API response to getItem
         :param api_response: API response to getItem
@@ -43,7 +43,7 @@ class OPNSenseItem(BaseModel, ABC):
 
     @classmethod
     @abstractmethod
-    def from_api_response_list(cls, api_response: dict, **kwargs) -> OPNSenseItem:
+    def from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
         """
         Parses the Item from the API response to list
         :param api_response: API response to list
@@ -108,7 +108,7 @@ class OPNSenseItem(BaseModel, ABC):
     #     return json.dumps(self.to_dict())
 
 
-class OPNSenseItemController(Generic[TOPNSenseItem], OPNSenseAPIController, ABC):
+class OPNsenseItemController(Generic[TOPNSenseItem], OPNsenseAPIController, ABC):
     # This gets overridden if the controller uses different action verbs
     # See Routes: https://docs.opnsense.org/development/api/core/routes.html
     class ItemActions(Enum):

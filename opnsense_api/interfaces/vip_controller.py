@@ -3,9 +3,9 @@ from typing import Union
 
 from pydantic import constr, conint, validator, SecretStr, root_validator, Field
 
-from ..util.applicable_item_controller import OPNSenseApplicableItemController
+from ..util.applicable_item_controller import OPNsenseApplicableItemController
 from ..util.exceptions import InvalidItemException
-from ..util.item_controller import OPNSenseItem
+from ..util.item_controller import OPNsenseItem
 from ..util.parse import parse_selected_keys, parse_int
 
 
@@ -24,7 +24,7 @@ VIP_LONG_NAME_TO_MODE_DICT: dict[str, VIPMode] = {
 }
 
 
-class VIP(OPNSenseItem):
+class VIP(OPNsenseItem):
     interface: constr(to_lower=True) = "wan"
     mode: VIPMode = VIPMode.IPALIAS
     subnet: str
@@ -74,7 +74,7 @@ class VIP(OPNSenseItem):
         return v
 
     @classmethod
-    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNSenseItem:
+    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
         return VIP(
             uuid=uuid,
             interface=parse_selected_keys(api_response["interface"])[0],
@@ -92,11 +92,11 @@ class VIP(OPNSenseItem):
         )
 
     @classmethod
-    def from_api_response_list(cls, api_response: dict, **kwargs) -> OPNSenseItem:
+    def from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
         raise NotImplementedError("This method is not implemented!")
 
 
-class VIPController(OPNSenseApplicableItemController[VIP]):
+class VIPController(OPNsenseApplicableItemController[VIP]):
 
     @property
     def opnsense_item_class(self) -> type[VIP]:

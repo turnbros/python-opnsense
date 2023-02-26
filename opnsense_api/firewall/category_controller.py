@@ -3,10 +3,10 @@ import re
 from pydantic import constr, validator
 
 from opnsense_api.util.exceptions import InvalidItemException
-from opnsense_api.util.item_controller import OPNSenseItem, OPNSenseItemController
+from opnsense_api.util.item_controller import OPNsenseItem, OPNsenseItemController
 
 
-class Category(OPNSenseItem):
+class Category(OPNsenseItem):
     name: str
     auto: bool = True
     color: constr(to_lower=True, max_length=6) = ""
@@ -20,15 +20,15 @@ class Category(OPNSenseItem):
         return value
 
     @classmethod
-    def from_api_response_list(cls, api_response: dict, **kwargs) -> OPNSenseItem:
+    def from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
         return Category.parse_obj(api_response)
 
     @classmethod
-    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNSenseItem:
+    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
         return Category.parse_obj({"uuid": uuid} | api_response)
 
 
-class CategoryController(OPNSenseItemController[Category]):
+class CategoryController(OPNsenseItemController[Category]):
 
     def __init__(self, device):
         super().__init__(device, "firewall", "category")

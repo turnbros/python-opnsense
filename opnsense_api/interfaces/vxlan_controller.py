@@ -2,11 +2,12 @@ from typing import Union
 
 from pydantic import conint, Field
 
-from ..util.item_controller import OPNSenseItemController, OPNSenseItem
+from ..util.applicable_item_controller import OPNsenseApplicableItemController
+from ..util.item_controller import OPNsenseItem
 from ..util.parse import parse_selected_keys
 
 
-class VXLAN(OPNSenseItem):
+class VXLAN(OPNsenseItem):
     deviceId: Union[int, None] = None
     device: str = Field(default="", alias="vxlandev")
     multicast_group: str = Field(default="", alias="vxlangroup")
@@ -15,7 +16,7 @@ class VXLAN(OPNSenseItem):
     remote: str = Field(default="", alias="vxlanremote")
 
     @classmethod
-    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNSenseItem:
+    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
         return VXLAN(
             uuid=uuid,
             deviceId=int(api_response["deviceId"]),
@@ -27,11 +28,11 @@ class VXLAN(OPNSenseItem):
         )
 
     @classmethod
-    def from_api_response_list(cls, api_response: dict, **kwargs) -> OPNSenseItem:
+    def from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
         return VXLAN.parse_obj(api_response)
 
 
-class VXLANController(OPNSenseItemController[VXLAN]):
+class VXLANController(OPNsenseApplicableItemController[VXLAN]):
 
     @property
     def opnsense_item_class(self) -> type[VXLAN]:

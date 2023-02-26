@@ -2,7 +2,7 @@ from enum import Enum
 
 from pydantic import constr, conint, Field
 
-from ..util.item_controller import OPNSenseItemController, OPNSenseItem
+from ..util.item_controller import OPNsenseItemController, OPNsenseItem
 from ..util.parse import parse_selected_keys
 
 
@@ -29,7 +29,7 @@ VLAN_LONG_NAME_TO_PRIORITY_DICT: dict[str, VLANPriority] = {
 }
 
 
-class VLAN(OPNSenseItem):
+class VLAN(OPNsenseItem):
     device: str = Field(default="", alias="vlanif")
     parent: constr(to_lower=True, min_length=1) = Field(alias="if")
     tag: conint(gt=0, lt=4095, strict=True)
@@ -37,7 +37,7 @@ class VLAN(OPNSenseItem):
     description: str = Field(default="", alias="descr")
 
     @classmethod
-    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNSenseItem:
+    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
         return VLAN(
             uuid=uuid,
             vlanif=api_response["vlanif"],
@@ -48,7 +48,7 @@ class VLAN(OPNSenseItem):
         )
 
     @classmethod
-    def from_api_response_list(cls, api_response: dict, **kwargs) -> OPNSenseItem:
+    def from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
         return VLAN(
             uuid=api_response["uuid"],
             vlanif=api_response["vlanif"],
@@ -59,7 +59,7 @@ class VLAN(OPNSenseItem):
         )
 
 
-class VLANController(OPNSenseItemController[VLAN]):
+class VLANController(OPNsenseItemController[VLAN]):
 
     def __init__(self, device):
         super().__init__(device, "interfaces", "vlan_settings")

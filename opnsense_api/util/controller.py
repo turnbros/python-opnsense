@@ -5,7 +5,7 @@ from typing import Optional
 log = logging.getLogger(__name__)
 
 
-class OPNSenseAPIController:
+class OPNsenseAPIController:
     def __init__(self, device, module: str, controller: str):
         self._device = device
         self._module = module

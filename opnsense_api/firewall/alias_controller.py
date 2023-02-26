@@ -6,8 +6,8 @@ from typing import Optional, Union
 from pydantic import constr
 
 from opnsense_api.util import ProtocolType
-from opnsense_api.util.applicable_item_controller import OPNSenseApplicableItemController
-from opnsense_api.util.item_controller import OPNSenseItem
+from opnsense_api.util.applicable_item_controller import OPNsenseApplicableItemController
+from opnsense_api.util.item_controller import OPNsenseItem
 from opnsense_api.util.parse import parse_selected_enum, parse_selected_keys
 
 
@@ -42,7 +42,7 @@ ALIAS_LONG_NAME_TO_TYPE_DICT: dict[str, AliasType] = {
 }
 
 
-class Alias(OPNSenseItem):
+class Alias(OPNsenseItem):
     name: constr(min_length=1, max_length=32, strip_whitespace=True, regex=r"^[a-zA-Z0-9_]*$")
     type: AliasType
     description: Union[None, constr(min_length=0, max_length=255)] = None
@@ -84,7 +84,7 @@ class Alias(OPNSenseItem):
         )
 
 
-class FirewallAliasController(OPNSenseApplicableItemController[Alias]):
+class FirewallAliasController(OPNsenseApplicableItemController[Alias]):
     class ItemActions(Enum):
         search = "searchItem"
         get = "getItem"

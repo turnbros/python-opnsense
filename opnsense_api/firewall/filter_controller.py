@@ -5,9 +5,9 @@ from typing import Optional, List, Union
 
 from pydantic import constr, conint, root_validator, validator, conlist
 
-from opnsense_api.util.applicable_item_controller import OPNSenseApplicableItemController
+from opnsense_api.util.applicable_item_controller import OPNsenseApplicableItemController
 from opnsense_api.util.exceptions import InvalidItemException, FailedToApplyChangesException
-from opnsense_api.util.item_controller import OPNSenseItem
+from opnsense_api.util.item_controller import OPNsenseItem
 from opnsense_api.util.parse import parse_selected_keys
 
 """
@@ -15,7 +15,7 @@ This requires the os-firewall plugin to be installed.
 """
 
 
-class FilterRule(OPNSenseItem):
+class FilterRule(OPNsenseItem):
     enabled: bool = True
     sequence: conint(gt=0, lt=100000)
     description: Union[None, constr(min_length=0, max_length=255)] = None
@@ -68,7 +68,7 @@ class FilterRule(OPNSenseItem):
         return v
 
     @classmethod
-    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNSenseItem:
+    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
         return FilterRule(
             uuid=uuid,
             sequence=int(api_response['sequence']),
@@ -92,14 +92,14 @@ class FilterRule(OPNSenseItem):
         )
 
     @classmethod
-    def from_api_response_list(cls, api_response: dict, uuid: Optional[str] = None, **kwargs) -> OPNSenseItem:
+    def from_api_response_list(cls, api_response: dict, uuid: Optional[str] = None, **kwargs) -> OPNsenseItem:
         raise NotImplementedError("This method is not implemented!")
 
     def get_api_name(self):
         return "rule"
 
 
-class FilterController(OPNSenseApplicableItemController[FilterRule]):
+class FilterController(OPNsenseApplicableItemController[FilterRule]):
     class ItemActions(Enum):
         search = "searchRule"
         get = "getRule"

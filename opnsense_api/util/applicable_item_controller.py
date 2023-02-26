@@ -2,10 +2,10 @@ from abc import ABC
 from enum import Enum
 
 from opnsense_api.util.exceptions import FailedToApplyChangesException
-from opnsense_api.util.item_controller import OPNSenseItemController, TOPNSenseItem
+from opnsense_api.util.item_controller import OPNsenseItemController, TOPNSenseItem
 
 
-class OPNSenseApplicableItemController(OPNSenseItemController[TOPNSenseItem], ABC):
+class OPNsenseApplicableItemController(OPNsenseItemController[TOPNSenseItem], ABC):
     """
     Controller for OPNSense items that have an apply action.
     """
