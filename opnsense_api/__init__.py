@@ -7,6 +7,7 @@ import http.client
 import logging
 from base64 import b64encode
 
+from opnsense_api.diagnostics import Diagnostics
 from opnsense_api.firewall import Firewall
 from opnsense_api.unbound import Unbound
 from opnsense_api.interfaces import Interfaces
@@ -111,6 +112,10 @@ class Opnsense(object):
             raise Exception(json.dumps(exception_message))
 
         return json.loads(query_response.read())
+
+    @property
+    def diagnostics(self) -> Diagnostics:
+        return Diagnostics(self)
 
     @property
     def firewall(self) -> Firewall:
