@@ -20,11 +20,11 @@ class Category(OPNsenseItem):
         return value
 
     @classmethod
-    def from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
+    def _from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
         return Category.parse_obj(api_response)
 
     @classmethod
-    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
+    def _from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
         return Category.parse_obj({"uuid": uuid} | api_response)
 
 

@@ -32,7 +32,7 @@ class OPNsenseItem(BaseModel, ABC):
 
     @classmethod
     @abstractmethod
-    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
+    def _from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
         """
         Parses the Item from the API response to getItem
         :param api_response: API response to getItem
@@ -43,7 +43,7 @@ class OPNsenseItem(BaseModel, ABC):
 
     @classmethod
     @abstractmethod
-    def from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
+    def _from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
         """
         Parses the Item from the API response to list
         :param api_response: API response to list
@@ -51,30 +51,30 @@ class OPNsenseItem(BaseModel, ABC):
         """
         raise NotImplementedError("This method needs to be implemented!")
 
-    def get_api_name(self):
+    def _get_api_name(self):
         return type(self).__name__.lower()
 
     @staticmethod
-    def _strip_none_fields(dictionary: dict) -> dict:
+    def __strip_none_fields(dictionary: dict) -> dict:
         return {k: v for k, v in dictionary.items() if v is not None}
 
     @staticmethod
-    def _replace_booleans_with_numbers(dictionary: dict):
+    def __replace_booleans_with_numbers(dictionary: dict):
         for k, v in dictionary.items():
             if isinstance(v, bool):
                 dictionary[k] = "1" if v else "0"
         return dictionary
 
     @staticmethod
-    def _replace_ints_with_strings(dictionary: dict):
+    def __replace_ints_with_strings(dictionary: dict):
         return {k: str(v) if isinstance(v, int) else v for k, v in dictionary.items()}
 
     @staticmethod
-    def _replace_lists(dictionary: dict):
+    def __replace_lists(dictionary: dict):
         return {k: str.join('\n', v) if isinstance(v, list) else v for k, v in dictionary.items()}
 
     @staticmethod
-    def _replace_enums_with_values(dictionary: dict):
+    def __replace_enums_with_values(dictionary: dict):
         return {k: v.value if isinstance(v, Enum) else v for k, v in dictionary.items()}
 
     def get_api_representation(self) -> dict:
@@ -83,12 +83,12 @@ class OPNsenseItem(BaseModel, ABC):
         :return: the items dictionary representation as the OPNSense API understands it when setting or adding.
         """
         return {
-            self.get_api_name():
-                self._replace_ints_with_strings(
-                    self._replace_booleans_with_numbers(
-                        self._replace_lists(
-                            self._replace_enums_with_values(
-                                self._strip_none_fields(self.dict(by_alias=True))
+            self._get_api_name():
+                self.__replace_ints_with_strings(
+                    self.__replace_booleans_with_numbers(
+                        self.__replace_lists(
+                            self.__replace_enums_with_values(
+                                self.__strip_none_fields(self.dict(by_alias=True))
                             )
                         )
                     )

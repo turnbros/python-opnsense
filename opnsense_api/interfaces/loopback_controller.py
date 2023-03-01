@@ -9,14 +9,14 @@ class LoopbackInterface(OPNsenseItem):
     deviceId: int
 
     @classmethod
-    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
+    def _from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
         return LoopbackInterface.parse_obj({"uuid": uuid} | api_response)
 
     @classmethod
-    def from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
+    def _from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
         return LoopbackInterface.parse_obj(api_response)
 
-    def get_api_name(self):
+    def _get_api_name(self):
         return "loopback"
 
 

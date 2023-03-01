@@ -54,7 +54,7 @@ class Alias(OPNsenseItem):
     categories_uuids: list[str] = []
 
     @classmethod
-    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> Alias:
+    def _from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> Alias:
         return Alias(
             uuid=uuid,
             name=api_response['name'],
@@ -69,7 +69,7 @@ class Alias(OPNsenseItem):
         )
 
     @classmethod
-    def from_api_response_list(cls, api_response: dict, **kwargs) -> Alias:
+    def _from_api_response_list(cls, api_response: dict, **kwargs) -> Alias:
         return Alias(
             uuid=api_response['uuid'],
             name=api_response['name'],

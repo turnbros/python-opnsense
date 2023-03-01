@@ -74,7 +74,7 @@ class VIP(OPNsenseItem):
         return v
 
     @classmethod
-    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
+    def _from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
         return VIP(
             uuid=uuid,
             interface=parse_selected_keys(api_response["interface"])[0],
@@ -92,7 +92,7 @@ class VIP(OPNsenseItem):
         )
 
     @classmethod
-    def from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
+    def _from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
         raise NotImplementedError("This method is not implemented!")
 
 

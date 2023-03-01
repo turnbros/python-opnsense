@@ -68,7 +68,7 @@ class FilterRule(OPNsenseItem):
         return v
 
     @classmethod
-    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
+    def _from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
         return FilterRule(
             uuid=uuid,
             sequence=int(api_response['sequence']),
@@ -92,10 +92,10 @@ class FilterRule(OPNsenseItem):
         )
 
     @classmethod
-    def from_api_response_list(cls, api_response: dict, uuid: Optional[str] = None, **kwargs) -> OPNsenseItem:
+    def _from_api_response_list(cls, api_response: dict, uuid: Optional[str] = None, **kwargs) -> OPNsenseItem:
         raise NotImplementedError("This method is not implemented!")
 
-    def get_api_name(self):
+    def _get_api_name(self):
         return "rule"
 
 

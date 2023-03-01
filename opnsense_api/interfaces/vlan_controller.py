@@ -37,7 +37,7 @@ class VLAN(OPNsenseItem):
     description: str = Field(default="", alias="descr")
 
     @classmethod
-    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
+    def _from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
         return VLAN(
             uuid=uuid,
             vlanif=api_response["vlanif"],
@@ -48,7 +48,7 @@ class VLAN(OPNsenseItem):
         )
 
     @classmethod
-    def from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
+    def _from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
         return VLAN(
             uuid=api_response["uuid"],
             vlanif=api_response["vlanif"],

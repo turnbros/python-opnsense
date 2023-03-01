@@ -16,7 +16,7 @@ class VXLAN(OPNsenseItem):
     remote: str = Field(default="", alias="vxlanremote")
 
     @classmethod
-    def from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
+    def _from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
         return VXLAN(
             uuid=uuid,
             deviceId=int(api_response["deviceId"]),
@@ -28,7 +28,7 @@ class VXLAN(OPNsenseItem):
         )
 
     @classmethod
-    def from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
+    def _from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
         return VXLAN.parse_obj(api_response)
 
 
