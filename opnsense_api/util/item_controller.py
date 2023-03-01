@@ -95,18 +95,6 @@ class OPNsenseItem(BaseModel, ABC):
                 )
         }
 
-    # TODO: figure out if this is still needed
-    # def to_dict(self):
-    #     opnsense_item = asdict(self)
-    #     opnsense_item_dict = {}
-    #     for field in fields(self):
-    #         opnsense_item_dict[field.metadata.get("json_name", field.name)] = opnsense_item.get(field.name)
-
-    #     return opnsense_item_dict
-
-    # def to_json(self):
-    #     return json.dumps(self.to_dict())
-
 
 class OPNsenseItemController(Generic[TOPNSenseItem], OPNsenseAPIController, ABC):
     # This gets overridden if the controller uses different action verbs
