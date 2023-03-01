@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional, List, Union
+from typing import List, Union
 
 from pydantic import constr, conint, root_validator, validator, conlist
 
@@ -92,7 +92,7 @@ class FilterRule(OPNsenseItem):
         )
 
     @classmethod
-    def _from_api_response_list(cls, api_response: dict, uuid: Optional[str] = None, **kwargs) -> OPNsenseItem:
+    def _from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
         raise NotImplementedError("This method is not implemented!")
 
     def _get_api_name(self):
