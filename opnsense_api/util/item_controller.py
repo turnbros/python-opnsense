@@ -128,7 +128,7 @@ class OPNsenseItemController(Generic[TOPNSenseItem], OPNsenseAPIController, ABC)
         :rtype List[T]:
         """
         query_response = self._api_post(self.ItemActions.search.value)
-        return [self.opnsense_item_class.from_api_response_list(item) for item in query_response.get('rows')]
+        return [self.opnsense_item_class._from_api_response_list(item) for item in query_response.get('rows')]
 
     def get(self, uuid: str) -> TOPNSenseItem:
         """
@@ -140,7 +140,7 @@ class OPNsenseItemController(Generic[TOPNSenseItem], OPNsenseAPIController, ABC)
         query_response = self._api_get(self.ItemActions.get.value, uuid)
         if len(query_response.values()) != 1:
             raise ItemNotFoundException(self.opnsense_item_class.__name__, uuid, query_response)
-        return self.opnsense_item_class.from_api_response_get(list(query_response.values())[0], uuid=uuid)
+        return self.opnsense_item_class._from_api_response_get(list(query_response.values())[0], uuid=uuid)
 
     def delete(self, item: TOPNSenseItem) -> None:
         """
