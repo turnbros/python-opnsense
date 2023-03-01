@@ -2,10 +2,10 @@ from abc import ABC
 from enum import Enum
 
 from opnsense_api.util.exceptions import FailedToApplyChangesException
-from opnsense_api.util.item_controller import OPNsenseItemController, TOPNSenseItem
+from opnsense_api.util.item_controller import OPNsenseItemController, TOPNsenseItem
 
 
-class OPNsenseApplicableItemController(OPNsenseItemController[TOPNSenseItem], ABC):
+class OPNsenseApplicableItemController(OPNsenseItemController[TOPNsenseItem], ABC):
     """
     Controller for OPNSense items that have an apply action.
     """
@@ -18,15 +18,15 @@ class OPNsenseApplicableItemController(OPNsenseItemController[TOPNSenseItem], AB
         delete = "delItem"
         apply = "reconfigure"
 
-    def add(self, item: TOPNSenseItem) -> None:
+    def add(self, item: TOPNsenseItem) -> None:
         super().add(item)
         self.apply_changes()
 
-    def set(self, item: TOPNSenseItem) -> None:
+    def set(self, item: TOPNsenseItem) -> None:
         super().set(item)
         self.apply_changes()
 
-    def delete(self, item: TOPNSenseItem) -> None:
+    def delete(self, item: TOPNsenseItem) -> None:
         super().delete(item)
         self.apply_changes()
 

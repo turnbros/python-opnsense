@@ -10,7 +10,7 @@ from .controller import OPNsenseAPIController
 from .exceptions import FailedToDeleteException, ItemNotFoundException, FailedToSetItemException, \
     FailedToAddItemException, InvalidItemException
 
-TOPNSenseItem = TypeVar('TOPNSenseItem', bound='OPNSenseItem')
+TOPNsenseItem = TypeVar('TOPNsenseItem', bound='OPNSenseItem')
 
 
 class OPNsenseItem(BaseModel, ABC):
@@ -96,7 +96,7 @@ class OPNsenseItem(BaseModel, ABC):
         }
 
 
-class OPNsenseItemController(Generic[TOPNSenseItem], OPNsenseAPIController, ABC):
+class OPNsenseItemController(Generic[TOPNsenseItem], OPNsenseAPIController, ABC):
     # This gets overridden if the controller uses different action verbs
     # See Routes: https://docs.opnsense.org/development/api/core/routes.html
     class ItemActions(Enum):
@@ -110,7 +110,7 @@ class OPNsenseItemController(Generic[TOPNSenseItem], OPNsenseAPIController, ABC)
 
     @property
     @abstractmethod
-    def opnsense_item_class(self) -> type[TOPNSenseItem]:
+    def opnsense_item_class(self) -> type[TOPNsenseItem]:
         """
         :return: the class of the implementation of OPNSenseItem this class controls.
         """
@@ -120,7 +120,7 @@ class OPNsenseItemController(Generic[TOPNSenseItem], OPNsenseAPIController, ABC)
     def __init__(self, device, module: str, controller: str):
         super().__init__(device, module, controller)
 
-    def list(self) -> List[TOPNSenseItem]:
+    def list(self) -> List[TOPNsenseItem]:
         """
         Returns a list of items.
 
@@ -130,7 +130,7 @@ class OPNsenseItemController(Generic[TOPNSenseItem], OPNsenseAPIController, ABC)
         query_response = self._api_post(self.ItemActions.search.value)
         return [self.opnsense_item_class._from_api_response_list(item) for item in query_response.get('rows')]
 
-    def get(self, uuid: str) -> TOPNSenseItem:
+    def get(self, uuid: str) -> TOPNsenseItem:
         """
         Gets a specific item
 
@@ -142,7 +142,7 @@ class OPNsenseItemController(Generic[TOPNSenseItem], OPNsenseAPIController, ABC)
             raise ItemNotFoundException(self.opnsense_item_class.__name__, uuid, query_response)
         return self.opnsense_item_class._from_api_response_get(list(query_response.values())[0], uuid=uuid)
 
-    def delete(self, item: TOPNSenseItem) -> None:
+    def delete(self, item: TOPNsenseItem) -> None:
         """
         Deletes the item
 
@@ -152,7 +152,7 @@ class OPNsenseItemController(Generic[TOPNSenseItem], OPNsenseAPIController, ABC)
         if query_response['result'] != "deleted":
             raise FailedToDeleteException(self.opnsense_item_class.__name__, item.uuid, query_response)
 
-    def add(self, item: TOPNSenseItem) -> None:
+    def add(self, item: TOPNsenseItem) -> None:
         """
         Adds the item to the OPNSense and saves the items UUID in the parameter item
         :param item: Will be created on the OPNSense and UUID will be updated after creation
@@ -163,7 +163,7 @@ class OPNsenseItemController(Generic[TOPNSenseItem], OPNsenseAPIController, ABC)
             raise FailedToAddItemException(self.opnsense_item_class.__name__, item.uuid, query_response)
         item.uuid = query_response['uuid']
 
-    def set(self, item: TOPNSenseItem) -> None:
+    def set(self, item: TOPNsenseItem) -> None:
         """
         Updates the items state in the OPNSense
 
