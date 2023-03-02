@@ -55,10 +55,6 @@ class OPNsenseItem(BaseModel, ABC):
         return type(self).__name__.lower()
 
     @staticmethod
-    def __strip_none_fields(dictionary: dict) -> dict:
-        return {k: v for k, v in dictionary.items() if v is not None}
-
-    @staticmethod
     def __replace_booleans_with_numbers(dictionary: dict):
         for k, v in dictionary.items():
             if isinstance(v, bool):
@@ -88,7 +84,7 @@ class OPNsenseItem(BaseModel, ABC):
                     self.__replace_booleans_with_numbers(
                         self.__replace_lists(
                             self.__replace_enums_with_values(
-                                self.__strip_none_fields(self.dict(by_alias=True))
+                                self.dict(by_alias=True, exclude_none=True)
                             )
                         )
                     )
