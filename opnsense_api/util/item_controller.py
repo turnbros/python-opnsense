@@ -25,8 +25,6 @@ class OPNsenseItem(BaseModel, ABC):
 
     uuid: Union[str, None]
 
-    # So my IDE stops screaming at me about unexpected arguments whenever I want to instantiate a subclass with more
-    # than just uuid.
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
