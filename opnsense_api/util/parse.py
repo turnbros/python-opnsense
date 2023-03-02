@@ -13,17 +13,14 @@ def parse_int(api_response_part: str) -> Union[int, None]:
     return int(api_response_part) if api_response_part else None
 
 
-def parse_selected_enum(api_response: dict,
-                        search_str: str,
-                        enum: Type[Enum]) -> Enum | None:
+def parse_selected_enum(api_response_part: dict, enum: Type[Enum]) -> Enum | None:
     """
     Used during parsing of an item.
-    :param api_response: response from the OPNSense
-    :param search_str: What key to search for in the api_response
+    :param api_response_part: response part to search in
     :param enum: Enum that return value should belong to
     :return: enum that match the api_response_part and has 'selected' set to true
     """
-    for key, val in api_response[search_str].items():
+    for key, val in api_response_part.items():
         if bool(val['selected']):
             return enum[key.upper()]
     return None

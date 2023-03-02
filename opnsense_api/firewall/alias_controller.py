@@ -62,7 +62,7 @@ class Alias(OPNsenseItem):
             description=api_response['description'],
             updatefreq=api_response['updatefreq'],
             counters=api_response['counters'],
-            proto=parse_selected_enum(api_response, 'proto', ProtocolType),
+            proto=parse_selected_enum(api_response['proto'], ProtocolType),
             content=parse_selected_keys(api_response['content']),
             enabled=bool(int(api_response['enabled'])),
             categories_uuids=parse_selected_keys(api_response['categories'])
