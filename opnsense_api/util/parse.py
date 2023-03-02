@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Type, Union
+from typing import Type, Optional
 
 
-def parse_int(api_response_part: str) -> Union[int, None]:
+def parse_int(api_response_part: str) -> Optional[int]:
     """
     Used during parsing of an item
     :param api_response_part: value of api response that is to be parsed to int

@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Union
+from typing import Optional
 
 from pydantic import constr, conint, validator, SecretStr, root_validator, Field
 
@@ -29,7 +29,7 @@ class VIP(OPNsenseItem):
     mode: VIPMode = VIPMode.IPALIAS
     subnet: str
     subnet_bits: conint(lt=33)
-    vhid: Union[conint(gt=0, lt=256), None] = None
+    vhid: Optional[conint(gt=0, lt=256)] = None
     advbase: conint(gt=0, lt=255) = 1
     advskew: conint(gt=-1, lt=255) = 0
     description: str = Field(default="", alias="descr")

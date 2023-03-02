@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import List, Union
+from typing import List, Optional
 
 from pydantic import constr, conint, root_validator, validator, conlist
 
@@ -18,7 +18,7 @@ This requires the os-firewall plugin to be installed.
 class FilterRule(OPNsenseItem):
     enabled: bool = True
     sequence: conint(gt=0, lt=100000)
-    description: Union[None, constr(min_length=0, max_length=255)] = None
+    description: Optional[constr(min_length=0, max_length=255)] = None
     action: constr(to_lower=True) = "pass"
     quick: bool = True
     interface: conlist(item_type=str, min_items=1, unique_items=True) = ["lan"]
@@ -27,10 +27,10 @@ class FilterRule(OPNsenseItem):
     protocol: constr(to_lower=True) = "any"
     source_net: constr(min_length=1, max_length=32) = "any"  # max length from alias name max length
     source_not: bool = False
-    source_port: Union[str, None] = None
+    source_port: Optional[str] = None
     destination_net: constr(min_length=1, max_length=32) = "any"  # max length from alias name max length
     destination_not: bool = False
-    destination_port: Union[str, None] = None
+    destination_port: Optional[str] = None
     gateway: constr(to_lower=True) = ""
     log: bool = False
 

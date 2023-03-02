@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional, Union
+from typing import Optional
 
 from pydantic import constr
 
@@ -45,10 +45,10 @@ ALIAS_LONG_NAME_TO_TYPE_DICT: dict[str, AliasType] = {
 class Alias(OPNsenseItem):
     name: constr(min_length=1, max_length=32, strip_whitespace=True, regex=r"^[a-zA-Z0-9_]*$")
     type: AliasType
-    description: Union[None, constr(min_length=0, max_length=255)] = None
-    updatefreq: Union[str, None]
-    counters: Union[str, None]
-    proto: Union[ProtocolType, None] = None
+    description: Optional[constr(min_length=0, max_length=255)] = None
+    updatefreq: Optional[str]
+    counters: Optional[str]
+    proto: Optional[ProtocolType] = None
     content: Optional[list[str]] = None
     enabled: bool = True
     categories_uuids: list[str] = []
@@ -101,6 +101,6 @@ class FirewallAliasController(OPNsenseApplicableItemController[Alias]):
     def __init__(self, device):
         super().__init__(device, "firewall", "alias")
 
-    def get_uuid(self, name: str) -> Union[str, None]:
+    def get_uuid(self, name: str) -> Optional[str]:
         query_response = self._api_get(self.ItemActions.get_uuid.value, name)
         return query_response.get('uuid')

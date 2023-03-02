@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import abstractmethod, ABC
 from enum import Enum
-from typing import List, TypeVar, Generic, Union
+from typing import List, TypeVar, Generic, Optional
 
 from pydantic import BaseModel
 
@@ -23,7 +23,7 @@ class OPNsenseItem(BaseModel, ABC):
         validate_assignment = True
         allow_population_by_field_name = True
 
-    uuid: Union[str, None]
+    uuid: Optional[str]
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

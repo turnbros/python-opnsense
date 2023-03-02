@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Optional
 
 from pydantic import conint, Field
 
@@ -8,7 +8,7 @@ from ..util.parse import parse_selected_keys
 
 
 class VXLAN(OPNsenseItem):
-    deviceId: Union[int, None] = None
+    deviceId: Optional[int] = None
     device: str = Field(default="", alias="vxlandev")
     multicast_group: str = Field(default="", alias="vxlangroup")
     vni: conint(gt=-1, lt=16777216) = Field(alias="vxlanid")
