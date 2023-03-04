@@ -1,82 +1,61 @@
-import logging
+from enum import Enum
+from typing import List, Union
 
-from .controller import UnboundResource
-from .util import format_request, HostAlias
+from pydantic import Field
 
-log = logging.getLogger(__name__)
+from .host_controller import HostOverride
+from .resource_controller import UnboundResourceController
+from ..util.item_controller import OPNsenseItem
+from ..util.parse import parse_selected_keys
 
 
-class Alias(UnboundResource[HostAlias]):
+class HostAlias(OPNsenseItem):
+    enabled: bool = True
+    hostname: str
+    domain: str
+    host: Union[HostOverride, str] = Field(exclude=True)
+    description: str = ""
 
-    def __init__(self, device):
-        super().__init__(device, "alias")
+    def _get_api_name(self):
+        return "alias"
 
-    def add(self,
-            name: str,
-            domain: str,
-            host_uuid: str,
-            description: str = "",
-            enabled: bool = True,
-            ) -> HostAlias:
-        """
-    Adds a new alias to an existing host.
-
-    :param name: The name of the alias. In the UI this is the `host` field.
-    :param domain: A domain for the alias.
-    :param host_uuid: The UUID of the host this alias will be associated with.
-    :param description: A description for this host alias.
-    :param enabled: Whether the alias is enabled.
-    :return: HostAlias
-    """
-        request_body = {
-            "alias": {
-                "hostname": name,
-                "domain": domain,
-                "host": host_uuid,
-                "description": description,
-                "enabled": str(int(enabled))
-            }
-        }
-        request_base = format_request(self._module, self._controller, "addHostAlias")
-        response = self._device._authenticated_request("POST", request_base, body=request_body)
-        if response['result'] == "saved":
-            self.apply_changes()
-            return self.get(response['uuid'])
+    def _get_api_representation(self) -> dict:
+        d = super()._get_api_representation()
+        if isinstance(self.host, str):
+            d[self._get_api_name()] |= {"host": self.host}
         else:
-            raise Exception(f"Failed to add host alias. Reason: {response}")
+            d[self._get_api_name()] |= {"host": self.host.uuid}
+        return d
 
-    def set(self,
-            uuid: str,
-            name: str,
-            domain: str,
-            host_uuid: str,
-            description: str = "",
-            enabled: bool = True,
-            ) -> HostAlias:
-        """
-    Updates an existing HostAlias.
+    @classmethod
+    def _from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
+        return HostAlias(
+            uuid=uuid,
+            enabled=bool(int(api_response["enabled"])),
+            host=parse_selected_keys(api_response["host"])[0],
+            hostname=api_response["hostname"],
+            domain=api_response["domain"],
+            description=api_response["description"]
+        )
 
-    :param uuid: The UUID of the alias. This is generated when the alias is created.
-    :param name: The name of the alias. In the UI this is the `host` field.
-    :param domain: A domain for the alias.
-    :param host_uuid: The UUID of the host this alias will be associated with.
-    :param description: A description for this host alias.
-    :param enabled: Whether the alias is enabled.
-    :return: HostAlias
-    """
-        request_body = {
-            "alias": {
-                "hostname": name,
-                "domain": domain,
-                "host": host_uuid,
-                "description": description,
-                "enabled": str(int(enabled))
-            }
-        }
-        request_base = format_request(self._module, self._controller, "setHostAlias", uuid)
-        response = self._device._authenticated_request("POST", request_base, body=request_body)
-        if response['result'] == "saved":
-            self.apply_changes()
-            return self.get(uuid)
-        else:
-            raise Exception(f"Failed to update host alias. Reason: {response}")
+    @classmethod
+    def _from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
+        raise NotImplementedError("This method is not implemented!")
+
+
+class AliasController(UnboundResourceController[HostAlias]):
+    class ItemActions(Enum):
+        search = "searchHostAlias"
+        get = "getHostAlias"
+        add = "addHostAlias"
+        set = "setHostAlias"
+        delete = "delHostAlias"
+        apply = "reconfigure"
+
+    @property
+    def opnsense_item_class(self) -> type[HostAlias]:
+        return HostAlias
+
+    def list(self) -> List[HostAlias]:
+        query_response = self._api_post(self.ItemActions.search.value)
+        return [self.get(row["uuid"]) for row in query_response.get('rows')]

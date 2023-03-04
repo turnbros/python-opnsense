@@ -17,6 +17,21 @@ class FailedToApplyChangesException(Exception):
         super().__init__(msg)
 
 
+class FailedToRestartException(Exception):
+    def __init__(self, msg: str):
+        super().__init__(msg)
+
+
+class FailedToStartException(Exception):
+    def __init__(self, msg: str):
+        super().__init__(msg)
+
+
+class FailedToStopException(Exception):
+    def __init__(self, msg: str):
+        super().__init__(msg)
+
+
 class ItemNotFoundException(Exception):
     def __init__(self, class_name: str, uuid: Optional[str], query_response: dict):
         super().__init__(f"Could not find {class_name} with UUID {uuid} with reason: {query_response}")
