@@ -71,7 +71,7 @@ class OPNsenseItem(BaseModel, ABC):
     def __replace_enums_with_values(dictionary: dict):
         return {k: v.value if isinstance(v, Enum) else v for k, v in dictionary.items()}
 
-    def get_api_representation(self) -> dict:
+    def _get_api_representation(self) -> dict:
         """
 
         :return: the items dictionary representation as the OPNSense API understands it when setting or adding.
@@ -152,7 +152,7 @@ class OPNsenseItemController(Generic[TOPNsenseItem], OPNsenseAPIController, ABC)
         :param item: Will be created on the OPNSense and UUID will be updated after creation
         """
         query_response = self._api_post(self.ItemActions.add.value,
-                                        body=item.get_api_representation())
+                                        body=item._get_api_representation())
         if query_response['result'] != "saved":
             raise FailedToAddItemException(self.opnsense_item_class.__name__, item.uuid, query_response)
         item.uuid = query_response['uuid']
@@ -170,6 +170,6 @@ class OPNsenseItemController(Generic[TOPNsenseItem], OPNsenseAPIController, ABC)
         self.get(item.uuid)
 
         query_response = self._api_post(self.ItemActions.set.value, item.uuid,
-                                        body=item.get_api_representation())
+                                        body=item._get_api_representation())
         if query_response['result'] != "saved":
             raise FailedToSetItemException(self.opnsense_item_class.__name__, item.uuid, query_response)
