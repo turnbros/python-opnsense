@@ -38,8 +38,8 @@ class VIP(OPNsenseItem):
     nobind: bool = False
     password: SecretStr = SecretStr("")
 
-    def get_api_representation(self) -> dict:
-        d = super().get_api_representation()
+    def _get_api_representation(self) -> dict:
+        d = super()._get_api_representation()
         if d["vip"].get("password"):
             d["vip"]["password"] = d["vip"]["password"].get_secret_value()
         return d

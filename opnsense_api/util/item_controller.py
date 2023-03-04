@@ -29,7 +29,6 @@ class OPNsenseItem(BaseModel, ABC):
         super().__init__(**kwargs)
 
     @classmethod
-    @abstractmethod
     def _from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
         """
         Parses the Item from the API response to getItem
@@ -37,17 +36,16 @@ class OPNsenseItem(BaseModel, ABC):
         :param uuid: the UUID that was originally searched for, as it's often not part of the response
         :return: Item from API response
         """
-        raise NotImplementedError("This method needs to be implemented!")
+        return cls.parse_obj({"uuid": uuid} | api_response)
 
     @classmethod
-    @abstractmethod
     def _from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
         """
         Parses the Item from the API response to list
         :param api_response: API response to list
         :return: Item from API response
         """
-        raise NotImplementedError("This method needs to be implemented!")
+        return cls.parse_obj(api_response)
 
     def _get_api_name(self):
         return type(self).__name__.lower()

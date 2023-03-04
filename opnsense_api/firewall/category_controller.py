@@ -19,14 +19,6 @@ class Category(OPNsenseItem):
                                                                   "or a six character long hex string.")
         return value
 
-    @classmethod
-    def _from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
-        return Category.parse_obj(api_response)
-
-    @classmethod
-    def _from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
-        return Category.parse_obj({"uuid": uuid} | api_response)
-
 
 class CategoryController(OPNsenseItemController[Category]):
 

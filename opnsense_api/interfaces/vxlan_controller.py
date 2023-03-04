@@ -20,16 +20,12 @@ class VXLAN(OPNsenseItem):
         return VXLAN(
             uuid=uuid,
             deviceId=int(api_response["deviceId"]),
-            vxlandev=parse_selected_keys(api_response["vxlandev"]),
+            vxlandev=parse_selected_keys(api_response["vxlandev"])[0],
             vxlangroup=api_response["vxlangroup"],
             vxlanid=api_response["vxlanid"],
             vxlanlocal=api_response["vxlanlocal"],
             vxlanremote=api_response["vxlanremote"]
         )
-
-    @classmethod
-    def _from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
-        return VXLAN.parse_obj(api_response)
 
 
 class VXLANController(OPNsenseApplicableItemController[VXLAN]):
