@@ -70,4 +70,5 @@ class VLANController(OPNsenseItemController[VLAN]):
 
     def add(self, item: VLAN) -> None:
         super().add(item)
+        assert item.uuid
         item.device = self.get(item.uuid).device  # get item again so correct device is set

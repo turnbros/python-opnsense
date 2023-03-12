@@ -35,15 +35,17 @@ def test_host_controller():
     assert len(override_list) == 0
 
     # ADD: Create the host override
-    new_override = HostOverride(hostname="", domain=test_domain, server=domain_ip_override, rr=UnboundResourceRecord.A,
+    new_override = HostOverride(uuid=None, hostname="", domain=test_domain, server=domain_ip_override, rr=UnboundResourceRecord.A,
                                 description="test-override")
     host_overrides.add(new_override)
+    assert new_override.uuid
     assert host_overrides.get(new_override.uuid).enabled is True
     assert compare(query_opnsense_device_dns(test_domain, 'A'), [domain_ip_override])
 
     # TOGGLE: Make sure we can disable the override
     new_override.enabled = False
     host_overrides.set(new_override)
+    assert new_override.uuid
     assert host_overrides.get(new_override.uuid).enabled is False
     assert compare(query_opnsense_device_dns(test_domain, 'A'), domain_start_ip)
 
@@ -81,6 +83,7 @@ def test_alias_controller():
                                      rr=UnboundResourceRecord.A,
                                      description="test-override")
     host_overrides.add(new_host_override)
+    assert new_host_override.uuid
     assert host_overrides.get(new_host_override.uuid).enabled is True
     assert compare(query_opnsense_device_dns(test_domain, 'A'), [domain_ip_override])
 
@@ -96,6 +99,7 @@ def test_alias_controller():
 
     # SET: Test set by enabling the alias and updating the description without changes to the UUID
     old_alias_uuid = new_host_alias.uuid
+    assert old_alias_uuid
     new_host_alias.enabled = True
     new_host_alias.description = "test-alias-new"
     alias_overrides.set(new_host_alias)
