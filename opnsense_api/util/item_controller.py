@@ -10,7 +10,7 @@ from .controller import OPNsenseAPIController
 from .exceptions import FailedToDeleteException, ItemNotFoundException, FailedToSetItemException, \
     FailedToAddItemException, InvalidItemException
 
-TOPNsenseItem = TypeVar('TOPNsenseItem', bound='OPNSenseItem')
+TOPNsenseItem = TypeVar('TOPNsenseItem', bound='OPNsenseItem')
 
 
 class OPNsenseItem(BaseModel, ABC):
@@ -120,7 +120,7 @@ class OPNsenseItemController(Generic[TOPNsenseItem], OPNsenseAPIController, ABC)
         :rtype List[T]:
         """
         query_response = self._api_post(self.ItemActions.search.value)
-        return [self.opnsense_item_class._from_api_response_list(item) for item in query_response.get('rows')]
+        return [self.opnsense_item_class._from_api_response_list(item) for item in query_response.get('rows')]  # type: ignore
 
     def get(self, uuid: str) -> TOPNsenseItem:
         """
@@ -132,8 +132,7 @@ class OPNsenseItemController(Generic[TOPNsenseItem], OPNsenseAPIController, ABC)
         query_response = self._api_get(self.ItemActions.get.value, uuid)
         if len(query_response.values()) != 1:
             raise ItemNotFoundException(self.opnsense_item_class.__name__, uuid, query_response)
-        return self.opnsense_item_class._from_api_response_get(list(query_response.values())[0], uuid=uuid)
-
+        return self.opnsense_item_class._from_api_response_get(list(query_response.values())[0], uuid=uuid)  # type: ignore
     def delete(self, item: TOPNsenseItem) -> None:
         """
         Deletes the item
