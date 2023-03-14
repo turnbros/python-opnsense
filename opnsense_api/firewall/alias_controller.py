@@ -1,182 +1,106 @@
-from typing import Union
+from __future__ import annotations
 
-from deprecation import deprecated
+from enum import Enum
+from typing import Optional
 
-from opnsense_api.util import AliasType, ProtocolType
-from opnsense_api.util.parse import parse_query_response_alias
+from pydantic import constr
+
+from opnsense_api.util import ProtocolType
+from opnsense_api.util.applicable_item_controller import OPNsenseApplicableItemController
+from opnsense_api.util.item_controller import OPNsenseItem
+from opnsense_api.util.parse import parse_selected_enum, parse_selected_keys
 
 
-class Alias(object):
+class AliasType(Enum):
+    HOST = "host"
+    NETWORK = "network"
+    PORT = "port"
+    URL = "url"
+    URL_TABLE = "urltable"
+    GEO_IP = "geoip"
+    NETWORK_GROUP = "networkgroup"
+    MAC = "mac"
+    BGP_ASN = "asn"
+    DYNAMIC_IPV6_HOST = "dynipv6host"
+    INTERNAL = "internal"
+    EXTERNAL = "external"
+
+
+ALIAS_LONG_NAME_TO_TYPE_DICT: dict[str, AliasType] = {
+    "Host(s)": AliasType.HOST,
+    "Network(s)": AliasType.NETWORK,
+    "Port(s)": AliasType.PORT,
+    "URL (IPs)": AliasType.URL,
+    "URL Table (IPs)": AliasType.URL_TABLE,
+    "GeoIP": AliasType.GEO_IP,
+    "Network group": AliasType.NETWORK_GROUP,
+    "MAC address": AliasType.MAC,
+    "BGP ASN": AliasType.BGP_ASN,
+    "Dynamic IPv6 Host": AliasType.DYNAMIC_IPV6_HOST,
+    "Internal (automatic)": AliasType.INTERNAL,
+    "External (advanced)": AliasType.EXTERNAL
+}
+
+
+class Alias(OPNsenseItem):
+    name: constr(min_length=1, max_length=32, strip_whitespace=True, regex=r"^[a-zA-Z0-9_]*$")
+    type: AliasType
+    description: Optional[constr(min_length=0, max_length=255)] = None
+    updatefreq: Optional[str]
+    counters: Optional[str]
+    proto: Optional[ProtocolType] = None
+    content: Optional[list[str]] = None
+    enabled: bool = True
+    categories_uuids: list[str] = []
+
+    @classmethod
+    def _from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> Alias:
+        return Alias(
+            uuid=uuid,
+            name=api_response['name'],
+            type=AliasType(parse_selected_keys(api_response['type'])[0]),
+            description=api_response['description'],
+            updatefreq=api_response['updatefreq'],
+            counters=api_response['counters'],
+            proto=parse_selected_enum(api_response['proto'], ProtocolType),
+            content=parse_selected_keys(api_response['content']),
+            enabled=bool(int(api_response['enabled'])),
+            categories_uuids=parse_selected_keys(api_response['categories'])
+        )
+
+    @classmethod
+    def _from_api_response_list(cls, api_response: dict, **kwargs) -> Alias:
+        return Alias(
+            uuid=api_response['uuid'],
+            name=api_response['name'],
+            type=ALIAS_LONG_NAME_TO_TYPE_DICT[api_response['type']],
+            description=api_response['description'],
+            updatefreq=api_response.get('updatefreq'),
+            counters=api_response.get('counters'),
+            proto=ProtocolType[api_response.get('proto').upper()] if api_response.get('proto') else None,
+            content=api_response['content'].split(','),
+            enabled=bool(int(api_response['enabled'])),
+            categories_uuids=api_response['categories_uuid']
+        )
+
+
+class FirewallAliasController(OPNsenseApplicableItemController[Alias]):
+    class ItemActions(Enum):
+        search = "searchItem"
+        get = "getItem"
+        add = "addItem"
+        set = "setItem"
+        delete = "delItem"
+        apply = "reconfigure"
+        get_uuid = "getAliasUUID"
+
+    @property
+    def opnsense_item_class(self) -> type[Alias]:
+        return Alias
 
     def __init__(self, device):
-        self.device = device
+        super().__init__(device, "firewall", "alias")
 
-    def list(self) -> list:
-        return self.list_aliases()
-
-    @deprecated(deprecated_in="1.0.5", removed_in="1.1.0", details="Use list instead")
-    def list_aliases(self) -> list:
-        search_results = self.device._authenticated_request("GET", f"firewall/alias/searchItem")
-        if 'rows' in search_results:
-            return search_results['rows']
-        return []
-
-    def get(self, uuid: str) -> dict:
-        return self.get_alias(uuid)
-
-    @deprecated(deprecated_in="1.0.5", removed_in="1.1.0", details="Use get instead")
-    def get_alias(self, uuid: str) -> dict:
-        query_response = self.device._authenticated_request("GET", f"firewall/alias/getItem/{uuid}")
-        if 'alias' in query_response:
-            try:
-                return parse_query_response_alias(query_response['alias'])
-            except Exception as error:
-                raise Exception(f"Failed to parse the alias with UUID: {uuid}\nException: {error.with_traceback()}")
-
-    def get_uuid(self, name: str) -> Union[str, None]:
-        return self.get_alias_uuid(name)
-
-    @deprecated(deprecated_in="1.0.5", removed_in="1.1.0", details="Use get_uuid instead")
-    def get_alias_uuid(self, name: str) -> Union[str, None]:
-        search_results = self.device._authenticated_request("GET", f"firewall/alias/getAliasUUID/{name}")
-        if 'uuid' in search_results:
-            return search_results['uuid']
-        return None
-
-    def toggle(self, uuid, enabled=None):
-        return self.toggle_alias(uuid, enabled)
-
-    @deprecated(deprecated_in="1.0.5", removed_in="1.1.0", details="Use toggle instead")
-    def toggle_alias(self, uuid, enabled=None):
-        if enabled is None:
-            enabled = bool(int(self.get_alias(uuid)['enabled']))
-        return self.device._authenticated_request("POST", f"firewall/alias/toggleItem/{uuid}?enabled={not enabled}")
-
-    def delete(self, uuid):
-        return self.delete_alias(uuid)
-
-    @deprecated(deprecated_in="1.0.5", removed_in="1.1.0", details="Use delete instead")
-    def delete_alias(self, uuid):
-        return self.device._authenticated_request("POST", f"firewall/alias/delItem/{uuid}")
-
-    def add(self,
-            name: str,
-            alias_type: AliasType,
-            description: str = "",
-            update_freq: str = "",
-            counters: str = "",
-            proto: ProtocolType = None,
-            content=None,
-            enabled: bool = True
-            ):
-        if content is None:
-            content = []
-
-        return self.add_alias(
-            name=name,
-            alias_type=alias_type,
-            description=description,
-            update_freq=update_freq,
-            counters=counters,
-            proto=proto,
-            content=content,
-            enabled=enabled
-        )
-
-    @deprecated(deprecated_in="1.0.5", removed_in="1.1.0", details="Use add instead")
-    def add_alias(self,
-                  name: str,
-                  alias_type: AliasType,
-                  description: str = "",
-                  update_freq: str = "",
-                  counters: str = "",
-                  proto: ProtocolType = None,
-                  content=None,
-                  enabled: bool = True
-                  ):
-
-        if content is None:
-            content = []
-
-        protocol_type = ""
-        if proto is not None:
-            protocol_type = proto.value
-
-        alias_content = ""
-        if len(content) > 0:
-            content = [str(item) for item in content]
-            alias_content = "\n".join(content)
-
-        request_body = {
-            "alias": {
-                "name": name,
-                "type": alias_type.value,
-                "description": description,
-                "updatefreq": update_freq,
-                "counters": counters,
-                "proto": protocol_type,
-                "content": alias_content,
-                "enabled": str(int(enabled))
-            }
-        }
-        return self.device._authenticated_request("POST", f"firewall/alias/addItem", body=request_body)
-
-    def set(self,
-            uuid: str,
-            name: str,
-            alias_type: AliasType,
-            description: str = "",
-            update_freq: str = "",
-            counters: str = "",
-            proto: ProtocolType = None,
-            content=None,
-            enabled: bool = True
-            ):
-        return self.set_alias(
-            uuid=uuid,
-            name=name,
-            alias_type=alias_type,
-            description=description,
-            update_freq=update_freq,
-            counters=counters,
-            proto=proto,
-            content=content,
-            enabled=enabled
-        )
-
-    @deprecated(deprecated_in="1.0.5", removed_in="1.1.0", details="Use set instead")
-    def set_alias(self,
-                  uuid: str,
-                  name: str,
-                  alias_type: AliasType,
-                  description: str = "",
-                  update_freq: str = "",
-                  counters: str = "",
-                  proto: ProtocolType = None,
-                  content=None,
-                  enabled: bool = True
-                  ):
-
-        protocol_type = ""
-        if proto is not None:
-            protocol_type = proto.value
-
-        alias_content = ""
-        if content is not None:
-            if len(content) > 0:
-                content = [str(item) for item in content]
-                alias_content = "\n".join(content)
-
-        request_body = {
-            "alias": {
-                "name": name,
-                "type": alias_type.value,
-                "description": description,
-                "updatefreq": update_freq,
-                "counters": counters,
-                "proto": protocol_type,
-                "content": alias_content,
-                "enabled": str(int(enabled))
-            }
-        }
-        return self.device._authenticated_request("POST", f"firewall/alias/setItem/{uuid}", body=request_body)
+    def get_uuid(self, name: str) -> Optional[str]:
+        query_response = self._api_get(self.ItemActions.get_uuid.value, name)
+        return query_response.get('uuid')

@@ -1,26 +1,38 @@
-from ..util.item_controller import OPNsenseItemController, OPNsenseItem
-from dataclasses import dataclass
-import logging
+from typing import Optional
 
-log = logging.getLogger(__name__)
+from pydantic import conint, Field
 
-
-@dataclass
-class VXLANInterface(OPNsenseItem):
-    description: str
-    enabled: bool
+from ..util.applicable_item_controller import OPNsenseApplicableItemController
+from ..util.item_controller import OPNsenseItem
+from ..util.parse import parse_selected_keys
 
 
-class VXLANController(OPNsenseItemController[VXLANInterface]):
+class VXLAN(OPNsenseItem):
+    deviceId: Optional[int] = None
+    device: str = Field(default="", alias="vxlandev")
+    multicast_group: str = Field(default="", alias="vxlangroup")
+    vni: conint(gt=-1, lt=16777216) = Field(alias="vxlanid")
+    source: str = Field(alias="vxlanlocal")
+    remote: str = Field(default="", alias="vxlanremote")
+
+    @classmethod
+    def _from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
+        return VXLAN(
+            uuid=uuid,
+            deviceId=int(api_response["deviceId"]),
+            vxlandev=parse_selected_keys(api_response["vxlandev"])[0],
+            vxlangroup=api_response["vxlangroup"],
+            vxlanid=api_response["vxlanid"],
+            vxlanlocal=api_response["vxlanlocal"],
+            vxlanremote=api_response["vxlanremote"]
+        )
+
+
+class VXLANController(OPNsenseApplicableItemController[VXLAN]):
+
+    @property
+    def opnsense_item_class(self) -> type[VXLAN]:
+        return VXLAN
 
     def __init__(self, device):
         super().__init__(device, "interfaces", "vxlan_settings")
-
-    def _parse_api_response(self, api_response) -> VXLANInterface:
-        pass
-
-    def add(self, interface: VXLANInterface) -> VXLANInterface:
-        pass
-
-    def set(self, interface: VXLANInterface) -> VXLANInterface:
-        pass
