@@ -1,7 +1,7 @@
-from .loopback_controller import LoopbackController as Loopback
-from .vip_controller import VIPController as VIP
-from .vlan_controller import VLANController as VLAN
-from .vxlan_controller import VXLANController as VXLAN
+from .loopback_controller import LoopbackController
+from .vip_controller import VIPController
+from .vlan_controller import VLANController
+from .vxlan_controller import VXLANController
 
 
 class Interfaces(object):
@@ -10,17 +10,17 @@ class Interfaces(object):
         self._device = device
 
     @property
-    def loopback_controller(self) -> Loopback:
-        return Loopback(self._device)
+    def loopback_controller(self) -> LoopbackController:
+        return LoopbackController(self._device)
 
     @property
-    def vip_controller(self) -> VIP:
-        return VIP(self._device)
+    def vip_controller(self) -> VIPController:
+        return VIPController(self._device)
 
     @property
-    def vlan_controller(self) -> VLAN:
-        return VLAN(self._device)
+    def vlan_controller(self) -> VLANController:
+        return VLANController(self._device)
 
     @property
-    def vxlan_controller(self) -> VXLAN:
-        return VXLAN(self._device)
+    def vxlan_controller(self) -> VXLANController:
+        return VXLANController(self._device)

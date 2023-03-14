@@ -1,17 +1,16 @@
 import http.client
+import http.client
 import json
+import logging
 import os
 import ssl
-import json
-import http.client
-import logging
 from base64 import b64encode
 
 from opnsense_api.diagnostics import Diagnostics
 from opnsense_api.firewall import Firewall
-from opnsense_api.unbound import Unbound
 from opnsense_api.interfaces import Interfaces
 from opnsense_api.routing import Routing
+from opnsense_api.unbound import Unbound
 from opnsense_api.util import Constants, reliable_b64_decode
 
 log = logging.getLogger(__name__)

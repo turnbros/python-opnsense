@@ -130,5 +130,6 @@ dmypy.json
 
 *.ignore.*
 .idea
+.vscode
 .DS_Store
 _version.py
