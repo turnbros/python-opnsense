@@ -1,30 +1,22 @@
-from ..util.item_controller import OPNsenseItemController, OPNsenseItem
-from dataclasses import dataclass, field
-import logging
+from pydantic import constr
 
-log = logging.getLogger(__name__)
+from opnsense_api.util.applicable_item_controller import OPNsenseApplicableItemController
+from opnsense_api.util.item_controller import OPNsenseItem
 
 
-@dataclass
 class LoopbackInterface(OPNsenseItem):
-    device_id: int = field(metadata={"json_name": "deviceId"})
-    description: str
+    description: constr(min_length=1, max_length=255)
+    deviceId: int
+
+    def _get_api_name(self):
+        return "loopback"
 
 
-class LoopbackController(OPNsenseItemController[LoopbackInterface]):
+class LoopbackController(OPNsenseApplicableItemController[LoopbackInterface]):
+
+    @property
+    def opnsense_item_class(self) -> type[LoopbackInterface]:
+        return LoopbackInterface
 
     def __init__(self, device):
         super().__init__(device, "interfaces", "loopback_settings")
-
-    def _parse_api_response(self, api_response: dict) -> LoopbackInterface:
-        return LoopbackInterface(
-        uuid=api_response["uuid"],
-        device_id=api_response["deviceId"],
-        description=api_response["description"]
-        )
-
-    def add(self, interface: LoopbackInterface) -> LoopbackInterface:
-        pass
-
-    def set(self, interface: LoopbackInterface) -> LoopbackInterface:
-        pass

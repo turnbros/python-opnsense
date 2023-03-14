@@ -1,35 +1,94 @@
-import json
-from dataclasses import dataclass, fields, asdict
-from .controller import OPNsenseAPIController
-from typing import List, TypeVar, Generic
-from abc import abstractmethod
+from __future__ import annotations
+
+from abc import abstractmethod, ABC
 from enum import Enum
-import logging
+from typing import List, TypeVar, Generic, Optional
 
-log = logging.getLogger(__name__)
-T = TypeVar('T', bound='OPNsenseItem')
+from pydantic import BaseModel
 
+from .controller import OPNsenseAPIController
+from .exceptions import FailedToDeleteException, ItemNotFoundException, FailedToSetItemException, \
+    FailedToAddItemException, InvalidItemException
 
-@dataclass
-class OPNsenseItem:
-    # Maybe we could extend pydantic.BaseModel here
-
-    uuid: str
-
-    def to_dict(self):
-        opnsense_item = asdict(self)
-        opnsense_item_dict = {}
-        for field in fields(self):
-            opnsense_item_dict[field.metadata.get("json_name", field.name)] = opnsense_item.get(field.name)
-
-        return opnsense_item_dict
-
-    def to_json(self):
-        return json.dumps(self.to_dict())
+TOPNsenseItem = TypeVar('TOPNsenseItem', bound='OPNsenseItem')
 
 
-class OPNsenseItemController(Generic[T], OPNsenseAPIController):
+class OPNsenseItem(BaseModel, ABC):
+    class Config:
+        """
+        Config class that:
+          - ensures validation of all fields, whenever a field is set directly.
+          - allows populating of fields via alias
+        """
+        validate_assignment = True
+        allow_population_by_field_name = True
 
+    uuid: Optional[str]
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    @classmethod
+    def _from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
+        """
+        Parses the Item from the API response to getItem
+        :param api_response: API response to getItem
+        :param uuid: the UUID that was originally searched for, as it's often not part of the response
+        :return: Item from API response
+        """
+        return cls.parse_obj({"uuid": uuid} | api_response)
+
+    @classmethod
+    def _from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
+        """
+        Parses the Item from the API response to list
+        :param api_response: API response to list
+        :return: Item from API response
+        """
+        return cls.parse_obj(api_response)
+
+    def _get_api_name(self):
+        return type(self).__name__.lower()
+
+    @staticmethod
+    def __replace_booleans_with_numbers(dictionary: dict):
+        for k, v in dictionary.items():
+            if isinstance(v, bool):
+                dictionary[k] = "1" if v else "0"
+        return dictionary
+
+    @staticmethod
+    def __replace_ints_with_strings(dictionary: dict):
+        return {k: str(v) if isinstance(v, int) else v for k, v in dictionary.items()}
+
+    @staticmethod
+    def __replace_lists(dictionary: dict):
+        return {k: str.join('\n', v) if isinstance(v, list) else v for k, v in dictionary.items()}
+
+    @staticmethod
+    def __replace_enums_with_values(dictionary: dict):
+        return {k: v.value if isinstance(v, Enum) else v for k, v in dictionary.items()}
+
+    def _get_api_representation(self) -> dict:
+        """
+
+        :return: the items dictionary representation as the OPNSense API understands it when setting or adding.
+        """
+        return {
+            self._get_api_name():
+                self.__replace_ints_with_strings(
+                    self.__replace_booleans_with_numbers(
+                        self.__replace_lists(
+                            self.__replace_enums_with_values(
+                                self.dict(by_alias=True, exclude_none=True)
+                            )
+                        )
+                    )
+                )
+        }
+
+
+class OPNsenseItemController(Generic[TOPNsenseItem], OPNsenseAPIController, ABC):
     # This gets overridden if the controller uses different action verbs
     # See Routes: https://docs.opnsense.org/development/api/core/routes.html
     class ItemActions(Enum):
@@ -38,63 +97,76 @@ class OPNsenseItemController(Generic[T], OPNsenseAPIController):
         add = "addItem"
         set = "setItem"
         delete = "delItem"
-        apply = "reconfigure"
+        # toggle = "toggleItem"
+        # removed toggle, we should just use set
 
-    def list(self) -> List[T]:
+    @property
+    @abstractmethod
+    def opnsense_item_class(self) -> type[TOPNsenseItem]:
+        """
+        :return: the class of the implementation of OPNSenseItem this class controls.
+        """
+        raise NotImplementedError("Not implemented!")
+
+    @abstractmethod
+    def __init__(self, device, module: str, controller: str):
+        super().__init__(device, module, controller)
+
+    def list(self) -> List[TOPNsenseItem]:
         """
         Returns a list of items.
 
         :return: A list of OPNsense items
         :rtype List[T]:
         """
-        items = []
-        search_results = self._api_get(self.ItemActions.search.value)
-        if 'rows' in search_results:
-            for item in search_results['rows']:
-                items.append(self._parse_api_response(item))
+        query_response = self._api_post(self.ItemActions.search.value)
+        return [self.opnsense_item_class._from_api_response_list(item) for item in query_response.get('rows')]  # type: ignore
 
-        return items
-
-    def get(self, uuid) -> T:
+    def get(self, uuid: str) -> TOPNsenseItem:
         """
         Gets a specific item
 
         :param uuid:
         :return: T
         """
-        result = self._api_get(self.ItemActions.get.value, uuid)
-        item = list(result.values())[0]
-        return self._parse_api_response(item)
-
-    def delete(self, item: T) -> None:
+        query_response = self._api_get(self.ItemActions.get.value, uuid)
+        if len(query_response.values()) != 1:
+            raise ItemNotFoundException(self.opnsense_item_class.__name__, uuid, query_response)
+        return self.opnsense_item_class._from_api_response_get(list(query_response.values())[0], uuid=uuid)  # type: ignore
+    def delete(self, item: TOPNsenseItem) -> None:
         """
         Deletes the item
 
-        :param item:
-        :return:
+        :param item: Item to be deleted
         """
-        response = self._api_post(self.ItemActions.delete.value, item.uuid)
-        if response['result'] != "deleted":
-            raise Exception(f"Failed to delete host override with UUID {item.uuid} with reason: {response['result']}")
-        self.apply_changes()
+        query_response = self._api_post(self.ItemActions.delete.value, item.uuid)
+        if query_response['result'] != "deleted":
+            raise FailedToDeleteException(self.opnsense_item_class.__name__, item.uuid, query_response)
 
-    def apply_changes(self) -> None:
+    def add(self, item: TOPNsenseItem) -> None:
         """
-        Apply any pending changes
-
+        Adds the item to the OPNSense and saves the items UUID in the parameter item
+        :param item: Will be created on the OPNSense and UUID will be updated after creation
         """
-        response = self._api_post(self.ItemActions.apply.value)
-        if response["status"] != "ok":
-            raise Exception(f"Failed to apply changes. Reason {response}")
+        query_response = self._api_post(self.ItemActions.add.value,
+                                        body=item._get_api_representation())
+        if query_response['result'] != "saved":
+            raise FailedToAddItemException(self.opnsense_item_class.__name__, item.uuid, query_response)
+        item.uuid = query_response['uuid']
 
-    @abstractmethod
-    def _parse_api_response(self, api_response) -> T:
-        raise NotImplementedError("This method needs to be implemented!")
+    def set(self, item: TOPNsenseItem) -> None:
+        """
+        Updates the items state in the OPNSense
 
-    @abstractmethod
-    def add(self, item: T) -> T:
-        raise NotImplementedError("This method needs to be implemented!")
+        :param item: state of item to be set on OPNSense
+        """
+        # get the item first to ensure it exists
+        if not item.uuid:
+            raise InvalidItemException(self.opnsense_item_class.__name__,
+                                       custom_message="Can't set item without knowing it's UUID.")
+        self.get(item.uuid)
 
-    @abstractmethod
-    def set(self, item: T) -> T:
-        raise NotImplementedError("This method needs to be implemented!")
+        query_response = self._api_post(self.ItemActions.set.value, item.uuid,
+                                        body=item._get_api_representation())
+        if query_response['result'] != "saved":
+            raise FailedToSetItemException(self.opnsense_item_class.__name__, item.uuid, query_response)
