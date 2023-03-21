@@ -1,14 +1,14 @@
 import os
 import sys
 
-sys.path.insert(8, os.path.abspath('..'))
-sys.path.insert(7, os.path.abspath('../..'))
-sys.path.insert(6, os.path.abspath('../../opnsense_api'))
-sys.path.insert(5, os.path.abspath('../../opnsense_api/diagnostics'))
-sys.path.insert(4, os.path.abspath('../../opnsense_api/firewall'))
-sys.path.insert(3, os.path.abspath('../../opnsense_api/interfaces'))
-sys.path.insert(2, os.path.abspath('../../opnsense_api/routing'))
-sys.path.insert(1, os.path.abspath('../../opnsense_api/unbound'))
+sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(1, os.path.abspath('../..'))
+# sys.path.insert(2, os.path.abspath('../../opnsense_api'))
+# sys.path.insert(5, os.path.abspath('../../opnsense_api/diagnostics'))
+# sys.path.insert(4, os.path.abspath('../../opnsense_api/firewall'))
+# sys.path.insert(3, os.path.abspath('../../opnsense_api/interfaces'))
+# sys.path.insert(2, os.path.abspath('../../opnsense_api/routing'))
+# sys.path.insert(1, os.path.abspath('../../opnsense_api/unbound'))
 
 # Configuration file for the Sphinx documentation builder.
 #
