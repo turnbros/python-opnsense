@@ -10,8 +10,6 @@ from .controller import OPNsenseAPIController
 from .exceptions import FailedToDeleteException, ItemNotFoundException, FailedToSetItemException, \
     FailedToAddItemException, InvalidItemException
 
-TOPNsenseItem = TypeVar('TOPNsenseItem', bound='OPNsenseItem')
-
 
 class OPNsenseItem(BaseModel, ABC):
     class Config:
@@ -86,6 +84,9 @@ class OPNsenseItem(BaseModel, ABC):
                     )
                 )
         }
+
+
+TOPNsenseItem = TypeVar('TOPNsenseItem', bound=OPNsenseItem)
 
 
 class OPNsenseItemController(Generic[TOPNsenseItem], OPNsenseAPIController, ABC):

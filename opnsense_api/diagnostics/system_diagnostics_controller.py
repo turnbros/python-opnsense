@@ -9,9 +9,19 @@ class SystemDiagnosticsController:
         self._system_memory_controller = self._SystemMemory(device)
 
     def get_activity(self) -> SystemActivity:
+        """
+        Returns detailed information about system utilization and process state
+
+        :return: SystemActivity
+        """
         return self._system_activity_controller.get_activity()
 
     def get_memory_statistics(self) -> SystemMemory:
+        """
+        Returns system memory statistics.
+
+        :return: SystemMemory
+        """
         return self._system_memory_controller.get_memory()
 
     class _SystemActivity(OPNsenseAPIController):

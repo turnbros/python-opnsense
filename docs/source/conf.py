@@ -1,3 +1,15 @@
+import os
+import sys
+
+sys.path.insert(3, os.path.abspath('..'))
+sys.path.insert(2, os.path.abspath('../..'))
+sys.path.insert(1, os.path.abspath('../../opnsense_api'))
+sys.path.insert(0, os.path.abspath('../../opnsense_api/diagnostics'))
+sys.path.insert(0, os.path.abspath('../../opnsense_api/firewall'))
+sys.path.insert(0, os.path.abspath('../../opnsense_api/interfaces'))
+sys.path.insert(0, os.path.abspath('../../opnsense_api/routing'))
+sys.path.insert(0, os.path.abspath('../../opnsense_api/unbound'))
+
 # Configuration file for the Sphinx documentation builder.
 #
 # For the full list of built-in configuration values, see the documentation:
@@ -14,15 +26,18 @@ release = '1.1.0'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = []
-
+extensions = ["myst_parser", 'sphinx.ext.autodoc', 'sphinx.ext.todo', 'sphinx.ext.coverage', 'sphinx.ext.autosummary']
+autosummary_generate = True
 templates_path = ['_templates']
 exclude_patterns = []
 
-
-
 # -- Options for HTML output -------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
+html_theme = 'pydata_sphinx_theme'
+html_theme_options = {
+    "logo": {
+        "text": "Python-OPNsense",
+    },
+}
 
-html_theme = 'alabaster'
 html_static_path = ['_static']
+

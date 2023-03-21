@@ -9,16 +9,37 @@ class InterfaceDiagnosticsController:
         self._traffic_controller = self._Traffic(device)
 
     def list_interfaces(self) -> SystemInterfaces:
+        """
+        Lists the configured interfaces
+
+        :return: SystemInterfaces
+        """
         return self._system_health_controller.get_interfaces()
 
     def get_interfaces(self):
-        # need to merge these
+        """
+        Returns a list of interfaces and their utilization
+
+        :return:
+        """
         return self._traffic_controller.interface()
 
     def get_interface(self, interface):
+        """
+        Returns detailed information about a specific interface.
+
+        :param interface:
+        :return:
+        """
         return self._traffic_controller.top(interface)
 
     def get_rrd_list(self) -> SystemRRDlist:
+        """
+        Returns a list of data being collected by the RRD.
+        More information on RRD can be found here: https://oss.oetiker.ch/rrdtool/index.en.html
+
+        :return: SystemRRDlist
+        """
         return self._system_health_controller.get_rrd_list()
 
     class _SystemHealth(OPNsenseAPIController):

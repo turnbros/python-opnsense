@@ -114,20 +114,45 @@ class Opnsense(object):
 
     @property
     def diagnostics(self) -> Diagnostics:
+        """
+        An instance of the `opnsense_api.diagnostics` controller module
+
+        :return: Diagnostics
+        """
         return Diagnostics(self)
 
     @property
     def firewall(self) -> Firewall:
+        """
+        An instance of the `opnsense_api.firewall` controller module
+
+        :return: Firewall
+        """
         return Firewall(self)
 
     @property
     def unbound_dns(self) -> Unbound:
+        """
+        An instance of the `opnsense_api.unbound` controller module
+
+        :return: Unbound
+        """
         return Unbound(self)
 
     @property
     def interfaces(self) -> Interfaces:
+        """
+        An instance of the `opnsense_api.interfaces` controller module
+
+        :return: Interfaces
+        """
         return Interfaces(self)
 
     @property
     def routing(self) -> Routing:
+        """
+        An instance of the `opnsense_api.routing` controller module
+
+        :return: Routing
+        """
         return Routing(self)

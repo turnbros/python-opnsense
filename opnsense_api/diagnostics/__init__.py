@@ -10,12 +10,24 @@ class Diagnostics(object):
 
     @property
     def system_diagnostics(self) -> System:
+        """
+
+        :return: SystemDiagnosticsController
+        """
         return System(self._device)
 
     @property
     def interface_diagnostics(self) -> Interface:
+        """
+
+        :return: InterfaceDiagnosticsController
+        """
         return Interface(self._device)
 
     @property
     def netflow_diagnostics(self) -> Netflow:
+        """
+
+        :return: NetflowDiagnosticsController
+        """
         return Netflow(self._device)
