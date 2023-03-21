@@ -1,5 +1,4 @@
 accessible-pygments==0.0.3
-
 appdirs==1.4.4
 astor==0.8.1
 attrs==22.2.0
