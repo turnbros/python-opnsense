@@ -1,4 +1,4 @@
-from diagnostics_dataclasses import SystemInterfaces, SystemRRDlist
+from opnsense_api.diagnostics.diagnostics_dataclasses import SystemInterfaces, SystemRRDlist
 from opnsense_api.util.controller import OPNsenseAPIController
 
 

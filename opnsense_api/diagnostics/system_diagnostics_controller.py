@@ -1,5 +1,5 @@
 from opnsense_api.util.controller import OPNsenseAPIController
-from diagnostics_dataclasses import SystemMemory, SystemActivity
+from opnsense_api.diagnostics.diagnostics_dataclasses import SystemMemory, SystemActivity
 
 
 class SystemDiagnosticsController:
