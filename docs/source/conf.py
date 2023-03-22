@@ -1,6 +1,7 @@
 import os
 import sys
 
+sys.path.insert(5, os.path.abspath('..'))
 sys.path.insert(4, os.path.abspath('../..'))
 
 # Configuration file for the Sphinx documentation builder.
