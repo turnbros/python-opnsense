@@ -87,7 +87,7 @@ class Opnsense(object):
         headers["Authorization"] = f"Basic {self._b64_auth}"
 
         if (method == "POST") and (body is not None):
-            headers["Content-Type"] = "application/json_src"
+            headers["Content-Type"] = "application/json"
 
         if isinstance(body, (dict, list, tuple)):
             body = json.dumps(body)
