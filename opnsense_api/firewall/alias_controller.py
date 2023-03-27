@@ -45,7 +45,7 @@ ALIAS_LONG_NAME_TO_TYPE_DICT: dict[str, AliasType] = {
 class Alias(OPNsenseItem):
     name: constr(min_length=1, max_length=32, strip_whitespace=True, regex=r"^[a-zA-Z0-9_]*$")
     type: AliasType
-    description: Optional[constr(min_length=0, max_length=255)] = None
+    description: constr(min_length=0, max_length=255) = ""
     updatefreq: Optional[str]
     counters: Optional[str]
     proto: Optional[ProtocolType] = None
