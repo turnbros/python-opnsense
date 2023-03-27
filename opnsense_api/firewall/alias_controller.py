@@ -48,8 +48,8 @@ class Alias(OPNsenseItem):
     description: constr(min_length=0, max_length=255) = ""
     updatefreq: Optional[str]
     counters: Optional[str]
-    proto: Optional[ProtocolType] = None
-    content: Optional[list[str]] = None
+    proto: Optional[ProtocolType]
+    content: Optional[list[str]]
     enabled: bool = True
     categories_uuids: list[str] = []
 
