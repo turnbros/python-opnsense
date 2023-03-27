@@ -1,0 +1,11 @@
+{
+    "alias": {
+        "uuid": "11111111-1111-1111-1111-11111111111",
+        "name": "Name",
+        "type": "port",
+        "description": "",
+        "content": "80\n443",
+        "enabled": "1",
+        "categories_uuids": ""
+    }
+}
