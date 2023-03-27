@@ -120,7 +120,7 @@ class TestCategoryController(unittest.TestCase):
             color="aaaaaa"
         )
 
-        self.category_controller.delete(category)
+        TestCategoryController.category_controller.delete(category)
 
         TestCategoryController.category_controller._device._authenticated_request.assert_called_once_with(
             'POST',
@@ -132,7 +132,7 @@ class TestCategoryController(unittest.TestCase):
             return_value={'result': 'not found'}
         )
         with self.assertRaises(FailedToDeleteException):
-            self.category_controller.delete(category)
+            TestCategoryController.category_controller.delete(category)
 
     def test_add(self):
         with open(os.path.join(parent_dir, 'json_src', 'category_add_request.json')) as f:
