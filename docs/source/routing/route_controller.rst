@@ -7,38 +7,19 @@ route_controller
    :members:
    :show-inheritance:
    :inherited-members:
-
-
-.. automethod:: __init__
-
-
+   :no-undoc-members:
 
 Methods
 ~~~~~~~
 
 .. autosummary::
 
-  ~RouteController.__init__
   ~RouteController.add
   ~RouteController.apply_changes
   ~RouteController.delete
   ~RouteController.get
   ~RouteController.list
   ~RouteController.set
-
-
-
-
-
-
-Attributes
-~~~~~~~~~~
-
-.. autosummary::
-
-  ~RouteController.opnsense_item_class
-
-
 
 Examples
 ~~~~~~~~

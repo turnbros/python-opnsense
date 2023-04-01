@@ -7,29 +7,18 @@ service_controller
    :members:
    :show-inheritance:
    :inherited-members:
-
-
-.. automethod:: __init__
-
-
+   :no-undoc-members:
 
 Methods
 ~~~~~~~
 
 .. autosummary::
 
-  ~UnboundServiceController.__init__
-  ~UnboundServiceController.apply_changes
-  ~UnboundServiceController.restart
-  ~UnboundServiceController.start
   ~UnboundServiceController.status
+  ~UnboundServiceController.start
+  ~UnboundServiceController.restart
   ~UnboundServiceController.stop
-
-
-
-
-
-
+  ~UnboundServiceController.apply_changes
 
 Examples
 ~~~~~~~~

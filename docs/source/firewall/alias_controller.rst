@@ -7,15 +7,13 @@ alias_controller
    :members:
    :show-inheritance:
    :inherited-members:
-
-.. automethod:: __init__
+   :no-undoc-members:
 
 Methods
 ~~~~~~~
 
 .. autosummary::
 
-  ~FirewallAliasController.__init__
   ~FirewallAliasController.add
   ~FirewallAliasController.apply_changes
   ~FirewallAliasController.delete

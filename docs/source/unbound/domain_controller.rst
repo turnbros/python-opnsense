@@ -7,38 +7,19 @@ domain_controller
    :members:
    :show-inheritance:
    :inherited-members:
-
-
-.. automethod:: __init__
-
-
+   :no-undoc-members:
 
 Methods
 ~~~~~~~
 
 .. autosummary::
 
-  ~DomainController.__init__
-  ~DomainController.add
-  ~DomainController.apply_changes
-  ~DomainController.delete
-  ~DomainController.get
   ~DomainController.list
+  ~DomainController.get
+  ~DomainController.add
   ~DomainController.set
-
-
-
-
-
-
-Attributes
-~~~~~~~~~~
-
-.. autosummary::
-
-  ~DomainController.opnsense_item_class
-
-
+  ~DomainController.delete
+  ~DomainController.apply_changes
 
 Examples
 ~~~~~~~~

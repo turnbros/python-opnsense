@@ -7,38 +7,19 @@ vip_controller
    :members:
    :show-inheritance:
    :inherited-members:
-
-
-.. automethod:: __init__
-
-
+   :no-undoc-members:
 
 Methods
 ~~~~~~~
 
 .. autosummary::
 
-  ~VIPController.__init__
   ~VIPController.add
   ~VIPController.apply_changes
   ~VIPController.delete
   ~VIPController.get
   ~VIPController.list
   ~VIPController.set
-
-
-
-
-
-
-Attributes
-~~~~~~~~~~
-
-.. autosummary::
-
-  ~VIPController.opnsense_item_class
-
-
 
 Examples
 ~~~~~~~~

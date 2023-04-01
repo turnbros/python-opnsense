@@ -1,5 +1,5 @@
 filter_controller
-================
+=================
 
 .. currentmodule:: opnsense_api.firewall.filter_controller
 
@@ -7,15 +7,13 @@ filter_controller
    :members:
    :show-inheritance:
    :inherited-members:
-
-.. automethod:: __init__
+   :no-undoc-members:
 
 Methods
 ~~~~~~~
 
 .. autosummary::
 
-  ~FilterController.__init__
   ~FilterController.add
   ~FilterController.apply_changes
   ~FilterController.delete

@@ -85,7 +85,7 @@ class Alias(OPNsenseItem):
 
 
 class FirewallAliasController(OPNsenseApplicableItemController[Alias]):
-    class ItemActions(Enum):
+    class _ItemActions(Enum):
         search = "searchItem"
         get = "getItem"
         add = "addItem"
@@ -102,5 +102,5 @@ class FirewallAliasController(OPNsenseApplicableItemController[Alias]):
         super().__init__(device, "firewall", "alias")
 
     def get_uuid(self, name: str) -> Optional[str]:
-        query_response = self._api_get(self.ItemActions.get_uuid.value, name)
+        query_response = self._api_get(self._ItemActions.get_uuid.value, name)
         return query_response.get('uuid')

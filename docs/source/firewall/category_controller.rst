@@ -7,15 +7,13 @@ category_controller
    :members:
    :show-inheritance:
    :inherited-members:
-
-.. automethod:: __init__
+   :no-undoc-members:
 
 Methods
 ~~~~~~~
 
 .. autosummary::
 
-  ~CategoryController.__init__
   ~CategoryController.add
   ~CategoryController.delete
   ~CategoryController.get

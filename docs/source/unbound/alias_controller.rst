@@ -7,38 +7,19 @@ alias_controller
    :members:
    :show-inheritance:
    :inherited-members:
-
-
-.. automethod:: __init__
-
-
+   :no-undoc-members:
 
 Methods
 ~~~~~~~
 
 .. autosummary::
 
-  ~AliasController.__init__
-  ~AliasController.add
-  ~AliasController.apply_changes
-  ~AliasController.delete
-  ~AliasController.get
   ~AliasController.list
+  ~AliasController.get
+  ~AliasController.add
   ~AliasController.set
-
-
-
-
-
-
-Attributes
-~~~~~~~~~~
-
-.. autosummary::
-
-  ~AliasController.opnsense_item_class
-
-
+  ~AliasController.delete
+  ~AliasController.apply_changes
 
 Examples
 ~~~~~~~~

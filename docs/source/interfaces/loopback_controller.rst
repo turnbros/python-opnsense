@@ -7,38 +7,19 @@ loopback_controller
    :members:
    :show-inheritance:
    :inherited-members:
-
-
-.. automethod:: __init__
-
-
+   :no-undoc-members:
 
 Methods
 ~~~~~~~
 
 .. autosummary::
 
-  ~LoopbackController.__init__
   ~LoopbackController.add
   ~LoopbackController.apply_changes
   ~LoopbackController.delete
   ~LoopbackController.get
   ~LoopbackController.list
   ~LoopbackController.set
-
-
-
-
-
-
-Attributes
-~~~~~~~~~~
-
-.. autosummary::
-
-  ~LoopbackController.opnsense_item_class
-
-
 
 Examples
 ~~~~~~~~

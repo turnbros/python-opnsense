@@ -6,7 +6,7 @@ from opnsense_api.util.exceptions import FailedToApplyChangesException, FailedTo
 
 # TODO: Move to generalized class like item controller
 class UnboundServiceController(OPNsenseAPIController):
-    class ItemActions(Enum):
+    class _ItemActions(Enum):
         apply = "reconfigure"
         restart = "restart"
         start = "start"
@@ -17,25 +17,25 @@ class UnboundServiceController(OPNsenseAPIController):
         super().__init__(device, "unbound", "service")
 
     def apply_changes(self) -> None:
-        response = self._api_post(self.ItemActions.apply.value)
+        response = self._api_post(self._ItemActions.apply.value)
         if response["status"] != "ok":
             raise FailedToApplyChangesException(f"Failed to apply changes. Reason {response}")
 
     def restart(self) -> None:
-        response = self._api_post(self.ItemActions.restart.value)
+        response = self._api_post(self._ItemActions.restart.value)
         if response["response"] != "OK":
             raise FailedToRestartException(f"Failed to apply changes. Reason {response}")
 
     def start(self) -> None:
-        response = self._api_post(self.ItemActions.start.value)
+        response = self._api_post(self._ItemActions.start.value)
         if response["response"] != "OK":
             raise FailedToRestartException(f"Failed to apply changes. Reason {response}")
 
     def status(self) -> str:
-        response = self._api_get(self.ItemActions.status.value)
+        response = self._api_get(self._ItemActions.status.value)
         return response["status"]
 
     def stop(self) -> None:
-        response = self._api_post(self.ItemActions.stop.value)
+        response = self._api_post(self._ItemActions.stop.value)
         if response["response"] != "OK":
             raise FailedToRestartException(f"Failed to apply changes. Reason {response}")

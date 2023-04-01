@@ -7,38 +7,19 @@ host_controller
    :members:
    :show-inheritance:
    :inherited-members:
-
-
-.. automethod:: __init__
-
-
+   :no-undoc-members:
 
 Methods
 ~~~~~~~
 
 .. autosummary::
 
-  ~HostController.__init__
-  ~HostController.add
-  ~HostController.apply_changes
-  ~HostController.delete
-  ~HostController.get
   ~HostController.list
+  ~HostController.get
+  ~HostController.add
   ~HostController.set
-
-
-
-
-
-
-Attributes
-~~~~~~~~~~
-
-.. autosummary::
-
-  ~HostController.opnsense_item_class
-
-
+  ~HostController.delete
+  ~HostController.apply_changes
 
 Examples
 ~~~~~~~~

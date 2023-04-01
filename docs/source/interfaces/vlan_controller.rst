@@ -7,37 +7,18 @@ vlan_controller
    :members:
    :show-inheritance:
    :inherited-members:
-
-
-.. automethod:: __init__
-
-
+   :no-undoc-members:
 
 Methods
 ~~~~~~~
 
 .. autosummary::
 
-  ~VLANController.__init__
   ~VLANController.add
   ~VLANController.delete
   ~VLANController.get
   ~VLANController.list
   ~VLANController.set
-
-
-
-
-
-
-Attributes
-~~~~~~~~~~
-
-.. autosummary::
-
-  ~VLANController.opnsense_item_class
-
-
 
 Examples
 ~~~~~~~~

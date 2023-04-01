@@ -7,38 +7,19 @@ resource_controller
    :members:
    :show-inheritance:
    :inherited-members:
-
-
-.. automethod:: __init__
-
-
+   :no-undoc-members:
 
 Methods
 ~~~~~~~
 
 .. autosummary::
 
-  ~UnboundResourceController.__init__
-  ~UnboundResourceController.add
-  ~UnboundResourceController.apply_changes
-  ~UnboundResourceController.delete
-  ~UnboundResourceController.get
   ~UnboundResourceController.list
+  ~UnboundResourceController.get
+  ~UnboundResourceController.add
   ~UnboundResourceController.set
-
-
-
-
-
-
-Attributes
-~~~~~~~~~~
-
-.. autosummary::
-
-  ~UnboundResourceController.opnsense_item_class
-
-
+  ~UnboundResourceController.delete
+  ~UnboundResourceController.apply_changes
 
 Examples
 ~~~~~~~~

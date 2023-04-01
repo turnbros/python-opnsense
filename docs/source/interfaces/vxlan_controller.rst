@@ -7,38 +7,19 @@ vxlan_controller
    :members:
    :show-inheritance:
    :inherited-members:
-
-
-.. automethod:: __init__
-
-
+   :no-undoc-members:
 
 Methods
 ~~~~~~~
 
 .. autosummary::
 
-  ~VXLANController.__init__
   ~VXLANController.add
   ~VXLANController.apply_changes
   ~VXLANController.delete
   ~VXLANController.get
   ~VXLANController.list
   ~VXLANController.set
-
-
-
-
-
-
-Attributes
-~~~~~~~~~~
-
-.. autosummary::
-
-  ~VXLANController.opnsense_item_class
-
-
 
 Examples
 ~~~~~~~~
