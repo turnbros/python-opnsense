@@ -5,10 +5,10 @@ build:
   tools:
     python: "3.11"
 
-# Build from the docs/ directory with Sphinx
+# Build from the source/ directory with Sphinx
 sphinx:
-  configuration: docs/source/conf.py
+  configuration: source/source_old/conf.py
 
 python:
    install:
-   - requirements: docs/requirements.txt
+   - requirements: source/requirements.txt
