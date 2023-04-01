@@ -51,3 +51,4 @@ typing_extensions==4.5.0
 urllib3==1.26.14
 zipp==3.15.0
 zope.interface==5.5.2
+sphinx-rtd-theme==1.2.0
