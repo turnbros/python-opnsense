@@ -1,6 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from typing import List
+import re
 
 from opnsense_api.util.controller import OPNsenseAPIController
 
@@ -60,7 +61,18 @@ class ProcessStats:
 
     @classmethod
     def from_json(cls, data) -> ProcessStats:
-        pass
+        return ProcessStats(data["C"],
+                            data["PID"],
+                            data["THR"],
+                            data["USERNAME"],
+                            data["PRI"],
+                            data["NICE"],
+                            data["SIZE"],
+                            data["RES"],
+                            data["STATE"],
+                            data["TIME"],
+                            data["WCPU"],
+                            data["COMMAND"])
 
 
 @dataclass
@@ -73,9 +85,30 @@ class SystemActivity:
     memory_stats: MemoryStats
     system_processes: List[ProcessStats]
 
+
+
     @classmethod
     def from_json(cls, data) -> SystemActivity:
-        pass
+
+        # Parse "last pid: 45701;  load averages:  0.26,  0.43,  0.41  up 59+06:39:49    23:03:19"
+        pid_avgs_up_json = data["headers"][0]
+        pattern = "^last pid:\s+(?P<last_pid>\d+)\W+load averages:\s+(?P<load_avg_1m>[+-]?([0-9]*[.])?[0-9]+)\W+(?P<load_avg_5m>[+-]?([0-9]*[.])?[0-9]+)\W+(?P<load_avg_15m>[+-]?([0-9]*[.])?[0-9]+)\W+up\s+(?P<uptime_days>\d+)\+(?P<uptime_hours>\d+):(?P<uptime_minutes>\d+):(?P<uptime_seconds>\d+)\W+(?P<system_time>\d{2}:\d{2}:\d{2})"
+        pid_avgs_up_dict = re.search(pattern, pid_avgs_up_json).groupdict()
+
+        last_pid = pid_avgs_up_dict["last_pid"]
+        load_averages = [pid_avgs_up_dict["load_avg_1m"], pid_avgs_up_dict["load_avg_5m"], pid_avgs_up_dict["load_avg_15m"]]
+        uptime = pid_avgs_up_dict[""]
+        system_time = pid_avgs_up_dict["system_time"]
+
+        thread_stats = ThreadStats.from_json(data["headers"][1])
+        cpu_stats = CPUStats.from_json(data["headers"][2])
+        memory_stats = MemoryStats.from_json(data["headers"][3])
+
+        system_processes = []
+        for process_json in data["details"]:
+            system_processes.append(ProcessStats.from_json(process_json))
+
+        return SystemActivity(0, 0, 0, thread_stats, cpu_stats, memory_stats, system_processes)
 
 
 @dataclass
