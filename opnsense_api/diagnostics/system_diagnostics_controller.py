@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from typing import List
 
@@ -11,15 +12,35 @@ class ThreadStats:
     sleeping: int
     waiting: int
 
-
-@dataclass
-class MemoryStats:
-    pass
+    @classmethod
+    def from_json(cls, data) -> ThreadStats:
+        pass
 
 
 @dataclass
 class CPUStats:
-    pass
+    user: float
+    nice: float
+    system: float
+    interrupt: float
+    idle: float
+
+    @classmethod
+    def from_json(cls, data) -> CPUStats:
+        pass
+
+
+@dataclass
+class MemoryStats:
+    active: int
+    inactive: int
+    wired: int
+    buffered: int
+    free: int
+
+    @classmethod
+    def from_json(cls, data) -> MemoryStats:
+        pass
 
 
 @dataclass
@@ -37,6 +58,10 @@ class ProcessStats:
     wcpu: str  # "98.08%"
     command: str  # "[idle{idle: cpu0}]"
 
+    @classmethod
+    def from_json(cls, data) -> ProcessStats:
+        pass
+
 
 @dataclass
 class SystemActivity:
@@ -48,6 +73,10 @@ class SystemActivity:
     memory_stats: MemoryStats
     system_processes: List[ProcessStats]
 
+    @classmethod
+    def from_json(cls, data) -> SystemActivity:
+        pass
+
 
 @dataclass
 class SystemMemoryAllocationDetails:
@@ -56,6 +85,14 @@ class SystemMemoryAllocationDetails:
     memory_use: int
     requests: int
     size: List[int]
+
+    @classmethod
+    def from_json(cls, data) -> SystemMemoryAllocationDetails:
+        return SystemMemoryAllocationDetails(data["name"],
+                                             data["in-use"],
+                                             data["memory-use"],
+                                             data["requests"],
+                                             data["size"])
 
 
 @dataclass
@@ -70,6 +107,18 @@ class SystemMemoryZoneStatistics:
     sleep: int
     xdomain: int
 
+    @classmethod
+    def from_json(cls, data) -> SystemMemoryZoneStatistics:
+        return SystemMemoryZoneStatistics(data["name"],
+                                          data["size"],
+                                          data["limit"],
+                                          data["used"],
+                                          data["free"],
+                                          data["requests"],
+                                          data["fail"],
+                                          data["sleep"],
+                                          data["xdomain"])
+
 
 @dataclass
 class SystemMemoryDetails:
@@ -79,6 +128,23 @@ class SystemMemoryDetails:
 
     virtual_memory_zones: List[SystemMemoryZoneStatistics]
     total_virtual_memory_used: int
+
+    @classmethod
+    def from_json(cls, data) -> SystemMemoryDetails:
+        memory_allocations = []
+        for allocation_json in data["malloc-statistics"]["memory"]:
+            memory_allocations.append(SystemMemoryAllocationDetails.from_json(allocation_json))
+        total_allocated_memory_used = data["malloc-statistics"]["totals"]["used"]
+
+        virtual_memory_zones = []
+        for zone_json in data["memory-zone-statistics"]["zone"]:
+            virtual_memory_zones.append(SystemMemoryZoneStatistics.from_json(zone_json))
+        total_virtual_memory_used = data["memory-zone-statistics"]["totals"]["used"]
+
+        return cls(memory_allocations,
+                   total_allocated_memory_used,
+                   virtual_memory_zones,
+                   total_virtual_memory_used)
 
 
 class SystemDiagnosticsController:
@@ -97,7 +163,7 @@ class SystemDiagnosticsController:
 
     def get_memory_statistics(self) -> SystemMemoryDetails:
         """
-        Returns system memory statistics.
+        Returns detailed system memory statistics.
 
         :return: SystemMemoryDetails
         """
@@ -117,4 +183,4 @@ class SystemDiagnosticsController:
             super().__init__(device, "diagnostics", "system")
 
         def get_memory_details(self) -> SystemMemoryDetails:
-            return self._api_get("memory")
+            return SystemMemoryDetails.from_json(self._api_get("memory"))
