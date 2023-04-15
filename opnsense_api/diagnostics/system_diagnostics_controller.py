@@ -78,27 +78,33 @@ class ProcessStats:
 @dataclass
 class SystemActivity:
     last_pid: int
-    load_averages: List[int]
+    load_average_1m: float
+    load_average_5m: float
+    load_average_15m: float
     uptime: int
+    system_time: str
     thread_stats: ThreadStats
     cpu_stats: CPUStats
     memory_stats: MemoryStats
     system_processes: List[ProcessStats]
 
-
-
     @classmethod
     def from_json(cls, data) -> SystemActivity:
-
         # Parse "last pid: 45701;  load averages:  0.26,  0.43,  0.41  up 59+06:39:49    23:03:19"
         pid_avgs_up_json = data["headers"][0]
         pattern = "^last pid:\s+(?P<last_pid>\d+)\W+load averages:\s+(?P<load_avg_1m>[+-]?([0-9]*[.])?[0-9]+)\W+(?P<load_avg_5m>[+-]?([0-9]*[.])?[0-9]+)\W+(?P<load_avg_15m>[+-]?([0-9]*[.])?[0-9]+)\W+up\s+(?P<uptime_days>\d+)\+(?P<uptime_hours>\d+):(?P<uptime_minutes>\d+):(?P<uptime_seconds>\d+)\W+(?P<system_time>\d{2}:\d{2}:\d{2})"
         pid_avgs_up_dict = re.search(pattern, pid_avgs_up_json).groupdict()
 
         last_pid = pid_avgs_up_dict["last_pid"]
-        load_averages = [pid_avgs_up_dict["load_avg_1m"], pid_avgs_up_dict["load_avg_5m"], pid_avgs_up_dict["load_avg_15m"]]
-        uptime = pid_avgs_up_dict[""]
+        load_average_1m = pid_avgs_up_dict["load_avg_1m"]
+        load_average_5m = pid_avgs_up_dict["load_avg_5m"]
+        load_average_15m = pid_avgs_up_dict["load_avg_15m"]
         system_time = pid_avgs_up_dict["system_time"]
+
+        uptime = (int(pid_avgs_up_dict["uptime_days"]) * 86400) + \
+                 (int(pid_avgs_up_dict["uptime_hours"]) * 3600) + \
+                 (int(pid_avgs_up_dict["uptime_minutes"]) * 60) + \
+                 (int(pid_avgs_up_dict["uptime_seconds"]))
 
         thread_stats = ThreadStats.from_json(data["headers"][1])
         cpu_stats = CPUStats.from_json(data["headers"][2])
@@ -108,7 +114,16 @@ class SystemActivity:
         for process_json in data["details"]:
             system_processes.append(ProcessStats.from_json(process_json))
 
-        return SystemActivity(0, 0, 0, thread_stats, cpu_stats, memory_stats, system_processes)
+        return SystemActivity(last_pid,
+                              load_average_1m,
+                              load_average_5m,
+                              load_average_15m,
+                              uptime,
+                              system_time,
+                              thread_stats,
+                              cpu_stats,
+                              memory_stats,
+                              system_processes)
 
 
 @dataclass
@@ -155,7 +170,6 @@ class SystemMemoryZoneStatistics:
 
 @dataclass
 class SystemMemoryDetails:
-
     memory_allocations: List[SystemMemoryAllocationDetails]
     total_allocated_memory_used: int
 
