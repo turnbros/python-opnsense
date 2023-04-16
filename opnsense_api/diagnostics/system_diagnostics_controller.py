@@ -15,7 +15,13 @@ class ThreadStats:
 
     @classmethod
     def from_json(cls, data) -> ThreadStats:
-        pass
+        # Parses 160 threads:   3 running, 109 sleeping, 48 waiting
+        pattern = "^(?P<total_threads>\d+)\sthreads\W+(?P<running_threads>\d+)\srunning\W+(?P<sleeping_threads>\d+)\ssleeping\W+(?P<waiting_threads>\d+)\swaiting"
+        data_dict = re.search(pattern, data).groupdict()
+        return cls(data_dict["total_threads"],
+                   data_dict["running_threads"],
+                   data_dict["sleeping_threads"],
+                   data_dict["waiting_threads"])
 
 
 @dataclass
@@ -28,7 +34,14 @@ class CPUStats:
 
     @classmethod
     def from_json(cls, data) -> CPUStats:
-        pass
+        # Parses CPU:  2.7% user,  0.0% nice,  4.9% system,  0.0% interrupt, 92.4% idle
+        pattern = "^CPU\W+(?P<cpu_util>[+-]?([0-9]*[.])?[0-9]+)\W+user\W+(?P<cpu_util_nice>[+-]?([0-9]*[.])?[0-9]+)\W+nice\W+(?P<cpu_util_system>[+-]?([0-9]*[.])?[0-9]+)\W+system\W+(?P<cpu_util_interrupt>[+-]?([0-9]*[.])?[0-9]+)\W+interrupt\W+(?P<cpu_util_idle>[+-]?([0-9]*[.])?[0-9]+)\W+idle"
+        data_dict = re.search(pattern, data).groupdict()
+        return cls(data_dict["cpu_util_user"],
+                   data_dict["cpu_util_nice"],
+                   data_dict["cpu_util_system"],
+                   data_dict["cpu_util_interrupt"],
+                   data_dict["cpu_util_idle"])
 
 
 @dataclass
@@ -41,8 +54,14 @@ class MemoryStats:
 
     @classmethod
     def from_json(cls, data) -> MemoryStats:
-        pass
-
+        # Parses Mem: 93M Active, 23M Inact, 254M Wired, 88M Buf, 3553M Free
+        pattern = "^Mem\W+(?P<memory_active_mb>\d+)M\W+Active\W+(?P<memory_inactive_mb>\d+)M\W+Inact\W+(?P<memory_wired_mb>\d+)M\W+Wired\W+(?P<memory_buffered_mb>\d+)M\W+Buf\W+(?P<memory_free_mb>\d+)M\W+Free"
+        data_dict = re.search(pattern, data).groupdict()
+        return cls(data_dict["memory_active_mb"],
+                   data_dict["memory_inactive_mb"],
+                   data_dict["memory_wired_mb"],
+                   data_dict["memory_buffered_mb"],
+                   data_dict["memory_free_mb"])
 
 @dataclass
 class ProcessStats:
