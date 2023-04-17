@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from pydantic import BaseModel
 from dataclasses import dataclass
 from typing import List
 import re
@@ -18,10 +20,10 @@ class ThreadStats:
         # Parses 160 threads:   3 running, 109 sleeping, 48 waiting
         pattern = "^(?P<total_threads>\d+)\sthreads\W+(?P<running_threads>\d+)\srunning\W+(?P<sleeping_threads>\d+)\ssleeping\W+(?P<waiting_threads>\d+)\swaiting"
         data_dict = re.search(pattern, data).groupdict()
-        return cls(data_dict["total_threads"],
-                   data_dict["running_threads"],
-                   data_dict["sleeping_threads"],
-                   data_dict["waiting_threads"])
+        return cls(int(data_dict["total_threads"]),
+                   int(data_dict["running_threads"]),
+                   int(data_dict["sleeping_threads"]),
+                   int(data_dict["waiting_threads"]))
 
 
 @dataclass
@@ -35,13 +37,13 @@ class CPUStats:
     @classmethod
     def from_json(cls, data) -> CPUStats:
         # Parses CPU:  2.7% user,  0.0% nice,  4.9% system,  0.0% interrupt, 92.4% idle
-        pattern = "^CPU\W+(?P<cpu_util>[+-]?([0-9]*[.])?[0-9]+)\W+user\W+(?P<cpu_util_nice>[+-]?([0-9]*[.])?[0-9]+)\W+nice\W+(?P<cpu_util_system>[+-]?([0-9]*[.])?[0-9]+)\W+system\W+(?P<cpu_util_interrupt>[+-]?([0-9]*[.])?[0-9]+)\W+interrupt\W+(?P<cpu_util_idle>[+-]?([0-9]*[.])?[0-9]+)\W+idle"
+        pattern = "^CPU\W+(?P<cpu_util_user>[+-]?([0-9]*[.])?[0-9]+)\W+user\W+(?P<cpu_util_nice>[+-]?([0-9]*[.])?[0-9]+)\W+nice\W+(?P<cpu_util_system>[+-]?([0-9]*[.])?[0-9]+)\W+system\W+(?P<cpu_util_interrupt>[+-]?([0-9]*[.])?[0-9]+)\W+interrupt\W+(?P<cpu_util_idle>[+-]?([0-9]*[.])?[0-9]+)\W+idle"
         data_dict = re.search(pattern, data).groupdict()
-        return cls(data_dict["cpu_util_user"],
-                   data_dict["cpu_util_nice"],
-                   data_dict["cpu_util_system"],
-                   data_dict["cpu_util_interrupt"],
-                   data_dict["cpu_util_idle"])
+        return cls(float(data_dict["cpu_util_user"]),
+                   float(data_dict["cpu_util_nice"]),
+                   float(data_dict["cpu_util_system"]),
+                   float(data_dict["cpu_util_interrupt"]),
+                   float(data_dict["cpu_util_idle"]))
 
 
 @dataclass
@@ -57,11 +59,11 @@ class MemoryStats:
         # Parses Mem: 93M Active, 23M Inact, 254M Wired, 88M Buf, 3553M Free
         pattern = "^Mem\W+(?P<memory_active_mb>\d+)M\W+Active\W+(?P<memory_inactive_mb>\d+)M\W+Inact\W+(?P<memory_wired_mb>\d+)M\W+Wired\W+(?P<memory_buffered_mb>\d+)M\W+Buf\W+(?P<memory_free_mb>\d+)M\W+Free"
         data_dict = re.search(pattern, data).groupdict()
-        return cls(data_dict["memory_active_mb"],
-                   data_dict["memory_inactive_mb"],
-                   data_dict["memory_wired_mb"],
-                   data_dict["memory_buffered_mb"],
-                   data_dict["memory_free_mb"])
+        return cls(int(data_dict["memory_active_mb"]),
+                   int(data_dict["memory_inactive_mb"]),
+                   int(data_dict["memory_wired_mb"]),
+                   int(data_dict["memory_buffered_mb"]),
+                   int(data_dict["memory_free_mb"]))
 
 @dataclass
 class ProcessStats:
@@ -92,7 +94,6 @@ class ProcessStats:
                             data["TIME"],
                             data["WCPU"],
                             data["COMMAND"])
-
 
 @dataclass
 class SystemActivity:
@@ -133,11 +134,11 @@ class SystemActivity:
         for process_json in data["details"]:
             system_processes.append(ProcessStats.from_json(process_json))
 
-        return SystemActivity(last_pid,
-                              load_average_1m,
-                              load_average_5m,
-                              load_average_15m,
-                              uptime,
+        return SystemActivity(int(last_pid),
+                              float(load_average_1m),
+                              float(load_average_5m),
+                              float(load_average_15m),
+                              int(uptime),
                               system_time,
                               thread_stats,
                               cpu_stats,
@@ -156,10 +157,10 @@ class SystemMemoryAllocationDetails:
     @classmethod
     def from_json(cls, data) -> SystemMemoryAllocationDetails:
         return SystemMemoryAllocationDetails(data["name"],
-                                             data["in-use"],
-                                             data["memory-use"],
-                                             data["requests"],
-                                             data["size"])
+                                             int(data["in-use"]),
+                                             int(data["memory-use"]),
+                                             int(data["requests"]),
+                                             int(data["size"]))
 
 
 @dataclass
@@ -177,14 +178,14 @@ class SystemMemoryZoneStatistics:
     @classmethod
     def from_json(cls, data) -> SystemMemoryZoneStatistics:
         return SystemMemoryZoneStatistics(data["name"],
-                                          data["size"],
-                                          data["limit"],
-                                          data["used"],
-                                          data["free"],
-                                          data["requests"],
-                                          data["fail"],
-                                          data["sleep"],
-                                          data["xdomain"])
+                                          int(data["size"]),
+                                          int(data["limit"]),
+                                          int(data["used"]),
+                                          int(data["free"]),
+                                          int(data["requests"]),
+                                          int(data["fail"]),
+                                          int(data["sleep"]),
+                                          int(data["xdomain"]))
 
 
 @dataclass
@@ -208,9 +209,9 @@ class SystemMemoryDetails:
         total_virtual_memory_used = data["memory-zone-statistics"]["totals"]["used"]
 
         return cls(memory_allocations,
-                   total_allocated_memory_used,
+                   int(total_allocated_memory_used),
                    virtual_memory_zones,
-                   total_virtual_memory_used)
+                   int(total_virtual_memory_used))
 
 
 class SystemDiagnosticsController:
@@ -241,7 +242,7 @@ class SystemDiagnosticsController:
             super().__init__(device, "diagnostics", "activity")
 
         def get_activity(self) -> SystemActivity:
-            return self._api_get("getActivity")
+            return SystemActivity.from_json(self._api_get("getActivity"))
 
     class _SystemMemory(OPNsenseAPIController):
 

@@ -71,7 +71,7 @@ class InterfaceSummary:
 
 
 @dataclass
-class InterfaceTrafficDetails:
+class InterfaceTopRecordDetail:
     address: str
     rate: str
     rate_bits: int
@@ -80,8 +80,8 @@ class InterfaceTrafficDetails:
     tags: List[str]
 
     @classmethod
-    def from_json(cls, data) -> InterfaceTrafficDetails:
-        return InterfaceTrafficDetails(
+    def from_json(cls, data) -> InterfaceTopRecordDetail:
+        return InterfaceTopRecordDetail(
             data["address"],
             data["rate"],
             data["rate_bits"],
@@ -91,7 +91,7 @@ class InterfaceTrafficDetails:
 
 
 @dataclass
-class InterfaceTraffic:
+class InterfaceTopRecord:
     name: str
     address: str
     rate_in: str
@@ -107,16 +107,15 @@ class InterfaceTraffic:
     cumulative_bytes_out: int
     cumulative_bytes: int
     tags: List[str]
-    details: List[InterfaceTrafficDetails]
+    details: List[InterfaceTopRecordDetail]
 
     @classmethod
-    def from_json(cls, data) -> InterfaceTraffic:
-
+    def from_json(cls, data) -> InterfaceTopRecord:
         client_details = []
         for client_detail in data["details"]:
-            client_details.append(InterfaceTrafficDetails.from_json(client_detail))
+            client_details.append(InterfaceTopRecordDetail.from_json(client_detail))
 
-        return InterfaceTraffic(
+        return InterfaceTopRecord(
             data["rname"],
             data["address"],
             data["rate_in"],
@@ -173,7 +172,7 @@ class InterfaceDiagnosticsController:
         """
         return self._traffic_controller.interface()
 
-    def get_interface_traffic(self, interface) -> InterfaceTraffic:
+    def get_interface_top(self, interface) -> List[InterfaceTopRecord]:
         """
         Returns detailed information about a specific interface.
 
@@ -208,10 +207,28 @@ class InterfaceDiagnosticsController:
             super().__init__(device, "diagnostics", "traffic")
 
         def interface(self) -> List[InterfaceSummary]:
+            api_interfaces = self._api_get("Interface")
             interfaces = []
-            for interface in self._api_get("Interface"):
-                interfaces.append(InterfaceSummary.from_json(interface))
+            for interface in api_interfaces["interfaces"]:
+                interfaces.append(InterfaceSummary.from_json(api_interfaces["interfaces"][interface]))
             return interfaces
 
-        def top(self, interface) -> InterfaceTraffic:
-            return InterfaceTraffic.from_json(self._api_get("Top", interface))
+        def top(self, interface) -> List[InterfaceTopRecord]:
+
+            api_response = self._api_get("top", interface)
+            if len(api_response) == 0:
+                raise Exception(f"Interface \"{interface}\" not found!")
+
+            api_response = api_response[interface]
+            if api_response["status"] != "ok":
+                raise Exception(f"Failed to get interface top! Status: {api_response['status']}")
+
+            interface_top_records = []
+            for interface_top_record in api_response["records"]:
+                interface_top_records.append(InterfaceTopRecord.from_json(interface_top_record))
+
+            return interface_top_records
+
+
+
+
