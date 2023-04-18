@@ -3,7 +3,6 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-<<<<<<< HEAD
 User Guide
 ==========
 
@@ -25,20 +24,3 @@ Information about using this library.
     :maxdepth: 2
 
     contributor_guide/index
-=======
-Welcome to Python-OPNsense's documentation!
-===========================================
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
->>>>>>> ifalatik-feature/unittesting
