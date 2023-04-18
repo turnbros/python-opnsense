@@ -52,15 +52,15 @@ class Alias(OPNsenseItem):
     #: The type this Alias will be created as.
     type: AliasType
     #: A description for this alias
-    description: Optional[constr(min_length=0, max_length=255)] = None
+    description: constr(min_length=0, max_length=255) = ""
     #: An alias update frequency
     updatefreq: Optional[str]
     #: counters
     counters: Optional[str]
     #: The Alias protocol
-    proto: Optional[ProtocolType] = None
+    proto: Optional[ProtocolType]
     #: content
-    content: Optional[list[str]] = None
+    content: Optional[list[str]]
     #: enabled
     enabled: bool = True
     #: categories_uuids

@@ -17,11 +17,3 @@ def query_opnsense_device_dns(record_name: str, record_type: str = "NS") -> List
     for record in answer:
         records.append(record.to_text())
     return records
-
-
-def establish_https_connection(endpoint: str, ssl_cert: str):
-    import http.client
-    SSL
-    c = http.client.HTTPSConnection(endpoint, ssl_cert=ssl_cert)
-    c.request("GET", "/")
-    response = c.getresponse()
