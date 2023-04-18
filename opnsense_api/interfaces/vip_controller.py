@@ -106,5 +106,5 @@ class VIPController(OPNsenseApplicableItemController[VIP]):
         super().__init__(device, "interfaces", "vip_settings")
 
     def list(self) -> list[VIP]:
-        query_response = self._api_post(self.ItemActions.search.value)
+        query_response = self._api_post(self._ItemActions.search.value)
         return [self.get(row["uuid"]) for row in query_response.get('rows')]
