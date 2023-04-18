@@ -20,7 +20,14 @@ release = '1.1.0'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ["myst_parser", 'sphinx.ext.autodoc', 'sphinx.ext.todo', 'sphinx.ext.coverage', 'sphinx.ext.autosummary']
+extensions = [
+    "myst_parser",
+    'sphinx.ext.autodoc',
+    'sphinx.ext.todo',
+    'sphinx.ext.coverage',
+    'sphinx.ext.autosummary',
+    'enum_tools.autoenum'
+]
 autosummary_generate = True
 templates_path = ['_templates']
 exclude_patterns = []
@@ -31,7 +38,12 @@ html_theme_options = {
     "logo": {
         "text": "Python-OPNsense",
     },
+    "show_nav_level": 2
 }
 
 html_static_path = ['_static']
 
+html_sidebars = {
+
+    "primary_sidebar_end": ["sidebar-nav-bs", "sidebar-ethical-ads"],
+}

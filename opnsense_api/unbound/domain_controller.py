@@ -23,7 +23,7 @@ class DomainOverride(OPNsenseItem):
 
 
 class DomainController(UnboundResourceController[DomainOverride]):
-    class ItemActions(Enum):
+    class _ItemActions(Enum):
         search = "searchDomainOverride"
         get = "getDomainOverride"
         add = "addDomainOverride"

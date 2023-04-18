@@ -1,6 +1,6 @@
-from .system_diagnostics_controller import SystemDiagnosticsController as System
 from .interface_diagnostics_controller import InterfaceDiagnosticsController as Interface
 from .netflow_diagnostics_controller import NetflowDiagnosticsController as Netflow
+from .system_diagnostics_controller import SystemDiagnosticsController as System
 
 
 class Diagnostics(object):

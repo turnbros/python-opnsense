@@ -84,7 +84,7 @@ class HostOverride(OPNsenseItem):
 
 
 class HostController(UnboundResourceController[HostOverride]):
-    class ItemActions(Enum):
+    class _ItemActions(Enum):
         search = "searchHostOverride"
         get = "getHostOverride"
         add = "addHostOverride"

@@ -3,27 +3,24 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome
-===========================================
+User Guide
+==========
+
+Information about using this library.
 
 ..  toctree::
     :hidden:
-    :maxdepth: 1
+    :maxdepth: 2
 
-    self
+    user_guide/index
 
-..  autosummary::
-    :caption: Documentation
-    :toctree: _autosummary
-    :template: opnsense-module-template.rst
-    :recursive:
+Contributor Guide
+=================
 
-    opnsense_api
+Information about using this library.
 
+..  toctree::
+    :hidden:
+    :maxdepth: 2
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+    contributor_guide/index

@@ -1,12 +1,11 @@
-First, install Python-OPNsense
+:html_theme.sidebar_secondary.remove:
 
-.. code:: shell
+Connecting to an OPNsense Firewall
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    pip install python-opnsense
+With the devices CA certificate in hand, create an instance of `Opnsense` by providing a path to the cert-bundle.
 
-Next, create an instance of `Opnsense` by providing a path to a cert-bundle.
-
-.. code:: python
+..  code:: python
 
     from opnsense_api import Opnsense
     opnsense = Opnsense(api_key="my_opnsense_api_key",
@@ -16,7 +15,7 @@ Next, create an instance of `Opnsense` by providing a path to a cert-bundle.
 
 Another option is to create an instance using a base64 encoded CA certificate instead.
 
-.. code:: python
+..  code:: python
 
     from opnsense_api import Opnsense
     opnsense = Opnsense(api_key="my_opnsense_api_key",
