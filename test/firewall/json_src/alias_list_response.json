@@ -1,0 +1,84 @@
+{
+    "rows": [
+        {
+            "uuid": "bogons",
+            "enabled": "1",
+            "name": "bogons",
+            "description": "bogon networks (internal)",
+            "type": "External (advanced)",
+            "content": "",
+            "current_items": "10",
+            "last_updated": "",
+            "categories_uuid": []
+        },
+        {
+            "uuid": "bogonsv6",
+            "enabled": "1",
+            "name": "bogonsv6",
+            "description": "bogon networks IPv6 (internal)",
+            "type": "External (advanced)",
+            "content": "",
+            "current_items": "76",
+            "last_updated": "",
+            "categories_uuid": []
+        },
+        {
+            "uuid": "a3a1d19e-be99-43de-99de-b2cd4947359c",
+            "enabled": "1",
+            "name": "net_alias",
+            "description": "",
+            "type": "Network(s)",
+            "content": "192.168.1.0/24",
+            "current_items": "1",
+            "last_updated": "2023-03-01T22:05:08.555023",
+            "categories_uuid": []
+        },
+        {
+            "uuid": "87be7a20-d3b8-481d-adfa-c3eb35ce0d24",
+            "enabled": "1",
+            "name": "new_alias",
+            "description": "",
+            "type": "Port(s)",
+            "content": "80,443",
+            "current_items": "",
+            "last_updated": "",
+            "categories_uuid": []
+        },
+        {
+            "uuid": "e0a70cde-cfbc-4ce0-bc57-6d85149ba696",
+            "enabled": "1",
+            "name": "URL_Table",
+            "description": "",
+            "type": "URL Table (IPs)",
+            "content": "9.9.9.9,10.10.10.10,1.1.1.1",
+            "current_items": "0",
+            "last_updated": "2023-03-27T11:10:00.247310",
+            "categories_uuid": []
+        },
+        {
+            "uuid": "sshlockout",
+            "enabled": "1",
+            "name": "sshlockout",
+            "description": "abuse lockout table (internal)",
+            "type": "External (advanced)",
+            "content": "",
+            "current_items": "0",
+            "last_updated": "",
+            "categories_uuid": []
+        },
+        {
+            "uuid": "__LAN_GROUP_network",
+            "enabled": "1",
+            "name": "__LAN_GROUP_network",
+            "description": "LAN_GROUP net",
+            "type": "Internal (automatic)",
+            "content": "",
+            "current_items": "3",
+            "last_updated": "",
+            "categories_uuid": []
+        }
+    ],
+    "rowCount": 7,
+    "total": 7,
+    "current": 1
+}

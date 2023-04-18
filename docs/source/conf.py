@@ -1,9 +1,12 @@
+<<<<<<< HEAD
 import os
 import sys
 
 sys.path.insert(5, os.path.abspath('..'))
 sys.path.insert(4, os.path.abspath('../..'))
 
+=======
+>>>>>>> ifalatik-feature/unittesting
 # Configuration file for the Sphinx documentation builder.
 #
 # For the full list of built-in configuration values, see the documentation:
@@ -20,6 +23,7 @@ release = '1.1.0'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
+<<<<<<< HEAD
 extensions = [
     "myst_parser",
     'sphinx.ext.autodoc',
@@ -47,3 +51,17 @@ html_sidebars = {
 
     "primary_sidebar_end": ["sidebar-nav-bs", "sidebar-ethical-ads"],
 }
+=======
+extensions = []
+
+templates_path = ['_templates']
+exclude_patterns = []
+
+
+
+# -- Options for HTML output -------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
+
+html_theme = 'alabaster'
+html_static_path = ['_static']
+>>>>>>> ifalatik-feature/unittesting

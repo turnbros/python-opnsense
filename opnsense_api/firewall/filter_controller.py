@@ -18,7 +18,7 @@ This requires the os-firewall plugin to be installed.
 class FilterRule(OPNsenseItem):
     enabled: bool = True
     sequence: conint(gt=0, lt=100000)
-    description: Optional[constr(min_length=0, max_length=255)] = None
+    description: constr(min_length=0, max_length=255) = ""
     action: constr(to_lower=True) = "pass"
     quick: bool = True
     interface: conlist(item_type=str, min_items=1, unique_items=True) = ["lan"]
