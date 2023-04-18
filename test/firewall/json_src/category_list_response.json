@@ -1,0 +1,25 @@
+{
+    "rows": [
+        {
+            "uuid": "6ce2534f-8037-46ff-852a-aca295550aec",
+            "name": "Category1",
+            "auto": "1",
+            "color": "aaaaaa"
+        },
+        {
+            "uuid": "3290ae86-e6ee-4e0c-a95d-99e53d34c9ec",
+            "name": "Category2",
+            "auto": "0",
+            "color": ""
+        },
+        {
+            "uuid": "521b4779-a493-4790-b1a2-92738f4c85c0",
+            "name": "Category3",
+            "auto": "0",
+            "color": "121212"
+        }
+    ],
+    "rowCount": 3,
+    "total": 3,
+    "current": 1
+}
