@@ -37,7 +37,7 @@ class InterfaceSummary:
     uptime_at_attach_or_stat_reset: int  # "1"
 
     @classmethod
-    def from_json(cls, data) -> InterfaceSummary:
+    def _parse(cls, data) -> InterfaceSummary:
         return InterfaceSummary(
             data["name"],
             data["flags"],
@@ -80,7 +80,7 @@ class InterfaceTopRecordDetail:
     tags: List[str]
 
     @classmethod
-    def from_json(cls, data) -> InterfaceTopRecordDetail:
+    def _parse(cls, data) -> InterfaceTopRecordDetail:
         return InterfaceTopRecordDetail(
             data["address"],
             data["rate"],
@@ -110,10 +110,10 @@ class InterfaceTopRecord:
     details: List[InterfaceTopRecordDetail]
 
     @classmethod
-    def from_json(cls, data) -> InterfaceTopRecord:
+    def _parse(cls, data) -> InterfaceTopRecord:
         client_details = []
         for client_detail in data["details"]:
-            client_details.append(InterfaceTopRecordDetail.from_json(client_detail))
+            client_details.append(InterfaceTopRecordDetail._parse(client_detail))
 
         return InterfaceTopRecord(
             data["rname"],
@@ -143,7 +143,7 @@ class SystemRRDlist:
     traffic: List[str]
 
     @classmethod
-    def from_json(cls, data) -> SystemRRDlist:
+    def _parse(cls, data) -> SystemRRDlist:
         return cls(data["result"],
                    data["data"]["packets"],
                    data["data"]["system"],
@@ -199,7 +199,7 @@ class InterfaceDiagnosticsController:
             return self._api_get("getInterfaces").keys()
 
         def get_rrd_list(self) -> SystemRRDlist:
-            return SystemRRDlist.from_json(self._api_get("getRRDlist"))
+            return SystemRRDlist._parse(self._api_get("getRRDlist"))
 
     class _Traffic(OPNsenseAPIController):
 
@@ -210,7 +210,7 @@ class InterfaceDiagnosticsController:
             api_interfaces = self._api_get("Interface")
             interfaces = []
             for interface in api_interfaces["interfaces"]:
-                interfaces.append(InterfaceSummary.from_json(api_interfaces["interfaces"][interface]))
+                interfaces.append(InterfaceSummary._parse(api_interfaces["interfaces"][interface]))
             return interfaces
 
         def top(self, interface) -> List[InterfaceTopRecord]:
@@ -225,7 +225,7 @@ class InterfaceDiagnosticsController:
 
             interface_top_records = []
             for interface_top_record in api_response["records"]:
-                interface_top_records.append(InterfaceTopRecord.from_json(interface_top_record))
+                interface_top_records.append(InterfaceTopRecord._parse(interface_top_record))
 
             return interface_top_records
 

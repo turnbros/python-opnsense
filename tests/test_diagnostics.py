@@ -5,14 +5,12 @@ current = os.path.dirname(os.path.realpath(__file__))
 parent = os.path.dirname(current)
 sys.path.append(parent)
 
-from opnsense_api.diagnostics.system_diagnostics_controller import SystemActivity, SystemMemoryDetails
-from opnsense_api.diagnostics.interface_diagnostics_controller import InterfaceSummary, InterfaceTopRecord, InterfaceTopRecordDetail, SystemRRDlist
+from opnsense_api.diagnostics.system_diagnostics_controller import SystemActivity
+from opnsense_api.diagnostics.interface_diagnostics_controller import InterfaceSummary, InterfaceTopRecord
+from opnsense_api.diagnostics.interface_diagnostics_controller import InterfaceTopRecordDetail, SystemRRDlist
 from opnsense_api import Opnsense
 
 
-domain_ip_override = os.getenv("TEST_DOMAIN_IP")
-test_alias = os.getenv("TEST_ALIAS")
-test_domain = os.getenv("TEST_DOMAIN")
 opnsense = Opnsense()
 
 
@@ -26,6 +24,14 @@ def test_diagnostics_controller():
     # System Activity
     system_activity = opnsense_system_diagnostics.get_activity()
     assert type(system_activity) is SystemActivity
+
+    # System Memory Stats
+    # system_memory_stats = opnsense_system_diagnostics.get_memory_statistics()
+    # assert type(system_memory_stats) is SystemMemoryDetails
+    # assert len(system_memory_stats.virtual_memory_zones) > 0
+    # assert type(system_memory_stats.virtual_memory_zones[0]) is SystemMemoryZoneStatistics
+    # assert len(system_memory_stats.memory_allocations) > 0
+    # assert type(system_memory_stats.memory_allocations[0]) is SystemMemoryAllocationDetails
 
     system_rrd_list = opnsense_diagnostics.interface_diagnostics.get_rrd_list()
     assert type(system_rrd_list) is SystemRRDlist
