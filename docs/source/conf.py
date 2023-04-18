@@ -25,8 +25,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
-    'sphinx.ext.autosummary',
-    'enum_tools.autoenum'
+    'sphinx.ext.autosummary'
 ]
 autosummary_generate = True
 templates_path = ['_templates']
