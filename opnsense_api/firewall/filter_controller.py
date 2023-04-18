@@ -100,7 +100,7 @@ class FilterRule(OPNsenseItem):
 
 
 class FilterController(OPNsenseApplicableItemController[FilterRule]):
-    class ItemActions(Enum):
+    class _ItemActions(Enum):
         search = "searchRule"
         get = "getRule"
         add = "addRule"
@@ -116,10 +116,10 @@ class FilterController(OPNsenseApplicableItemController[FilterRule]):
         return FilterRule
 
     def apply_changes(self) -> None:
-        response = self._api_post(self.ItemActions.apply.value)
+        response = self._api_post(self._ItemActions.apply.value)
         if response["status"] != "OK\n\n":
             raise FailedToApplyChangesException(f"Failed to apply changes. Reason {response}")
 
     def list(self) -> List[FilterRule]:
-        query_response = self._api_post(self.ItemActions.search.value)
+        query_response = self._api_post(self._ItemActions.search.value)
         return [self.get(row["uuid"]) for row in query_response.get('rows')]

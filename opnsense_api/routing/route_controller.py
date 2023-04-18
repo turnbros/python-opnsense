@@ -46,7 +46,7 @@ class RouteController(OPNsenseApplicableItemController[Route]):
     def opnsense_item_class(self) -> type[Route]:
         return Route
 
-    class ItemActions(Enum):
+    class _ItemActions(Enum):
         search = "searchroute"
         get = "getroute"
         add = "addroute"

@@ -3,18 +3,24 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Python-OPNsense's documentation!
-===========================================
+User Guide
+==========
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+Information about using this library.
 
+..  toctree::
+    :hidden:
+    :maxdepth: 2
 
+    user_guide/index
 
-Indices and tables
-==================
+Contributor Guide
+=================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+Information about using this library.
+
+..  toctree::
+    :hidden:
+    :maxdepth: 2
+
+    contributor_guide/index
