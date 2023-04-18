@@ -13,7 +13,7 @@ ConfigArgParse==1.5.3
 constantly==15.1.0
 deprecation==2.1.0
 dnspython==2.3.0
-docutils==0.18
+docutils==0.18.1
 hyperlink==21.0.0
 idna==3.4
 imagesize==1.4.1
