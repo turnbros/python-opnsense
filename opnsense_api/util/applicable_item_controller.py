@@ -10,7 +10,7 @@ class OPNsenseApplicableItemController(OPNsenseItemController[TOPNsenseItem], AB
     Controller for OPNSense items that have an apply action.
     """
 
-    class ItemActions(Enum):
+    class _ItemActions(Enum):
         search = "searchItem"
         get = "getItem"
         add = "addItem"
@@ -35,6 +35,6 @@ class OPNsenseApplicableItemController(OPNsenseItemController[TOPNsenseItem], AB
         Apply any pending changes
 
         """
-        response = self._api_post(self.ItemActions.apply.value)
+        response = self._api_post(self._ItemActions.apply.value)
         if response["status"] != "ok":
             raise FailedToApplyChangesException(f"Failed to apply changes. Reason {response}")

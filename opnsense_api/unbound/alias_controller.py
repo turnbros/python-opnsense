@@ -44,7 +44,7 @@ class HostAlias(OPNsenseItem):
 
 
 class AliasController(UnboundResourceController[HostAlias]):
-    class ItemActions(Enum):
+    class _ItemActions(Enum):
         search = "searchHostAlias"
         get = "getHostAlias"
         add = "addHostAlias"
@@ -57,5 +57,5 @@ class AliasController(UnboundResourceController[HostAlias]):
         return HostAlias
 
     def list(self) -> List[HostAlias]:
-        query_response = self._api_post(self.ItemActions.search.value)
+        query_response = self._api_post(self._ItemActions.search.value)
         return [self.get(row["uuid"]) for row in query_response.get('rows')]
