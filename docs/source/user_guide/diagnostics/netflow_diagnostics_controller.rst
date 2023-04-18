@@ -3,12 +3,6 @@ netflow_diagnostics_controller
 
 .. currentmodule:: opnsense_api.diagnostics.netflow_diagnostics_controller
 
-.. autoclass:: NetflowDiagnosticsController
-   :members:
-   :show-inheritance:
-   :inherited-members:
-   :no-undoc-members:
-
 Methods
 ~~~~~~~
 
@@ -20,6 +14,12 @@ Methods
   ~NetflowDiagnosticsController.is_enabled
   ~NetflowDiagnosticsController.reconfigure
   ~NetflowDiagnosticsController.set_config
+
+.. autoclass:: NetflowDiagnosticsController
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :no-undoc-members:
 
 Examples
 ~~~~~~~~
