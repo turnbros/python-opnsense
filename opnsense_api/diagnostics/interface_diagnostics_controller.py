@@ -167,7 +167,6 @@ class InterfaceDiagnosticsController:
         """
         Lists the configured interfaces
 
-        :return: SystemInterfaces
         """
         return self._system_health_controller.get_interfaces()
 
@@ -175,7 +174,6 @@ class InterfaceDiagnosticsController:
         """
         Returns a list of interfaces and their utilization.
 
-        :return:
         """
         return self._traffic_controller.interface()
 
@@ -183,8 +181,6 @@ class InterfaceDiagnosticsController:
         """
         Returns detailed information about a specific interface.
 
-        :param interface:
-        :return:
         """
         return self._traffic_controller.top(interface)
 

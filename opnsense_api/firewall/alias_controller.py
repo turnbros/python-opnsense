@@ -44,12 +44,13 @@ ALIAS_LONG_NAME_TO_TYPE_DICT: dict[str, AliasType] = {
 
 class Alias(OPNsenseItem):
     """
-    An Alias.
+    Represents a firewall alias on an OPNsense device.
+
     """
 
-    #: The Alias name
+    #: The alias name
     name: constr(min_length=1, max_length=32, strip_whitespace=True, regex=r"^[a-zA-Z0-9_]*$")
-    #: The type this Alias will be created as.
+    #: The type this alias will be created as.
     type: AliasType
     #: A description for this alias
     description: constr(min_length=0, max_length=255) = ""
@@ -57,11 +58,11 @@ class Alias(OPNsenseItem):
     updatefreq: Optional[str]
     #: counters
     counters: Optional[str]
-    #: The Alias protocol
+    #: The alias protocol
     proto: Optional[ProtocolType]
     #: content
     content: Optional[list[str]]
-    #: enabled
+    #: Enabled if the alias is enabled, otherwise nah.
     enabled: bool = True
     #: categories_uuids
     categories_uuids: list[str] = []
@@ -115,5 +116,9 @@ class FirewallAliasController(OPNsenseApplicableItemController[Alias]):
         super().__init__(device, "firewall", "alias")
 
     def get_uuid(self, name: str) -> Optional[str]:
+        """
+        Gets an Alias by name and returns the UUID
+
+        """
         query_response = self._api_get(self._ItemActions.get_uuid.value, name)
         return query_response.get('uuid')

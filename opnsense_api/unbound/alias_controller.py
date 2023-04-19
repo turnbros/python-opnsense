@@ -10,6 +10,11 @@ from ..util.parse import parse_selected_keys
 
 
 class HostAlias(OPNsenseItem):
+    """
+    An OPNsense device Unbound Host Alias
+
+    """
+
     enabled: bool = True
     hostname: str
     domain: str
@@ -57,5 +62,9 @@ class AliasController(UnboundResourceController[HostAlias]):
         return HostAlias
 
     def list(self) -> List[HostAlias]:
+        """
+        Returns a list of Unbound Host Aliases on an OPNsense device.
+
+        """
         query_response = self._api_post(self._ItemActions.search.value)
         return [self.get(row["uuid"]) for row in query_response.get('rows')]

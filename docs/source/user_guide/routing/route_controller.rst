@@ -3,23 +3,20 @@ route_controller
 
 .. currentmodule:: opnsense_api.routing.route_controller
 
+.. rubric:: Route Controller
 .. autoclass:: RouteController
    :members:
    :show-inheritance:
    :inherited-members:
    :no-undoc-members:
 
-Methods
-~~~~~~~
+----------
 
-.. autosummary::
+.. rubric:: Route
+.. autoclass:: Route()
+   :members:
 
-  ~RouteController.add
-  ~RouteController.apply_changes
-  ~RouteController.delete
-  ~RouteController.get
-  ~RouteController.list
-  ~RouteController.set
+----------
 
 Examples
 ~~~~~~~~

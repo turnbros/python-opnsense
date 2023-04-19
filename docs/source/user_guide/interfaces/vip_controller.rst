@@ -3,23 +3,25 @@ vip_controller
 
 .. currentmodule:: opnsense_api.interfaces.vip_controller
 
+.. rubric:: Virtual IP Controller
 .. autoclass:: VIPController
    :members:
    :show-inheritance:
    :inherited-members:
    :no-undoc-members:
 
-Methods
-~~~~~~~
+----------
 
-.. autosummary::
+.. rubric:: Virtual IP
+.. autoclass:: VIP()
+   :members:
 
-  ~VIPController.add
-  ~VIPController.apply_changes
-  ~VIPController.delete
-  ~VIPController.get
-  ~VIPController.list
-  ~VIPController.set
+----------
+
+.. rubric:: VIP Modes
+.. autoenum:: VIPMode()
+
+----------
 
 Examples
 ~~~~~~~~

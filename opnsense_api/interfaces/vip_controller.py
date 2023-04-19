@@ -10,6 +10,11 @@ from ..util.parse import parse_selected_keys, parse_int
 
 
 class VIPMode(Enum):
+    """
+    A OPNsense device virtual IP.
+
+    """
+
     IPALIAS = "ipalias"
     CARP = "carp"
     PROXYARP = "proxyarp"

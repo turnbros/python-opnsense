@@ -3,7 +3,7 @@ alias_controller
 
 .. currentmodule:: opnsense_api.unbound.alias_controller
 
-.. rubric:: Unbound Alias Controller
+.. rubric:: Unbound Host Alias Controller
 .. autoclass:: AliasController
    :members:
    :show-inheritance:

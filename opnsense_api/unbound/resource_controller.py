@@ -8,6 +8,7 @@ from opnsense_api.util.item_controller import T
 class UnboundResourceController(OPNsenseApplicableItemController[T], ABC):
     """
     Unbound Controllers extend this, so changes get applied at api/unbound/service/reconfigure.
+
     """
 
     _unbound_service_controller: UnboundServiceController

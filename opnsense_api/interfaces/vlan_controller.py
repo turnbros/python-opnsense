@@ -30,6 +30,11 @@ VLAN_LONG_NAME_TO_PRIORITY_DICT: dict[str, VLANPriority] = {
 
 
 class VLAN(OPNsenseItem):
+    """
+    An OPNsense device VLAN.
+
+    """
+
     device: str = Field(default="", alias="vlanif")
     parent: constr(to_lower=True, min_length=1) = Field(alias="if")
     tag: conint(gt=0, lt=4095, strict=True)
@@ -69,6 +74,10 @@ class VLANController(OPNsenseItemController[VLAN]):
         return VLAN
 
     def add(self, controller_item: VLAN) -> None:
+        """
+        Adds a new VLAN to an OPNsense device
+
+        """
         super().add(controller_item)
         assert controller_item.uuid
         controller_item.device = self.get(controller_item.uuid).device  # get item again so correct device is set

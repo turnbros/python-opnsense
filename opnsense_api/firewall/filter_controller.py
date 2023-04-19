@@ -121,5 +121,10 @@ class FilterController(OPNsenseApplicableItemController[FilterRule]):
             raise FailedToApplyChangesException(f"Failed to apply changes. Reason {response}")
 
     def list(self) -> List[FilterRule]:
+        """
+        List the firewall filters configured on an OPNsense device.
+
+        """
+
         query_response = self._api_post(self._ItemActions.search.value)
         return [self.get(row["uuid"]) for row in query_response.get('rows')]

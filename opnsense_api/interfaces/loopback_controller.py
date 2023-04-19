@@ -5,6 +5,11 @@ from opnsense_api.util.item_controller import OPNsenseItem
 
 
 class LoopbackInterface(OPNsenseItem):
+    """
+    A OPNsense device loopback network interface.
+
+    """
+
     description: constr(min_length=1, max_length=255)
     deviceId: int
 

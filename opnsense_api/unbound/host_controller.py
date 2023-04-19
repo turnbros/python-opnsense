@@ -23,6 +23,11 @@ UNBOUND_RR_LONG_NAME_TO_TYPE_DICT: dict[str, UnboundResourceRecordType] = {
 
 
 class HostOverride(OPNsenseItem):
+    """
+    An OPNsense device Unbound Host Override
+
+    """
+
     enabled: bool = True
     hostname: str
     domain: str

@@ -5,27 +5,24 @@ class NetflowDiagnosticsController(OPNsenseAPIController):
     def __init__(self, device):
         super().__init__(device, "diagnostics", "netflow")
 
-    def get_cache_stats(self):
+    def get_cache_stats(self) -> dict:
         """
         Returns netflow cache stats
 
-        :return:
         """
         return self._api_get("cacheStats")
 
-    def get_config(self):
+    def get_config(self) -> dict:
         """
         Returns the active netflow config
 
-        :return:
         """
         return self._api_get("getconfig")
 
-    def is_enabled(self):
+    def is_enabled(self) -> bool:
         """
         Returns `True` if netflow data collection is enabled.
 
-        :return: bool
         """
 
         return self._api_get("isEnabled")
@@ -34,7 +31,6 @@ class NetflowDiagnosticsController(OPNsenseAPIController):
         """
         Applies any pending configuration changes.
 
-        :return: None
         """
         return self._api_get("reconfigure")
 
@@ -42,7 +38,6 @@ class NetflowDiagnosticsController(OPNsenseAPIController):
         """
         Updates the netflow configuration
 
-        :return:
         """
         return self._api_get("setconfig")
 
@@ -50,7 +45,6 @@ class NetflowDiagnosticsController(OPNsenseAPIController):
         """
         Returns the status of netflow collection
 
-        :return:
         """
         return self._api_get("status")
 

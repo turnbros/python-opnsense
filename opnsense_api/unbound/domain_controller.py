@@ -5,6 +5,11 @@ from opnsense_api.util.item_controller import OPNsenseItem
 
 
 class DomainOverride(OPNsenseItem):
+    """
+    An OPNsense device Unbound Domain Override
+
+    """
+
     enabled: bool = True
     domain: str
     server: str

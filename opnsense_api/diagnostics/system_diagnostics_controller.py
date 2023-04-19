@@ -225,7 +225,6 @@ class SystemDiagnosticsController:
         """
         Returns detailed information about system utilization and process state
 
-        :return: SystemActivity
         """
         return self._system_activity_controller.get_activity()
 
@@ -233,7 +232,6 @@ class SystemDiagnosticsController:
     #     """
     #     Returns detailed system memory statistics.
     #
-    #     :return: SystemMemoryDetails
     #     """
     #     return self._system_memory_controller.get_memory_details()
 

@@ -7,6 +7,11 @@ from opnsense_api.util.item_controller import OPNsenseItem, OPNsenseItemControll
 
 
 class Category(OPNsenseItem):
+    """
+    Represents a firewall category in an OPNsense device.
+
+    """
+
     name: str
     auto: bool = True
     color: constr(to_lower=True, max_length=6) = ""
