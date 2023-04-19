@@ -3,23 +3,25 @@ host_controller
 
 .. currentmodule:: opnsense_api.unbound.host_controller
 
+.. rubric:: Unbound Host Controller
 .. autoclass:: HostController
    :members:
    :show-inheritance:
    :inherited-members:
    :no-undoc-members:
 
-Methods
-~~~~~~~
+----------
 
-.. autosummary::
+.. rubric:: Controller OPNsenseItems
+.. autoclass:: HostOverride()
+   :members:
 
-  ~HostController.list
-  ~HostController.get
-  ~HostController.add
-  ~HostController.set
-  ~HostController.delete
-  ~HostController.apply_changes
+----------
+
+.. rubric:: Controller OPNsenseItems Types
+.. autoenum:: UnboundResourceRecordType()
+
+----------
 
 Examples
 ~~~~~~~~

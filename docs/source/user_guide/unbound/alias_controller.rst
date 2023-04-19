@@ -3,23 +3,20 @@ alias_controller
 
 .. currentmodule:: opnsense_api.unbound.alias_controller
 
+.. rubric:: Unbound Alias Controller
 .. autoclass:: AliasController
    :members:
    :show-inheritance:
    :inherited-members:
    :no-undoc-members:
 
-Methods
-~~~~~~~
+----------
 
-.. autosummary::
+.. rubric:: Controller OPNsenseItems
+.. autoclass:: HostAlias()
+   :members:
 
-  ~AliasController.list
-  ~AliasController.get
-  ~AliasController.add
-  ~AliasController.set
-  ~AliasController.delete
-  ~AliasController.apply_changes
+----------
 
 Examples
 ~~~~~~~~

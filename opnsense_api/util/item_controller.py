@@ -88,6 +88,7 @@ class OPNsenseItem(BaseModel, ABC):
         }
 
 
+#: OPNsense item generic
 T = TypeVar('T', bound=OPNsenseItem)
 
 
@@ -101,8 +102,6 @@ class OPNsenseItemController(Generic[T], OPNsenseAPIController, ABC):
         add = "addItem"
         set = "setItem"
         delete = "delItem"
-        # toggle = "toggleItem"
-        # removed toggle, we should just use set
 
     @property
     @abstractmethod

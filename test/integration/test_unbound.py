@@ -5,7 +5,7 @@ import dns.resolver
 import pytest
 
 from opnsense_api.unbound.alias_controller import HostAlias
-from opnsense_api.unbound.host_controller import HostOverride, UnboundResourceRecord
+from opnsense_api.unbound.host_controller import HostOverride, UnboundResourceRecordType
 
 current = os.path.dirname(os.path.realpath(__file__))
 parent = os.path.dirname(current)
@@ -35,7 +35,7 @@ def test_host_controller():
     assert len(override_list) == 0
 
     # ADD: Create the host override
-    new_override = HostOverride(uuid=None, hostname="", domain=test_domain, server=domain_ip_override, rr=UnboundResourceRecord.A,
+    new_override = HostOverride(uuid=None, hostname="", domain=test_domain, server=domain_ip_override, rr=UnboundResourceRecordType.A,
                                 description="test-override")
     host_overrides.add(new_override)
     assert new_override.uuid
@@ -80,7 +80,7 @@ def test_alias_controller():
 
     # ADD: Create the host override
     new_host_override = HostOverride(hostname="", domain=test_domain, server=domain_ip_override,
-                                     rr=UnboundResourceRecord.A,
+                                     rr=UnboundResourceRecordType.A,
                                      description="test-override")
     host_overrides.add(new_host_override)
     assert new_host_override.uuid

@@ -9,16 +9,16 @@ from ..util.item_controller import OPNsenseItem
 from ..util.parse import parse_int, parse_selected_enum
 
 
-class UnboundResourceRecord(Enum):
+class UnboundResourceRecordType(Enum):
     A = "A"
     AAAA = "AAAA"
     MX = "MX"
 
 
-UNBOUND_RR_LONG_NAME_TO_TYPE_DICT: dict[str, UnboundResourceRecord] = {
-    "A (IPv4 address)": UnboundResourceRecord.A,
-    "AAAA (IPv6 address)": UnboundResourceRecord.AAAA,
-    "MX (Mail server)": UnboundResourceRecord.MX
+UNBOUND_RR_LONG_NAME_TO_TYPE_DICT: dict[str, UnboundResourceRecordType] = {
+    "A (IPv4 address)": UnboundResourceRecordType.A,
+    "AAAA (IPv6 address)": UnboundResourceRecordType.AAAA,
+    "MX (Mail server)": UnboundResourceRecordType.MX
 }
 
 
@@ -26,7 +26,7 @@ class HostOverride(OPNsenseItem):
     enabled: bool = True
     hostname: str
     domain: str
-    rr: UnboundResourceRecord = UnboundResourceRecord.A
+    rr: UnboundResourceRecordType = UnboundResourceRecordType.A
     mxprio: Optional[int] = None
     mx: str = ""
     server: str = ""
@@ -34,13 +34,13 @@ class HostOverride(OPNsenseItem):
 
     @root_validator
     def __fields_can_be_defined_together(cls, values):
-        if values["rr"] != UnboundResourceRecord.MX and (values["mx"] or values["mxprio"]):
+        if values["rr"] != UnboundResourceRecordType.MX and (values["mx"] or values["mxprio"]):
             raise InvalidItemException(cls.__name__, custom_message="Fields mx and mxprio require RR to be MX.")
-        if values["rr"] != UnboundResourceRecord.MX and not values["server"]:
+        if values["rr"] != UnboundResourceRecordType.MX and not values["server"]:
             raise InvalidItemException(cls.__name__, custom_message="Field server is required for A and AAAA RRs.")
-        if values["rr"] == UnboundResourceRecord.MX and values["server"]:
+        if values["rr"] == UnboundResourceRecordType.MX and values["server"]:
             raise InvalidItemException(cls.__name__, custom_message="Field server can't be set with RR MX.")
-        if values["rr"] == UnboundResourceRecord.MX and not (values["mx"] or values["mxprio"]):
+        if values["rr"] == UnboundResourceRecordType.MX and not (values["mx"] or values["mxprio"]):
             raise InvalidItemException(cls.__name__, custom_message="Fields mx and mxprio need to be set with RR MX.")
         return values
 
@@ -61,7 +61,7 @@ class HostOverride(OPNsenseItem):
             enabled=bool(int(api_response["enabled"])),
             hostname=api_response["hostname"],
             domain=api_response["domain"],
-            rr=parse_selected_enum(api_response["rr"], UnboundResourceRecord),
+            rr=parse_selected_enum(api_response["rr"], UnboundResourceRecordType),
             mxprio=parse_int(api_response["mxprio"]),
             mx=api_response["mx"],
             server=api_response["server"],

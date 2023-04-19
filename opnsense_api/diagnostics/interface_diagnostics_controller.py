@@ -137,15 +137,22 @@ class InterfaceTopRecord:
 
 @dataclass
 class SystemRRDlist:
-    result: str
+    """
+    Contains lists of system and interface for which metrics are being collected.
+
+    """
+    #: A list of interfaces being monitored for packet metrics
     packets: List[str]
+    #: A list of system processes being monitored for utilization metrics
     system: List[str]
+    #: A list of interfaces being monitored for traffic metrics
     traffic: List[str]
 
     @classmethod
     def _parse(cls, data) -> SystemRRDlist:
-        return cls(data["result"],
-                   data["data"]["packets"],
+        if data["result"] != "ok":
+            raise Exception(f"Failed to parse System RRD List!\n Error: {data['result']}")
+        return cls(data["data"]["packets"],
                    data["data"]["system"],
                    data["data"]["traffic"])
 
@@ -172,7 +179,7 @@ class InterfaceDiagnosticsController:
         """
         return self._traffic_controller.interface()
 
-    def get_interface_top(self, interface) -> List[InterfaceTopRecord]:
+    def get_interface_top(self, interface: str) -> List[InterfaceTopRecord]:
         """
         Returns detailed information about a specific interface.
 
@@ -186,7 +193,6 @@ class InterfaceDiagnosticsController:
         Returns a list of data being collected by the RRD.
         More information on RRD can be found here: https://oss.oetiker.ch/rrdtool/index.en.html
 
-        :return: SystemRRDlist
         """
         return self._system_health_controller.get_rrd_list()
 
