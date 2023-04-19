@@ -99,7 +99,7 @@ class VIP(OPNsenseItem):
 class VIPController(OPNsenseApplicableItemController[VIP]):
 
     @property
-    def opnsense_item_class(self) -> type[VIP]:
+    def _opnsense_item_class(self) -> type[VIP]:
         return VIP
 
     def __init__(self, device):

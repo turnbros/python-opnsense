@@ -30,6 +30,7 @@ class OPNsenseItem(BaseModel, ABC):
     def _from_api_response_get(cls, api_response: dict, uuid: str, **kwargs) -> OPNsenseItem:
         """
         Parses the Item from the API response to getItem
+
         :param api_response: API response to getItem
         :param uuid: the UUID that was originally searched for, as it's often not part of the response
         :return: Item from API response
@@ -40,6 +41,7 @@ class OPNsenseItem(BaseModel, ABC):
     def _from_api_response_list(cls, api_response: dict, **kwargs) -> OPNsenseItem:
         """
         Parses the Item from the API response to list
+
         :param api_response: API response to list
         :return: Item from API response
         """
@@ -69,8 +71,8 @@ class OPNsenseItem(BaseModel, ABC):
 
     def _get_api_representation(self) -> dict:
         """
+        Returns an OPNsenseItems dictionary representation as the OPNSense API understands it when setting or adding.
 
-        :return: the items dictionary representation as the OPNSense API understands it when setting or adding.
         """
         return {
             self._get_api_name():
@@ -86,10 +88,11 @@ class OPNsenseItem(BaseModel, ABC):
         }
 
 
-TOPNsenseItem = TypeVar('TOPNsenseItem', bound=OPNsenseItem)
+T = TypeVar('T', bound=OPNsenseItem)
 
 
-class OPNsenseItemController(Generic[TOPNsenseItem], OPNsenseAPIController, ABC):
+class OPNsenseItemController(Generic[T], OPNsenseAPIController, ABC):
+
     # This gets overridden if the controller uses different action verbs
     # See Routes: https://docs.opnsense.org/development/api/core/routes.html
     class _ItemActions(Enum):
@@ -103,71 +106,63 @@ class OPNsenseItemController(Generic[TOPNsenseItem], OPNsenseAPIController, ABC)
 
     @property
     @abstractmethod
-    def opnsense_item_class(self) -> type[TOPNsenseItem]:
-#        """
-#        :return: the class of the implementation of OPNSenseItem this class controls.
-#        """
+    def _opnsense_item_class(self) -> type[T]:
         raise NotImplementedError("Not implemented!")
 
     @abstractmethod
     def __init__(self, device, module: str, controller: str):
         super().__init__(device, module, controller)
 
-    def list(self) -> List[TOPNsenseItem]:
+    def list(self) -> List[T]:
         """
-        Returns a list of items.
+        Returns a list of OPNsenseItems that exist on an OPNsense device.
 
-        :return: A list of OPNsense items
-        :rtype List[T]:
         """
         query_response = self._api_post(self._ItemActions.search.value)
-        return [self.opnsense_item_class._from_api_response_list(item) for item in query_response.get('rows')]  # type: ignore
+        return [self._opnsense_item_class._from_api_response_list(item) for item in query_response.get('rows')]  # type: ignore
 
-    def get(self, uuid: str) -> TOPNsenseItem:
+    def get(self, uuid: str) -> T:
         """
-        Gets a specific item
+        Gets a specific OPNsenseItem by UUID from an OPNsense device
 
-        :param uuid:
-        :return: T
         """
         query_response = self._api_get(self._ItemActions.get.value, uuid)
         if len(query_response.values()) != 1:
-            raise ItemNotFoundException(self.opnsense_item_class.__name__, uuid, query_response)
-        return self.opnsense_item_class._from_api_response_get(list(query_response.values())[0], uuid=uuid)  # type: ignore
-    def delete(self, item: TOPNsenseItem) -> None:
-        """
-        Deletes the item
+            raise ItemNotFoundException(self._opnsense_item_class.__name__, uuid, query_response)
+        return self._opnsense_item_class._from_api_response_get(list(query_response.values())[0], uuid=uuid)  # type: ignore
 
-        :param item: Item to be deleted
+    def delete(self, controller_item: T) -> None:
         """
-        query_response = self._api_post(self._ItemActions.delete.value, item.uuid)
+        Deletes the supplied item from an OPNsense device
+
+        """
+        query_response = self._api_post(self._ItemActions.delete.value, controller_item.uuid)
         if query_response['result'] != "deleted":
-            raise FailedToDeleteException(self.opnsense_item_class.__name__, item.uuid, query_response)
+            raise FailedToDeleteException(self._opnsense_item_class.__name__, controller_item.uuid, query_response)
 
-    def add(self, item: TOPNsenseItem) -> None:
+    def add(self, controller_item: T) -> None:
         """
-        Adds the item to the OPNSense and saves the items UUID in the parameter item
-        :param item: Will be created on the OPNSense and UUID will be updated after creation
+        Adds an OPNsenseItem object without a UUID to an OPNsense device then updates the input OPNsenseItem objects UUID
+
         """
         query_response = self._api_post(self._ItemActions.add.value,
-                                        body=item._get_api_representation())
+                                        body=controller_item._get_api_representation())
         if query_response['result'] != "saved":
-            raise FailedToAddItemException(self.opnsense_item_class.__name__, item.uuid, query_response)
-        item.uuid = query_response['uuid']
+            raise FailedToAddItemException(self._opnsense_item_class.__name__, controller_item.uuid, query_response)
+        controller_item.uuid = query_response['uuid']
 
-    def set(self, item: TOPNsenseItem) -> None:
+    def set(self, controller_item: T) -> None:
         """
-        Updates the items state in the OPNSense
+        Updates an OPNsenseItem on an OPNsense device
 
-        :param item: state of item to be set on OPNSense
         """
         # get the item first to ensure it exists
-        if not item.uuid:
-            raise InvalidItemException(self.opnsense_item_class.__name__,
+        if not controller_item.uuid:
+            raise InvalidItemException(self._opnsense_item_class.__name__,
                                        custom_message="Can't set item without knowing it's UUID.")
-        self.get(item.uuid)
+        self.get(controller_item.uuid)
 
-        query_response = self._api_post(self._ItemActions.set.value, item.uuid,
-                                        body=item._get_api_representation())
+        query_response = self._api_post(self._ItemActions.set.value, controller_item.uuid,
+                                        body=controller_item._get_api_representation())
         if query_response['result'] != "saved":
-            raise FailedToSetItemException(self.opnsense_item_class.__name__, item.uuid, query_response)
+            raise FailedToSetItemException(self._opnsense_item_class.__name__, controller_item.uuid, query_response)

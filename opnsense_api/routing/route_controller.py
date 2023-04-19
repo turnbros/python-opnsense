@@ -43,7 +43,7 @@ class RouteController(OPNsenseApplicableItemController[Route]):
         super().__init__(device, "routes", "routes")
 
     @property
-    def opnsense_item_class(self) -> type[Route]:
+    def _opnsense_item_class(self) -> type[Route]:
         return Route
 
     class _ItemActions(Enum):

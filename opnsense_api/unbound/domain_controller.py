@@ -32,5 +32,5 @@ class DomainController(UnboundResourceController[DomainOverride]):
         apply = "reconfigure"
 
     @property
-    def opnsense_item_class(self) -> type[DomainOverride]:
+    def _opnsense_item_class(self) -> type[DomainOverride]:
         return DomainOverride

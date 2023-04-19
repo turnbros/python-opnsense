@@ -15,7 +15,7 @@ class LoopbackInterface(OPNsenseItem):
 class LoopbackController(OPNsenseApplicableItemController[LoopbackInterface]):
 
     @property
-    def opnsense_item_class(self) -> type[LoopbackInterface]:
+    def _opnsense_item_class(self) -> type[LoopbackInterface]:
         return LoopbackInterface
 
     def __init__(self, device):

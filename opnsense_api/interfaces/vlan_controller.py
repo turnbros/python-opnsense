@@ -65,10 +65,10 @@ class VLANController(OPNsenseItemController[VLAN]):
         super().__init__(device, "interfaces", "vlan_settings")
 
     @property
-    def opnsense_item_class(self) -> type[VLAN]:
+    def _opnsense_item_class(self) -> type[VLAN]:
         return VLAN
 
-    def add(self, item: VLAN) -> None:
-        super().add(item)
-        assert item.uuid
-        item.device = self.get(item.uuid).device  # get item again so correct device is set
+    def add(self, controller_item: VLAN) -> None:
+        super().add(controller_item)
+        assert controller_item.uuid
+        controller_item.device = self.get(controller_item.uuid).device  # get item again so correct device is set

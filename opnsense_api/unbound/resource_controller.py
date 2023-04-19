@@ -2,10 +2,10 @@ from abc import ABC
 
 from opnsense_api.unbound.service_controller import UnboundServiceController
 from opnsense_api.util.applicable_item_controller import OPNsenseApplicableItemController
-from opnsense_api.util.item_controller import TOPNsenseItem
+from opnsense_api.util.item_controller import T
 
 
-class UnboundResourceController(OPNsenseApplicableItemController[TOPNsenseItem], ABC):
+class UnboundResourceController(OPNsenseApplicableItemController[T], ABC):
     """
     Unbound Controllers extend this, so changes get applied at api/unbound/service/reconfigure.
     """

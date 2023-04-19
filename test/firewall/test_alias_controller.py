@@ -63,7 +63,7 @@ class TestFirewallAliasController(unittest.TestCase):
         self.assertEqual(TestFirewallAliasController.alias_controller._controller, 'alias')
 
     def test_opnsense_item_class(self):
-        self.assertEqual(TestFirewallAliasController.alias_controller.opnsense_item_class, Alias)
+        self.assertEqual(TestFirewallAliasController.alias_controller._opnsense_item_class, Alias)
 
     def test_list(self):
         with open(os.path.join(parent_dir, 'json_src', 'alias_list_response.json')) as f:

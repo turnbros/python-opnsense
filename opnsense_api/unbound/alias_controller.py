@@ -53,7 +53,7 @@ class AliasController(UnboundResourceController[HostAlias]):
         apply = "reconfigure"
 
     @property
-    def opnsense_item_class(self) -> type[HostAlias]:
+    def _opnsense_item_class(self) -> type[HostAlias]:
         return HostAlias
 
     def list(self) -> List[HostAlias]:

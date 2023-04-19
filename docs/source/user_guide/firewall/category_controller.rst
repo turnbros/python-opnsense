@@ -3,11 +3,7 @@ category_controller
 
 .. currentmodule:: opnsense_api.firewall.category_controller
 
-.. rubric:: Category
-.. autoclass:: Category()
-   :members:
-
-.. rubric:: Category Controller
+.. rubric:: Firewall Category Controller
 .. autoclass:: CategoryController()
    :members:
    :show-inheritance:
@@ -16,16 +12,9 @@ category_controller
 
 ----------
 
-Methods
-~~~~~~~
-
-.. autosummary::
-
-  ~CategoryController.add
-  ~CategoryController.delete
-  ~CategoryController.get
-  ~CategoryController.list
-  ~CategoryController.set
+.. rubric:: Firewall Category
+.. autoclass:: Category()
+   :members:
 
 ----------
 

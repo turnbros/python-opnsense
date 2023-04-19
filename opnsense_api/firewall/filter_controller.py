@@ -112,7 +112,7 @@ class FilterController(OPNsenseApplicableItemController[FilterRule]):
         super().__init__(device, "firewall", "filter")
 
     @property
-    def opnsense_item_class(self) -> type[FilterRule]:
+    def _opnsense_item_class(self) -> type[FilterRule]:
         return FilterRule
 
     def apply_changes(self) -> None:

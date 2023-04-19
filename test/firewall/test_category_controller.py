@@ -58,7 +58,7 @@ class TestCategoryController(unittest.TestCase):
         self.assertEqual(TestCategoryController.category_controller._controller, 'category')
 
     def test_opnsense_item_class(self):
-        self.assertEqual(TestCategoryController.category_controller.opnsense_item_class, Category)
+        self.assertEqual(TestCategoryController.category_controller._opnsense_item_class, Category)
 
     def test_list(self):
         with open(os.path.join(parent_dir, 'json_src', 'category_list_response.json')) as f:

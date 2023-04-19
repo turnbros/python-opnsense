@@ -3,14 +3,7 @@ alias_controller
 
 .. currentmodule:: opnsense_api.firewall.alias_controller
 
-.. rubric:: Alias
-.. autoclass:: Alias()
-   :members:
-
-.. rubric:: Alias Types
-.. autoenum:: AliasType()
-
-.. rubric:: Alias Controller
+.. rubric:: Firewall Alias Controller
 .. autoclass:: FirewallAliasController()
    :members:
    :show-inheritance:
@@ -19,18 +12,14 @@ alias_controller
 
 ----------
 
-Methods
-~~~~~~~
+.. rubric:: Firewall Alias
+.. autoclass:: Alias()
+   :members:
 
-.. autosummary::
+----------
 
-  ~FirewallAliasController.add
-  ~FirewallAliasController.apply_changes
-  ~FirewallAliasController.delete
-  ~FirewallAliasController.get
-  ~FirewallAliasController.get_uuid
-  ~FirewallAliasController.list
-  ~FirewallAliasController.set
+.. rubric:: Firewall Alias Types
+.. autoenum:: AliasType()
 
 ----------
 

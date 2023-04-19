@@ -47,3 +47,6 @@ html_sidebars = {
 
     "primary_sidebar_end": ["sidebar-nav-bs", "sidebar-ethical-ads"],
 }
+
+
+autodoc_typehints = "signature"

@@ -31,7 +31,7 @@ class VXLAN(OPNsenseItem):
 class VXLANController(OPNsenseApplicableItemController[VXLAN]):
 
     @property
-    def opnsense_item_class(self) -> type[VXLAN]:
+    def _opnsense_item_class(self) -> type[VXLAN]:
         return VXLAN
 
     def __init__(self, device):

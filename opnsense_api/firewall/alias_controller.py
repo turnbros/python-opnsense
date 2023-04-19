@@ -108,7 +108,7 @@ class FirewallAliasController(OPNsenseApplicableItemController[Alias]):
         get_uuid = "getAliasUUID"
 
     @property
-    def opnsense_item_class(self) -> type[Alias]:
+    def _opnsense_item_class(self) -> type[Alias]:
         return Alias
 
     def __init__(self, device):

@@ -93,5 +93,5 @@ class HostController(UnboundResourceController[HostOverride]):
         apply = "reconfigure"
 
     @property
-    def opnsense_item_class(self) -> type[HostOverride]:
+    def _opnsense_item_class(self) -> type[HostOverride]:
         return HostOverride

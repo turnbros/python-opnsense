@@ -26,5 +26,5 @@ class CategoryController(OPNsenseItemController[Category]):
         super().__init__(device, "firewall", "category")
 
     @property
-    def opnsense_item_class(self) -> type[Category]:
+    def _opnsense_item_class(self) -> type[Category]:
         return Category
