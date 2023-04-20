@@ -19,4 +19,4 @@ jobs:
                     pip install -r requirements.txt
 
             -   name: Run unittests
-                run: python -m unittest discover --start-directory tests/unit/firewall
+                run: python -m unittest discover --start-directory tests/unit
