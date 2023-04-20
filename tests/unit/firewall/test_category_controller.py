@@ -32,7 +32,7 @@ class TestCategory(unittest.TestCase):
         self.assertEqual(category_item.name, "Name")
         self.assertEqual(category_item.auto, False)
         self.assertEqual(category_item.color, "aaaaaa")
-        # test constraints
+        # tests constraints
         # lowercase color
         category_item.color = "AAAAAA"
         self.assertEqual(category_item.color, "aaaaaa")

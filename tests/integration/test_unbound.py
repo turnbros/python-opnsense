@@ -21,7 +21,7 @@ opnsense = Opnsense()
 
 
 def test_domain_controller():
-    # TODO: Finish the domain override test
+    # TODO: Finish the domain override tests
     pass
 
 
@@ -36,7 +36,7 @@ def test_host_controller():
 
     # ADD: Create the host override
     new_override = HostOverride(uuid=None, hostname="", domain=test_domain, server=domain_ip_override, rr=UnboundResourceRecordType.A,
-                                description="test-override")
+                                description="tests-override")
     host_overrides.add(new_override)
     assert new_override.uuid
     assert host_overrides.get(new_override.uuid).enabled is True
@@ -52,7 +52,7 @@ def test_host_controller():
     # SET: Test set by enabling the override and updating the description without changes to the UUID
     old_override_uuid = new_override.uuid
     new_override.enabled = True
-    new_override.description = "test-override-new"
+    new_override.description = "tests-override-new"
     host_overrides.set(new_override)
     assert new_override == host_overrides.get(old_override_uuid)
     assert old_override_uuid == new_override.uuid
@@ -81,13 +81,13 @@ def test_alias_controller():
     # ADD: Create the host override
     new_host_override = HostOverride(hostname="", domain=test_domain, server=domain_ip_override,
                                      rr=UnboundResourceRecordType.A,
-                                     description="test-override")
+                                     description="tests-override")
     host_overrides.add(new_host_override)
     assert new_host_override.uuid
     assert host_overrides.get(new_host_override.uuid).enabled is True
     assert compare(query_opnsense_device_dns(test_domain, 'A'), [domain_ip_override])
 
-    new_host_alias = HostAlias(hostname="", domain=test_alias, host=new_host_override, description="test-alias")
+    new_host_alias = HostAlias(hostname="", domain=test_alias, host=new_host_override, description="tests-alias")
     alias_overrides.add(new_host_alias)
     assert compare(query_opnsense_device_dns(test_alias, 'A'), [domain_ip_override])
 
@@ -101,7 +101,7 @@ def test_alias_controller():
     old_alias_uuid = new_host_alias.uuid
     assert old_alias_uuid
     new_host_alias.enabled = True
-    new_host_alias.description = "test-alias-new"
+    new_host_alias.description = "tests-alias-new"
     alias_overrides.set(new_host_alias)
     assert new_host_alias == alias_overrides.get(old_alias_uuid)
     assert old_alias_uuid == new_host_alias.uuid

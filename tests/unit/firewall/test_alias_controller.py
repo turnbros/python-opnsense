@@ -30,7 +30,7 @@ class TestAlias(unittest.TestCase):
             uuid="11111111-1111-1111-1111-11111111111",
             name="Name",
             type=AliasType.HOST,
-            description="test description",
+            description="tests description",
             updatefreq="2",
             counters="5",
             proto=ProtocolType.IPV6,
@@ -41,7 +41,7 @@ class TestAlias(unittest.TestCase):
         self.assertEqual(alias_item.uuid, "11111111-1111-1111-1111-11111111111")
         self.assertEqual(alias_item.name, "Name")
         self.assertEqual(alias_item.type, AliasType.HOST)
-        self.assertEqual(alias_item.description, "test description")
+        self.assertEqual(alias_item.description, "tests description")
         self.assertEqual(alias_item.updatefreq, "2")
         self.assertEqual(alias_item.counters, "5")
         self.assertEqual(alias_item.proto, ProtocolType.IPV6)
@@ -152,7 +152,7 @@ class TestFirewallAliasController(unittest.TestCase):
 
         self.assertEqual(alias, Alias(
             uuid="11111111-1111-1111-1111-11111111111",
-            name="test",
+            name="tests",
             enabled=True,
             type=AliasType.DYNAMIC_IPV6_HOST,
             counters="0",
