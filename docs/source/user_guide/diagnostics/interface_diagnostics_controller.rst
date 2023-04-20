@@ -23,10 +23,6 @@ interface_diagnostics_controller
 .. autoclass:: InterfaceTopRecord()
    :members:
 
-.. rubric:: System RRD List
-.. autoclass:: SystemRRDlist()
-   :members:
-
 ----------
 
 Examples

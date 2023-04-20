@@ -44,9 +44,10 @@ html_theme_options = {
 html_static_path = ['_static']
 
 html_sidebars = {
-
-    "primary_sidebar_end": ["sidebar-nav-bs", "sidebar-ethical-ads"],
+    "primary_sidebar_end": [
+        "sidebar-nav-bs",
+        "sidebar-ethical-ads"
+    ],
 }
-
 
 autodoc_typehints = "signature"

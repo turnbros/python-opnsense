@@ -15,6 +15,10 @@ system_diagnostics_controller
 .. autoclass:: SystemActivity()
    :members:
 
+.. rubric:: System RRD List
+.. autoclass:: SystemRRDlist()
+   :members:
+
 ----------
 
 Examples

@@ -135,28 +135,6 @@ class InterfaceTopRecord:
         )
 
 
-@dataclass
-class SystemRRDlist:
-    """
-    Contains lists of system and interface for which metrics are being collected.
-
-    """
-    #: A list of interfaces being monitored for packet metrics
-    packets: List[str]
-    #: A list of system processes being monitored for utilization metrics
-    system: List[str]
-    #: A list of interfaces being monitored for traffic metrics
-    traffic: List[str]
-
-    @classmethod
-    def _parse(cls, data) -> SystemRRDlist:
-        if data["result"] != "ok":
-            raise Exception(f"Failed to parse System RRD List!\n Error: {data['result']}")
-        return cls(data["data"]["packets"],
-                   data["data"]["system"],
-                   data["data"]["traffic"])
-
-
 class InterfaceDiagnosticsController:
 
     def __init__(self, device):
@@ -184,14 +162,6 @@ class InterfaceDiagnosticsController:
         """
         return self._traffic_controller.top(interface)
 
-    def get_rrd_list(self) -> SystemRRDlist:
-        """
-        Returns a list of data being collected by the RRD.
-        More information on RRD can be found here: https://oss.oetiker.ch/rrdtool/index.en.html
-
-        """
-        return self._system_health_controller.get_rrd_list()
-
     class _SystemHealth(OPNsenseAPIController):
 
         def __init__(self, device):
@@ -199,9 +169,6 @@ class InterfaceDiagnosticsController:
 
         def get_interfaces(self) -> List[str]:
             return self._api_get("getInterfaces").keys()
-
-        def get_rrd_list(self) -> SystemRRDlist:
-            return SystemRRDlist._parse(self._api_get("getRRDlist"))
 
     class _Traffic(OPNsenseAPIController):
 

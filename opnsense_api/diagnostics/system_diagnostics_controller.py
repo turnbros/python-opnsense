@@ -9,6 +9,10 @@ from opnsense_api.util.controller import OPNsenseAPIController
 
 @dataclass
 class ThreadStats:
+    """
+    ThreadStats
+
+    """
     total: int
     running: int
     sleeping: int
@@ -27,6 +31,10 @@ class ThreadStats:
 
 @dataclass
 class CPUStats:
+    """
+    CPUStats
+
+    """
     user: float
     nice: float
     system: float
@@ -47,6 +55,10 @@ class CPUStats:
 
 @dataclass
 class MemoryStats:
+    """
+    MemoryStats
+
+    """
     active: int
     inactive: int
     wired: int
@@ -67,6 +79,10 @@ class MemoryStats:
 
 @dataclass
 class ProcessStats:
+    """
+    ProcessStats
+
+    """
     c: str  # "0"
     pid: str  # "11"
     thr: str  # "100003"
@@ -98,6 +114,10 @@ class ProcessStats:
 
 @dataclass
 class SystemActivity:
+    """
+    SystemActivity
+
+    """
     last_pid: int
     load_average_1m: float
     load_average_5m: float
@@ -149,6 +169,10 @@ class SystemActivity:
 
 @dataclass
 class SystemMemoryAllocationDetails:
+    """
+    SystemMemoryAllocationDetails
+
+    """
     name: str
     in_use: int
     memory_use: int
@@ -166,6 +190,11 @@ class SystemMemoryAllocationDetails:
 
 @dataclass
 class SystemMemoryZoneStatistics:
+    """
+    SystemMemoryZoneStatistics
+
+    """
+
     name: str
     size: int
     limit: int
@@ -191,6 +220,10 @@ class SystemMemoryZoneStatistics:
 
 @dataclass
 class SystemMemoryDetails:
+    """
+    SystemMemoryDetails
+
+    """
     memory_allocations: List[SystemMemoryAllocationDetails]
     total_allocated_memory_used: int
 
@@ -215,6 +248,29 @@ class SystemMemoryDetails:
                    int(total_virtual_memory_used))
 
 
+@dataclass
+class SystemRRDlist:
+    """
+    Contains lists of system and interface for which metrics are being collected.
+
+    """
+
+    #: A list of interfaces being monitored for packet metrics
+    packets: List[str]
+    #: A list of system processes being monitored for utilization metrics
+    system: List[str]
+    #: A list of interfaces being monitored for traffic metrics
+    traffic: List[str]
+
+    @classmethod
+    def _parse(cls, data) -> SystemRRDlist:
+        if data["result"] != "ok":
+            raise Exception(f"Failed to parse System RRD List!\n Error: {data['result']}")
+        return cls(data["data"]["packets"],
+                   data["data"]["system"],
+                   data["data"]["traffic"])
+
+
 class SystemDiagnosticsController:
 
     def __init__(self, device):
@@ -235,6 +291,14 @@ class SystemDiagnosticsController:
     #     """
     #     return self._system_memory_controller.get_memory_details()
 
+    def get_rrd_list(self) -> SystemRRDlist:
+        """
+        Returns a list of data being collected by the RRD.
+        More information on RRD can be found here: https://oss.oetiker.ch/rrdtool/index.en.html
+
+        """
+        return self._system_health_controller.get_rrd_list()
+
     class _SystemActivity(OPNsenseAPIController):
 
         def __init__(self, device):
@@ -250,3 +314,11 @@ class SystemDiagnosticsController:
 
         def get_memory_details(self) -> SystemMemoryDetails:
             return SystemMemoryDetails._parse(self._api_get("memory"))
+
+    class _SystemHealth(OPNsenseAPIController):
+
+        def __init__(self, device):
+            super().__init__(device, "diagnostics", "systemhealth")
+
+        def get_rrd_list(self) -> SystemRRDlist:
+            return SystemRRDlist._parse(self._api_get("getRRDlist"))
