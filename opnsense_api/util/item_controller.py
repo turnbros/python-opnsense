@@ -165,3 +165,22 @@ class OPNsenseItemController(Generic[T], OPNsenseAPIController, ABC):
                                         body=controller_item._get_api_representation())
         if query_response['result'] != "saved":
             raise FailedToSetItemException(self._opnsense_item_class.__name__, controller_item.uuid, query_response)
+
+    def match_by_attributes(self, **kwargs) -> List[T]:
+        """
+        Matches and returns firewall filter rules. The match is based on attribute values provided as kwargs.
+        kwarg example: { "description": "a filter rule description", "log": True }
+
+        """
+
+        matched_items = []
+        for item in self.list():
+            item = self.get(item.uuid)
+            item_matched = True
+            for key in kwargs.keys():
+                if item.get(key) != kwargs.get(key):
+                    item_matched = False
+                    break
+            if item_matched:
+                matched_items.append(item)
+        return matched_items

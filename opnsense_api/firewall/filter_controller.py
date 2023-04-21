@@ -128,22 +128,3 @@ class FilterController(OPNsenseApplicableItemController[FilterRule]):
 
         query_response = self._api_post(self._ItemActions.search.value)
         return [self.get(row["uuid"]) for row in query_response.get('rows')]
-
-    def match_by_attributes(self, **kwargs) -> List[FilterRule]:
-        """
-        Matches and returns firewall filter rules. The match is based on attribute values provided as kwargs.
-        kwarg example: { "description": "a filter rule description", "log": True }
-
-        """
-        all_rules = self.list()
-        matched_rules = []
-        for rule in all_rules:
-            rule = self.get(rule.uuid)
-            rule_matched = True
-            for key in kwargs.keys():
-                if rule.get(key) != kwargs.get(key):
-                    rule_matched = False
-                    break
-            if rule_matched:
-                matched_rules.append(rule)
-        return matched_rules
